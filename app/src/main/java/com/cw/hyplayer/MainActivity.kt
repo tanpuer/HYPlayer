@@ -87,9 +87,9 @@ class MainActivity : AppCompatActivity() {
         timer.scheduleAtFixedRate(object : TimerTask() {
             override fun run() {
                 handler.post {
-                    if (audioPlayer != null && settable && audioPlayer!!.totalDuration() > 0) {
-                        Log.d("111", "${audioPlayer!!.currentTime()} : ${audioPlayer!!.totalDuration()}")
-                        seek_bar.progress = (audioPlayer!!.currentTime() * 100 / audioPlayer!!.totalDuration()).toInt()
+                    if (audioPlayer != null && settable && audioPlayer!!.totalDuration() > 0 && audioPlayer!!.currentTime() > 0) {
+                        seek_bar.progress =
+                            (audioPlayer!!.currentTime() * 100 / audioPlayer!!.totalDuration()).toInt()
                     }
                 }
             }

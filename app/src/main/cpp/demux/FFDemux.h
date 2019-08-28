@@ -38,6 +38,8 @@ private:
 
     int audioStreamIndex = -1;
 
+    double timeBase;
+
 };
 
 

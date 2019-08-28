@@ -30,6 +30,8 @@ public:
 
     bool seekOver;
 
+    double timeBase;
+
 };
 
 

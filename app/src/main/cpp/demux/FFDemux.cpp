@@ -37,7 +37,7 @@ bool FFDemux::init(const char *url) {
         ALOGD("find stream info failed %s", buf);
         return false;
     }
-    totalDuration = ic->duration / AV_TIME_BASE;
+    totalDuration = ic->duration / AV_TIME_BASE * 1000;
     re = av_find_best_stream(ic, AVMEDIA_TYPE_AUDIO, -1, -1, nullptr, 0);
     if (re < 0) {
         char buf[1024] = {0};
@@ -46,6 +46,7 @@ bool FFDemux::init(const char *url) {
         return false;
     }
     audioStreamIndex = re;
+    timeBase = r2d(ic->streams[audioStreamIndex]->time_base);
     return true;
 }
 
@@ -61,8 +62,9 @@ bool FFDemux::start() {
             AVPacketData *data = new AVPacketData();
             data->packet = pkt;
             data->size = pkt->size;
-            data->pts = pkt->pts * 1000 * r2d(ic->streams[pkt->stream_index]->time_base);
+            data->pts = pkt->pts * 1000 * timeBase;
             data->parameters = ic->streams[audioStreamIndex]->codecpar;
+            data->timeBase = timeBase;
             packetQueue->push(data);
             //network slow test
 //            usleep(100000);

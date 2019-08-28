@@ -36,6 +36,8 @@ private:
 
     SwrContext *swrContext;
 
+    double timeBase;
+
 };
 
 

@@ -17,6 +17,7 @@ bool FFDecode::start() {
                 continue;
             }
             parameters = packetData->parameters;
+            timeBase = packetData->timeBase;
             codec = avcodec_find_decoder(parameters->codec_id);
             if (codec == nullptr) {
                 ALOGE("avcodec_find_decoder %d failed", parameters->codec_id);
@@ -105,7 +106,7 @@ bool FFDecode::start() {
                         continue;
                     }
                     frameData->size = size;
-                    frameData->pts = frame->pts;
+                    frameData->pts = frame->pts * 1000 * timeBase;
                     frameQueue->push(frameData);
                 } else {
 //                    ALOGD("avcodec_receive_frame fail");

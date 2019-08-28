@@ -5,6 +5,8 @@ import android.content.pm.PackageManager
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
+import android.widget.SeekBar
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -51,6 +53,27 @@ class MainActivity : AppCompatActivity() {
         pause.setOnClickListener {
             audioPlayer?.pause()
         }
+
+        seek_bar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {
+
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                if (seekBar == null || audioPlayer == null) {
+                    return
+                }
+                val pos = audioPlayer!!.totalDuration() * seekBar.progress / seekBar.max
+                Log.d("seek ", "$pos")
+                audioPlayer!!.seek(pos)
+            }
+
+        })
     }
 
     override fun onRequestPermissionsResult(

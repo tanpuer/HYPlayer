@@ -25,6 +25,14 @@ class HYAudioPlayer {
         nativeRelease()
     }
 
+    fun totalDuration(): Long {
+        return nativeTotalDuration()
+    }
+
+    fun currentTime(): Long {
+        return nativeCurrentTime()
+    }
+
     private external fun nativeInit(url: String): Boolean
 
     private external fun nativeStart(): Boolean
@@ -34,6 +42,10 @@ class HYAudioPlayer {
     private external fun nativeSeek(pos: Long): Boolean
 
     private external fun nativeRelease()
+
+    private external fun nativeTotalDuration(): Long
+
+    private external fun nativeCurrentTime(): Long
 
     companion object {
         init {

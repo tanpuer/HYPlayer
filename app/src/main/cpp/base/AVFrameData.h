@@ -26,6 +26,8 @@ public:
 
     bool over;
 
+    bool seekOver;
+
 };
 
 

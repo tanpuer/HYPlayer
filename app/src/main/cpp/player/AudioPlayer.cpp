@@ -33,7 +33,13 @@ void AudioPlayer::pause() {
 }
 
 void AudioPlayer::seek(long pos) {
-
+    if (slPlayerLooper != nullptr) {
+        slPlayerLooper->sendMessage(slPlayerLooper->kMsgSLPlayerSeek);
+    }
+    if (demuxLooper != nullptr) {
+        demuxLooper->demux->isDemuxing = false;
+        demuxLooper->sendMessage(demuxLooper->kMsgDemuxSeek, reinterpret_cast<void *>(pos));
+    }
 }
 
 void AudioPlayer::release() {
@@ -42,6 +48,7 @@ void AudioPlayer::release() {
     }
     if (demuxLooper != nullptr) {
         demuxLooper->demux->isDemuxing = false;
+        demuxLooper->demux->isOver = true;
         demuxLooper->sendMessage(demuxLooper->kMsgDemuxRelease);
     }
     if (decodeLooper != nullptr) {

@@ -146,7 +146,14 @@ void SLAudioPlayer::init() {
 }
 
 void SLAudioPlayer::seek() {
-
+    pause();
+    AVFrameData *data = frameQueue->pull();
+    while (!data->seekOver) {
+        data->clear();
+        data = frameQueue->pull();
+    }
+    data->clear();
+    start();
 }
 
 void SLAudioPlayer::release() {

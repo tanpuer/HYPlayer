@@ -56,13 +56,20 @@ bool FFDecode::start() {
         if (packetData == nullptr) {
             continue;
         }
+        if (packetData->seekOver) {
+            ALOGD("FFDecode receive seek over signal");
+            auto *frameData = new AVFrameData();
+            frameData->seekOver = true;
+            frameQueue->push(frameData);
+            continue;
+        }
         if (packetData->over) {
             ALOGD("AVPacket is over!");
             packetData->clear();
-            AVFrameData *frameData = new AVFrameData();
+            auto *frameData = new AVFrameData();
             frameData->over = true;
             frameQueue->push(frameData);
-            AVFrameData *frameData2 = new AVFrameData();
+            auto *frameData2 = new AVFrameData();
             frameData->over = true;
             frameQueue->push(frameData2);
 
@@ -90,7 +97,8 @@ bool FFDecode::start() {
                     frameData->data = new unsigned char[size];
                     uint8_t *outArr[2] = {0};
                     outArr[0] = frameData->data;
-                    int len = swr_convert(swrContext, outArr, frame->nb_samples, (const uint8_t **)frame->data, frame->nb_samples);
+                    int len = swr_convert(swrContext, outArr, frame->nb_samples,
+                                          (const uint8_t **) frame->data, frame->nb_samples);
                     if (len <= 0) {
                         ALOGE("resample error");
                         frameData->clear();

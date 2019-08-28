@@ -35,6 +35,9 @@ extern "C" JNIEXPORT jboolean JNICALL Java_com_cw_hyplayer_audio_HYAudioPlayer_n
         JNIEnv *env,
         jobject instance,
         jlong pos) {
+    if (audioPlayer != nullptr) {
+        audioPlayer->seek(pos);
+    }
     return true;
 }
 
@@ -43,5 +46,21 @@ extern "C" JNIEXPORT void JNICALL Java_com_cw_hyplayer_audio_HYAudioPlayer_nativ
         jobject instance) {
     if (audioPlayer != nullptr) {
         audioPlayer->release();
+    }
+}
+
+extern "C" JNIEXPORT jlong JNICALL Java_com_cw_hyplayer_audio_HYAudioPlayer_nativeTotalDuration(
+        JNIEnv *env,
+        jobject instance) {
+    if (audioPlayer != nullptr) {
+        return audioPlayer->getTotalDuration();
+    }
+}
+
+extern "C" JNIEXPORT jlong JNICALL Java_com_cw_hyplayer_audio_HYAudioPlayer_nativeCurrentTime(
+        JNIEnv *env,
+        jobject instance) {
+    if (audioPlayer != nullptr) {
+        return audioPlayer->getCurrentDuration();
     }
 }

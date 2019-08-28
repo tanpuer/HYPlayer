@@ -23,6 +23,8 @@ public:
 
     bool isDemuxing = false;
 
+    bool isOver = false;
+
     circle_av_packet_queue *packetQueue;
 
     int64_t totalDuration;

@@ -28,6 +28,8 @@ public:
 
     void clear();
 
+    bool seekOver;
+
 };
 
 

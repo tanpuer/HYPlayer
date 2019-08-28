@@ -29,6 +29,7 @@ void SLPlayerLooper::handleMessage(Looper::LooperMessage *msg) {
             break;
         }
         case kMsgSLPlayerSeek: {
+            slAudioPlayer->seek();
             break;
         }
         case kMsgSLPlayerRelease: {

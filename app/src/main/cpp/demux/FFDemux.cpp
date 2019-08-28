@@ -71,13 +71,16 @@ bool FFDemux::start() {
             av_packet_free(&pkt);
         }
     }
-    //over
-    AVPacketData *data = new AVPacketData();
-    data->over = true;
-    packetQueue->push(data);
-    AVPacketData *data2 = new AVPacketData();
-    data->over = true;
-    packetQueue->push(data2);
+    if (isOver) {
+        //over
+        AVPacketData *data = new AVPacketData();
+        data->over = true;
+        packetQueue->push(data);
+        AVPacketData *data2 = new AVPacketData();
+        data->over = true;
+        packetQueue->push(data2);
+        isOver = false;
+    }
     ALOGD("FFDemux start break!");
     return false;
 }
@@ -87,6 +90,21 @@ bool FFDemux::pause() {
 }
 
 bool FFDemux::seek(long pos) {
+    ALOGD("demux seek start! %ld, %lld", pos, totalDuration);
+    avformat_flush(ic);
+    int64_t seekPos = ic->streams[audioStreamIndex]->duration * pos / totalDuration;
+    ALOGD("demux seek start! %lld, %lld", seekPos, ic->streams[audioStreamIndex]->duration);
+    int re = av_seek_frame(ic, audioStreamIndex, seekPos, AVSEEK_FLAG_FRAME|AVSEEK_FLAG_BACKWARD);
+    if (re < 0) {
+        ALOGE("seek error !");
+        return false;
+    }
+    isDemuxing = true;
+    AVPacketData *data = new AVPacketData();
+    data->seekOver = true;
+    packetQueue->push(data);
+    ALOGD("demux seek end!")
+    start();
     return true;
 }
 

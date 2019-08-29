@@ -2,6 +2,9 @@
 #include <string>
 #include "player/AudioPlayer.h"
 
+//.......................................................
+//AudioPlayer
+
 AudioPlayer *audioPlayer;
 
 extern "C" JNIEXPORT jboolean JNICALL Java_com_cw_hyplayer_audio_HYAudioPlayer_nativeInit(
@@ -64,3 +67,66 @@ extern "C" JNIEXPORT jlong JNICALL Java_com_cw_hyplayer_audio_HYAudioPlayer_nati
         return audioPlayer->getCurrentDuration();
     }
 }
+
+//.......................................................
+//VideoPlayer
+
+extern "C" JNIEXPORT jboolean JNICALL Java_com_cw_hyplayer_video_HYVideoPlayer_nativeInit(
+        JNIEnv *env,
+        jobject instance,
+        jstring url) {
+
+    return true;
+}
+
+extern "C" JNIEXPORT jboolean JNICALL Java_com_cw_hyplayer_video_HYVideoPlayer_nativeStart(
+        JNIEnv *env,
+        jobject instance) {
+
+    return true;
+}
+
+extern "C" JNIEXPORT jboolean JNICALL Java_com_cw_hyplayer_video_HYVideoPlayer_nativePause(
+        JNIEnv *env,
+        jobject instance) {
+
+    return true;
+}
+
+extern "C" JNIEXPORT jboolean JNICALL Java_com_cw_hyplayer_video_HYVideoPlayer_nativeSeek(
+        JNIEnv *env,
+        jobject instance,
+        jlong pos) {
+
+    return true;
+}
+
+extern "C" JNIEXPORT void JNICALL Java_com_cw_hyplayer_video_HYVideoPlayer_nativeRelease(
+        JNIEnv *env,
+        jobject instance) {
+
+}
+
+extern "C" JNIEXPORT jlong JNICALL Java_com_cw_hyplayer_video_HYVideoPlayer_nativeTotalDuration(
+        JNIEnv *env,
+        jobject instance) {
+
+    return 0L;
+}
+
+extern "C" JNIEXPORT jlong JNICALL Java_com_cw_hyplayer_video_HYVideoPlayer_nativeCurrentTime(
+        JNIEnv *env,
+        jobject instance) {
+
+    return 0L;
+}
+
+extern "C" JNIEXPORT void JNICALL Java_com_cw_hyplayer_video_HYVideoPlayer_nativeSetSurface(
+        JNIEnv *env,
+        jobject instance,
+        jobject surface) {
+
+}
+
+
+

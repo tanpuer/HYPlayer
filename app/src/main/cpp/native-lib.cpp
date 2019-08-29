@@ -128,5 +128,49 @@ extern "C" JNIEXPORT void JNICALL Java_com_cw_hyplayer_video_HYVideoPlayer_nativ
 
 }
 
+//.......................................................
+//Template
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_cw_hyplayer_template_TemplateView_nativeTemplateViewCreated(
+        JNIEnv *env,
+        jobject instance,
+        jobject surface) {
+
+}
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_cw_hyplayer_template_TemplateView_nativeTemplateViewChanged(
+        JNIEnv *env,
+        jobject instance,
+        jint width,
+        jint height) {
+
+}
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_cw_hyplayer_template_TemplateView_nativeTemplateViewDestroyed(
+        JNIEnv *env,
+        jobject instance) {
+
+}
+
+extern "C" JNIEXPORT void JNICALL Java_com_cw_hyplayer_template_TemplateView_nativeTemplateDoFrame(
+        JNIEnv *env,
+        jobject instance,
+        jlong frameTimeNanos) {
+
+}
+
+//......................................................
+//System
+JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved) {
+    JNIEnv *env;
+    if (vm->GetEnv(reinterpret_cast<void **>(&env), JNI_VERSION_1_6) != JNI_OK) {
+        return -1;
+    }
+    //ffmpeg mediacodec
+    return JNI_VERSION_1_6;
+}
 
 

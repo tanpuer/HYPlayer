@@ -25,6 +25,11 @@ add_library(native-lib
         src/main/cpp/audio/SLPlayerLooper.cpp
 
         src/main/cpp/player/AudioPlayer.cpp
+
+        src/main/cpp/egl/egl_core.cpp
+        src/main/cpp/egl/base_surface.cpp
+        src/main/cpp/egl/window_surface.cpp
+        src/main/cpp/egl/offscreen_surface.cpp
         )
 
 set(JNI_LIBS_DIR ${CMAKE_SOURCE_DIR}/src/main/jniLibs)

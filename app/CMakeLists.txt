@@ -72,10 +72,19 @@ set_target_properties(avfilter
         ${JNI_LIBS_DIR}/${ANDROID_ABI}/libavfilter.so)
 
 
-include_directories(${JNI_LIBS_DIR}/includes)
+include_directories(
+        ${JNI_LIBS_DIR}/includes
+        ${JNI_LINS_DIR}/includes/libjpeg
+        ${JNI_LINS_DIR}/includes/libpng16
+        ${JNI_LINS_DIR}/includes/libgif
+)
 
 target_link_libraries(native-lib
         avutil swresample swscale avcodec avformat avfilter
         ${log-lib} ${android-lib}
         android EGL GLESv3 jnigraphics OpenSLES
+
+        ${JNI_LIBS_DIR}/${ANDROID_ABI}/libjpeg.a
+        ${JNI_LIBS_DIR}/${ANDROID_ABI}/libpng16.a
+        ${JNI_LIBS_DIR}/${ANDROID_ABI}/libgif.a
         )

@@ -9,6 +9,7 @@
 #include <android/native_window.h>
 #include "../egl/egl_core.h"
 #include "../egl/window_surface.h"
+#include "TemplateBaseFilter.h"
 
 class TemplateRenderer {
 
@@ -32,6 +33,7 @@ private:
 
     window_surface *windowSurface;
 
+    TemplateBaseFilter *baseFilter;
 };
 
 

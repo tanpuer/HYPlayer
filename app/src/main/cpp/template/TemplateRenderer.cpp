@@ -21,6 +21,10 @@ TemplateRenderer::~TemplateRenderer() {
         delete eglCore;
         eglCore = nullptr;
     }
+    if (baseFilter != nullptr) {
+        delete baseFilter;
+        baseFilter = nullptr;
+    }
 }
 
 void TemplateRenderer::templateCreated(ANativeWindow *nativeWindow) {
@@ -34,6 +38,8 @@ void TemplateRenderer::templateCreated(ANativeWindow *nativeWindow) {
     glDisable(GL_CULL_FACE);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    baseFilter = new TemplateBaseFilter();
 }
 
 void TemplateRenderer::templateChanged(int width, int height) {
@@ -53,6 +59,10 @@ void TemplateRenderer::templateDestroyed() {
         eglCore->release();
         delete eglCore;
         eglCore = nullptr;
+    }
+    if (baseFilter != nullptr) {
+        delete baseFilter;
+        baseFilter = nullptr;
     }
 }
 

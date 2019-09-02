@@ -33,6 +33,9 @@ add_library(native-lib
 
         src/main/cpp/template/TemplateLooper.cpp
         src/main/cpp/template/TemplateRenderer.cpp
+        src/main/cpp/template/TemplateBaseFilter.cpp
+
+        src/main/cpp/image/ImageCreator.cpp
         )
 
 set(JNI_LIBS_DIR ${CMAKE_SOURCE_DIR}/src/main/jniLibs)

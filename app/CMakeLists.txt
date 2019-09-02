@@ -30,6 +30,9 @@ add_library(native-lib
         src/main/cpp/egl/base_surface.cpp
         src/main/cpp/egl/window_surface.cpp
         src/main/cpp/egl/offscreen_surface.cpp
+
+        src/main/cpp/template/TemplateLooper.cpp
+        src/main/cpp/template/TemplateRenderer.cpp
         )
 
 set(JNI_LIBS_DIR ${CMAKE_SOURCE_DIR}/src/main/jniLibs)

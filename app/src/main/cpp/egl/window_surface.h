@@ -13,7 +13,7 @@ public:
     window_surface(ANativeWindow* nativeWindow, egl_core* eglCore, bool releaseSurface);
     window_surface(ANativeWindow* nativeWindow, egl_core* eglCore);
 
-    void release();
+    void release(bool releaseNativeWindow);
 
     void recreate(egl_core* eglCore);
 

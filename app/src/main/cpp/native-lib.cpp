@@ -1,6 +1,9 @@
 #include <jni.h>
 #include <string>
+#include <android/native_window.h>
+#include "android/native_window_jni.h"
 #include "player/AudioPlayer.h"
+#include "template/TemplateLooper.h"
 
 //.......................................................
 //AudioPlayer
@@ -131,12 +134,16 @@ extern "C" JNIEXPORT void JNICALL Java_com_cw_hyplayer_video_HYVideoPlayer_nativ
 //.......................................................
 //Template
 
+ANativeWindow *nativeWindow;
+TemplateLooper *templateLooper;
 extern "C" JNIEXPORT void JNICALL
 Java_com_cw_hyplayer_template_TemplateView_nativeTemplateViewCreated(
         JNIEnv *env,
         jobject instance,
         jobject surface) {
-
+    nativeWindow = ANativeWindow_fromSurface(env, surface);
+    templateLooper = new TemplateLooper(nativeWindow);
+    templateLooper->sendMessage(templateLooper->kMsgTemplateCreated);
 }
 
 extern "C" JNIEXPORT void JNICALL
@@ -145,21 +152,29 @@ Java_com_cw_hyplayer_template_TemplateView_nativeTemplateViewChanged(
         jobject instance,
         jint width,
         jint height) {
-
+    if (templateLooper != nullptr) {
+        templateLooper->sendMessage(templateLooper->kMsgTemplateChanged, width, height);
+    }
 }
 
 extern "C" JNIEXPORT void JNICALL
 Java_com_cw_hyplayer_template_TemplateView_nativeTemplateViewDestroyed(
         JNIEnv *env,
         jobject instance) {
-
+    if (templateLooper != nullptr) {
+        templateLooper->sendMessage(templateLooper->kMsgTemplateDestroyed);
+        templateLooper->quit();
+    }
 }
 
 extern "C" JNIEXPORT void JNICALL Java_com_cw_hyplayer_template_TemplateView_nativeTemplateDoFrame(
         JNIEnv *env,
         jobject instance,
         jlong frameTimeNanos) {
-
+    if (templateLooper != nullptr) {
+        templateLooper->sendMessage(templateLooper->kMsgTemplateDoFrame,
+                                    reinterpret_cast<void *>(frameTimeNanos));
+    }
 }
 
 //......................................................

@@ -82,14 +82,15 @@ void TemplateBaseFilter::doFrame() {
     AVFrame *avFrame = imageCreator->readImage("sdcard/test.png");
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, avFrame->width, avFrame->height, 0, GL_RGBA, GL_UNSIGNED_BYTE,
                  avFrame->data[0]);
+    ALOGD("image type %d %d %d %d", avFrame->format, avFrame->data[1] == nullptr, avFrame->width, avFrame->height);
     glUniform1i(uTextureSamplerLocation, 0);
 
-    ALOGD("aPositionLocation: %d; "
-          "aTextureCoordinateLocation : %d; "
-          "uTextureMatrixLocation : %d "
-          "uMVPMatrixLocation: %d "
-          "uTextureSamplerLocation: %d",
-            aPositionLocation, aTextureCoordinateLocation, uTextureMatrixLocation, uMVPMatrixLocation, uTextureSamplerLocation)
+//    ALOGD("aPositionLocation: %d; "
+//          "aTextureCoordinateLocation : %d; "
+//          "uTextureMatrixLocation : %d "
+//          "uMVPMatrixLocation: %d "
+//          "uTextureSamplerLocation: %d",
+//            aPositionLocation, aTextureCoordinateLocation, uTextureMatrixLocation, uMVPMatrixLocation, uTextureSamplerLocation)
 
     glDrawArrays(GL_TRIANGLES, 0, vertexCount);
     glDisableVertexAttribArray(aPositionLocation);

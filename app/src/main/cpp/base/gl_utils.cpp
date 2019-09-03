@@ -179,7 +179,7 @@ GLuint createTexture(GLenum type) {
     // 绑定纹理
     glBindTexture(type, textureId);
     // 设置放大缩小模式
-    glTexParameterf(type, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameterf(type, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameterf(type, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameterf(type, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameterf(type, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);

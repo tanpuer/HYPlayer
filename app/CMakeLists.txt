@@ -9,6 +9,7 @@ add_library(native-lib
         src/main/cpp/base/Looper.cpp
         src/main/cpp/base/AVPacketData.cpp
         src/main/cpp/base/AVFrameData.cpp
+        src/main/cpp/base/gl_utils.cpp
 
         src/main/cpp/demux/IDemux.cpp
         src/main/cpp/demux/FFDemux.cpp

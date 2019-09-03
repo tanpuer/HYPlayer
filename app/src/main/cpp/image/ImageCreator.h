@@ -6,20 +6,22 @@
 #define HYPLAYER_IMAGECREATOR_H
 
 
+extern "C" {
+#include <libavutil/frame.h>
+
+};
+
 class ImageCreator {
 
 public:
 
-    struct ImageData {
-        void *data;
-        int width;
-        int height;
-    };
+    AVFrame *readImage(const char *path);
 
-    ImageData* readImage(const char *path);
+    void releaseImage(AVFrame *avFrame);
 
-    void releaseImage(ImageData *imageData);
+private:
 
+    AVFrame *frame;
 };
 
 

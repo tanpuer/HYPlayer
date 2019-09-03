@@ -67,5 +67,10 @@ void TemplateRenderer::templateDestroyed() {
 }
 
 void TemplateRenderer::templateDoFrame(long frameTimeNanos) {
+    glClearColor(0.0, 0.0, 0.0, 1.0);
+    glClear(GL_COLOR_BUFFER_BIT);
 
+    baseFilter->doFrame();
+
+    windowSurface->swapBuffer();
 }

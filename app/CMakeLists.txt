@@ -90,10 +90,14 @@ include_directories(
         ${JNI_LINS_DIR}/includes/libgif
 )
 
+find_library(z-lib z)
+
 target_link_libraries(native-lib
         avutil swresample swscale avcodec avformat avfilter
         ${log-lib} ${android-lib}
         android EGL GLESv3 jnigraphics OpenSLES
+
+        ${z-lib}
 
         ${JNI_LIBS_DIR}/${ANDROID_ABI}/libjpeg.a
         ${JNI_LIBS_DIR}/${ANDROID_ABI}/libpng16.a

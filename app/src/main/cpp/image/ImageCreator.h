@@ -17,7 +17,7 @@ public:
 
     AVFrame *readImage(const char *path);
 
-    void releaseImage(AVFrame *avFrame);
+    void releaseImage();
 
 private:
 

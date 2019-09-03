@@ -48,6 +48,7 @@ TemplateBaseFilter::TemplateBaseFilter() {
 }
 
 TemplateBaseFilter::~TemplateBaseFilter() {
+    imageCreator->releaseImage();
     delete imageCreator;
 
     glDeleteProgram(program);

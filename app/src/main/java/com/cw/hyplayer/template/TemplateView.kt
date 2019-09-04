@@ -17,11 +17,14 @@ class TemplateView : SurfaceView, SurfaceHolder.Callback, Choreographer.FrameCal
         defStyleAttr
     )
 
+    private var active = false
+
     init {
         holder.addCallback(this)
     }
 
     override fun surfaceCreated(holder: SurfaceHolder?) {
+        active = true
         nativeTemplateViewCreated(holder!!.surface)
         Choreographer.getInstance().postFrameCallback(this)
     }
@@ -31,12 +34,15 @@ class TemplateView : SurfaceView, SurfaceHolder.Callback, Choreographer.FrameCal
     }
 
     override fun surfaceDestroyed(holder: SurfaceHolder?) {
+        active = false
         nativeTemplateViewDestroyed()
         Choreographer.getInstance().removeFrameCallback(this)
     }
 
     override fun doFrame(frameTimeNanos: Long) {
-        nativeTemplateDoFrame(frameTimeNanos)
+        if (active) {
+            nativeTemplateDoFrame(frameTimeNanos)
+        }
         Choreographer.getInstance().postFrameCallback(this)
     }
 

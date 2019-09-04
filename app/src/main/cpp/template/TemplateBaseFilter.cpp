@@ -61,19 +61,8 @@ TemplateBaseFilter::TemplateBaseFilter() {
 TemplateBaseFilter::~TemplateBaseFilter() {
     imageCreator->releaseImage();
     delete imageCreator;
-
-    glDeleteProgram(program);
-    glDeleteShader(fragmentShader);
-    glDeleteShader(vertexShader);
-    auto textures = new GLuint[3];
-    textures[0] = yTexture;
-    textures[1] = uTexture;
-    textures[2] = vTexture;
-    glDeleteTextures(3, textures);
-
     delete uCoordMatrix;
     delete textureMatrix;
-
     ALOGD("delete TemplateBaseFilter");
 }
 
@@ -149,4 +138,16 @@ void TemplateBaseFilter::updateMatrix() {
     if (windowWidth > 0&& windowHeight >0 && imageWidth >0 && imageHeight >0) {
 
     }
+}
+
+void TemplateBaseFilter::release() {
+    ALOGD("TemplateBaseFilter release");
+    glDeleteProgram(program);
+    glDeleteShader(fragmentShader);
+    glDeleteShader(vertexShader);
+    auto textures = new GLuint[3];
+    textures[0] = yTexture;
+    textures[1] = uTexture;
+    textures[2] = vTexture;
+    glDeleteTextures(3, textures);
 }

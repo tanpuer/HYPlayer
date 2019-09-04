@@ -52,19 +52,19 @@ void TemplateRenderer::templateChanged(int width, int height) {
 
 void TemplateRenderer::templateDestroyed() {
     ALOGD("templateDestroyed");
+    if (baseFilter != nullptr) {
+        baseFilter->release();
+        delete baseFilter;
+        baseFilter = nullptr;
+    }
     if (windowSurface != nullptr) {
         windowSurface->release(true);
-        delete windowSurface;
         windowSurface = nullptr;
     }
     if (eglCore != nullptr) {
         eglCore->release();
         delete eglCore;
         eglCore = nullptr;
-    }
-    if (baseFilter != nullptr) {
-        delete baseFilter;
-        baseFilter = nullptr;
     }
 }
 

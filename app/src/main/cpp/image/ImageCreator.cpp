@@ -46,7 +46,7 @@ AVFrame *ImageCreator::readImage(const char *path) {
     ALOGD("image codec open success");
 
     pkt = av_packet_alloc();
-    AVFrame *frame = av_frame_alloc();
+    frame = av_frame_alloc();
     re = av_read_frame(ic, pkt);
     if (re != 0) {
         ALOGE("image read frame fail");
@@ -66,7 +66,7 @@ AVFrame *ImageCreator::readImage(const char *path) {
     ALOGD("image receive frame success");
 
     pFrameYUV = av_frame_alloc();
-    unsigned char *out_buffer = (unsigned char *)av_malloc(av_image_get_buffer_size(AV_PIX_FMT_YUV420P, codecContext->width, codecContext->height, 1));
+    out_buffer = (unsigned char *)av_malloc(av_image_get_buffer_size(AV_PIX_FMT_YUV420P, codecContext->width, codecContext->height, 1));
     av_image_fill_arrays(pFrameYUV->data, pFrameYUV->linesize, out_buffer,
                          AV_PIX_FMT_YUV420P, codecContext->width, codecContext->height, 1);
     SwsContext *img_convert_ctx = sws_getContext(codecContext->width, codecContext->height, codecContext->pix_fmt,
@@ -91,6 +91,10 @@ void ImageCreator::releaseImage() {
     avcodec_free_context(&codecContext);
     avformat_close_input(&ic);
     av_frame_free(&pFrameYUV);
+    av_frame_free(&frame);
     av_packet_free(&pkt);
+    if (out_buffer != nullptr) {
+        av_free(&out_buffer);
+    }
     ALOGD("imageCreator release");
 }

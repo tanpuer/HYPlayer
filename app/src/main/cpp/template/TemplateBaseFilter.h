@@ -40,6 +40,8 @@ public:
 
     void doFrame();
 
+    void release();
+
 private:
 
     GLuint yTexture;

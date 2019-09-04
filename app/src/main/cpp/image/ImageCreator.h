@@ -24,9 +24,11 @@ public:
 private:
 
     AVFrame *pFrameYUV;
+    AVFrame *frame;
     AVPacket *pkt;
     AVFormatContext *ic;
     AVCodecContext *codecContext;
+    unsigned char *out_buffer;
 };
 
 

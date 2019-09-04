@@ -4,6 +4,7 @@
 
 #include "ImageCreator.h"
 #include "../base/native_log.h"
+#include "../base/utils.h"
 
 extern "C" {
 #include <libavformat/avformat.h>
@@ -15,6 +16,7 @@ AVFrame *ImageCreator::readImage(const char *path) {
     if (frame != nullptr) {
         return frame;
     }
+    long start = javaTimeMillis();
     AVFormatContext *ic = nullptr;
     int re = avformat_open_input(&ic, path, nullptr, nullptr);
     if (re != 0) {
@@ -105,6 +107,9 @@ AVFrame *ImageCreator::readImage(const char *path) {
     av_frame_free(&frame);
 
     this->frame = pFrameYUV;
+
+    long end = javaTimeMillis();
+    ALOGD("read image time %ld", end - start);
     return pFrameYUV;
 }
 

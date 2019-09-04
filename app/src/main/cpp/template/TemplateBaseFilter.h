@@ -36,6 +36,8 @@ public:
 
     virtual ~TemplateBaseFilter();
 
+    void setNativeWindowSize(int width, int height);
+
     void doFrame();
 
 private:
@@ -66,8 +68,15 @@ private:
 
     ESMatrix *uCoordMatrix;
     ESMatrix *textureMatrix;
+    void updateMatrix();
 
     ImageCreator *imageCreator;
+
+    //size
+    int windowWidth;
+    int windowHeight;
+    int imageWidth;
+    int imageHeight;
 };
 
 

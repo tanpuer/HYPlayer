@@ -46,6 +46,7 @@ void TemplateRenderer::templateChanged(int width, int height) {
     ALOGD("templateChanged");
     windowSurface->makeCurrent();
     glViewport(0, 0, width, height);
+    baseFilter->setNativeWindowSize(width, height);
 }
 
 void TemplateRenderer::templateDestroyed() {

@@ -11,6 +11,10 @@ TemplateRenderer::TemplateRenderer() {
 }
 
 TemplateRenderer::~TemplateRenderer() {
+    if (baseFilter != nullptr) {
+        delete baseFilter;
+        baseFilter = nullptr;
+    }
     if (windowSurface != nullptr) {
         windowSurface->release(true);
         delete windowSurface;
@@ -20,10 +24,6 @@ TemplateRenderer::~TemplateRenderer() {
         eglCore->release();
         delete eglCore;
         eglCore = nullptr;
-    }
-    if (baseFilter != nullptr) {
-        delete baseFilter;
-        baseFilter = nullptr;
     }
     ALOGD("TemplateRenderer delete");
 }
@@ -59,6 +59,7 @@ void TemplateRenderer::templateDestroyed() {
     }
     if (windowSurface != nullptr) {
         windowSurface->release(true);
+        delete windowSurface;
         windowSurface = nullptr;
     }
     if (eglCore != nullptr) {

@@ -6,12 +6,6 @@
 #include "../base/native_log.h"
 #include "../base/utils.h"
 
-extern "C" {
-#include <libavformat/avformat.h>
-#include "libswscale/swscale.h"
-#include "libavutil/imgutils.h"
-}
-
 AVFrame *ImageCreator::readImage(const char *path) {
     if (pFrameYUV != nullptr) {
         return pFrameYUV;
@@ -66,14 +60,19 @@ AVFrame *ImageCreator::readImage(const char *path) {
     ALOGD("image receive frame success");
 
     pFrameYUV = av_frame_alloc();
-    out_buffer = (unsigned char *)av_malloc(av_image_get_buffer_size(AV_PIX_FMT_YUV420P, codecContext->width, codecContext->height, 1));
+    out_buffer = (unsigned char *) av_malloc(
+            av_image_get_buffer_size(AV_PIX_FMT_YUV420P, codecContext->width, codecContext->height,
+                                     1));
     av_image_fill_arrays(pFrameYUV->data, pFrameYUV->linesize, out_buffer,
                          AV_PIX_FMT_YUV420P, codecContext->width, codecContext->height, 1);
-    SwsContext *img_convert_ctx = sws_getContext(codecContext->width, codecContext->height, codecContext->pix_fmt,
-                                     codecContext->width, codecContext->height, AV_PIX_FMT_YUV420P, SWS_BICUBIC, NULL, NULL, NULL);
+    SwsContext *img_convert_ctx = sws_getContext(codecContext->width, codecContext->height,
+                                                 codecContext->pix_fmt,
+                                                 codecContext->width, codecContext->height,
+                                                 AV_PIX_FMT_YUV420P, SWS_BICUBIC, NULL, NULL, NULL);
 
-    int height = sws_scale(img_convert_ctx, (const unsigned char* const*)frame->data, frame->linesize, 0, codecContext->height,
-              pFrameYUV->data, pFrameYUV->linesize);
+    int height = sws_scale(img_convert_ctx, (const unsigned char *const *) frame->data,
+                           frame->linesize, 0, codecContext->height,
+                           pFrameYUV->data, pFrameYUV->linesize);
     if (height < 0) {
         ALOGE("sw_scale error!");
         return nullptr;
@@ -93,8 +92,9 @@ void ImageCreator::releaseImage() {
     av_frame_free(&pFrameYUV);
     av_frame_free(&frame);
     av_packet_free(&pkt);
-    if (out_buffer != nullptr) {
-        av_free(&out_buffer);
-    }
+    sws_freeContext(img_convert_ctx);
+//    if (out_buffer != nullptr) {
+//        av_free(&out_buffer);
+//    }
     ALOGD("imageCreator release");
 }

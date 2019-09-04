@@ -89,29 +89,34 @@ void TemplateBaseFilter::doFrame() {
     glUniformMatrix4fv(uMVPMatrixLocation, 1, GL_FALSE, this->uCoordMatrix->m);
 
     AVFrame *avFrame = imageCreator->readImage("sdcard/test.jpeg");
+    if (avFrame != nullptr) {
+        uTextureYLocation = glGetUniformLocation(program, uTextureY);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, yTexture);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, avFrame->width, avFrame->height, 0,
+                     GL_LUMINANCE,
+                     GL_UNSIGNED_BYTE,
+                     avFrame->data[0]);
+        glUniform1i(uTextureYLocation, 0);
 
-    uTextureYLocation = glGetUniformLocation(program, uTextureY);
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, yTexture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, avFrame->width, avFrame->height, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE,
-                 avFrame->data[0]);
-    glUniform1i(uTextureYLocation, 0);
+        uTextureULocation = glGetUniformLocation(program, uTextureU);
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, uTexture);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, avFrame->width / 2, avFrame->height / 2, 0,
+                     GL_LUMINANCE,
+                     GL_UNSIGNED_BYTE,
+                     avFrame->data[1]);
+        glUniform1i(uTextureULocation, 1);
 
-    uTextureULocation = glGetUniformLocation(program, uTextureU);
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, uTexture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, avFrame->width / 2, avFrame->height / 2, 0, GL_LUMINANCE,
-                 GL_UNSIGNED_BYTE,
-                 avFrame->data[1]);
-    glUniform1i(uTextureULocation, 1);
-
-    uTextureVLocation = glGetUniformLocation(program, uTextureV);
-    glActiveTexture(GL_TEXTURE2);
-    glBindTexture(GL_TEXTURE_2D, vTexture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, avFrame->width / 2, avFrame->height / 2, 0, GL_LUMINANCE,
-                 GL_UNSIGNED_BYTE,
-                 avFrame->data[2]);
-    glUniform1i(uTextureVLocation, 2);
+        uTextureVLocation = glGetUniformLocation(program, uTextureV);
+        glActiveTexture(GL_TEXTURE2);
+        glBindTexture(GL_TEXTURE_2D, vTexture);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, avFrame->width / 2, avFrame->height / 2, 0,
+                     GL_LUMINANCE,
+                     GL_UNSIGNED_BYTE,
+                     avFrame->data[2]);
+        glUniform1i(uTextureVLocation, 2);
+    }
 
     glDrawArrays(GL_TRIANGLES, 0, vertexCount);
     glDisableVertexAttribArray(aPositionLocation);

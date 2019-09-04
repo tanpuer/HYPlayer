@@ -50,19 +50,17 @@ TemplateBaseFilter::TemplateBaseFilter() {
 
     imageCreator = new ImageCreator();
 
-    uCoordMatrix = new ESMatrix();
-    setIdentityM(uCoordMatrix);
-    textureMatrix = new ESMatrix();
-    setIdentityM(textureMatrix);
-    textureMatrix->m[5] = -1.0f;
-    textureMatrix->m[13] = 1.0f;
+    baseMVPMatrix = ESMatrix();
+    textureMatrix = ESMatrix();
+    setIdentityM(&baseMVPMatrix);
+    setIdentityM(&textureMatrix);
+    textureMatrix.m[5] = -1.0f;
+    textureMatrix.m[13] = 1.0f;
 }
 
 TemplateBaseFilter::~TemplateBaseFilter() {
     imageCreator->releaseImage();
     delete imageCreator;
-    delete uCoordMatrix;
-    delete textureMatrix;
     ALOGD("delete TemplateBaseFilter");
 }
 
@@ -90,10 +88,10 @@ void TemplateBaseFilter::doFrame() {
     glVertexAttribPointer(aTextureCoordinateLocation, 2, GL_FLOAT, GL_FALSE, 8, texture);
 
     uTextureMatrixLocation = glGetUniformLocation(program, uTextureMatrix);
-    glUniformMatrix4fv(uTextureMatrixLocation, 1, GL_FALSE, this->textureMatrix->m);
+    glUniformMatrix4fv(uTextureMatrixLocation, 1, GL_FALSE, this->textureMatrix.m);
 
     uMVPMatrixLocation = glGetUniformLocation(program, uMVPMatrix);
-    glUniformMatrix4fv(uMVPMatrixLocation, 1, GL_FALSE, this->uCoordMatrix->m);
+    glUniformMatrix4fv(uMVPMatrixLocation, 1, GL_FALSE, this->baseMVPMatrix.m);
 
     uTextureYLocation = glGetUniformLocation(program, uTextureY);
     glActiveTexture(GL_TEXTURE0);
@@ -135,8 +133,33 @@ void TemplateBaseFilter::setNativeWindowSize(int width, int height) {
 }
 
 void TemplateBaseFilter::updateMatrix() {
-    if (windowWidth > 0&& windowHeight >0 && imageWidth >0 && imageHeight >0) {
+    if (windowWidth > 0 && windowHeight > 0 && imageWidth > 0 && imageHeight > 0) {
+        if (true) {
+            //fit_center
+            if (imageWidth * 1.0 / imageHeight > windowWidth * 1.0 / windowHeight) {
+                //横屏视频
+                originScaleY = windowWidth * 1.0F / imageWidth * imageHeight / windowHeight;
+                originScaleX = 1.0F;
+            } else {
+                //竖屏视频
+                originScaleY = 1.0F;
+                originScaleX = windowHeight * 1.0F / imageHeight * imageWidth / windowWidth;
+            }
+        } else {
+            //center_crop
+            if (imageWidth * 1.0 / imageHeight > windowWidth * 1.0 / windowHeight) {
+                //横屏视频
+                originScaleY = 1.0F;
+                originScaleX = windowHeight * 1.0F / imageHeight * imageWidth / windowWidth;
+            } else {
+                //竖屏视频
+                originScaleY = windowWidth * 1.0F / imageWidth * imageHeight / windowHeight;
+                originScaleX = 1.0F;
+            }
+        }
 
+        setIdentityM(&baseMVPMatrix);
+        scaleM(&baseMVPMatrix, 0, originScaleX, originScaleY, 1.0F);
     }
 }
 

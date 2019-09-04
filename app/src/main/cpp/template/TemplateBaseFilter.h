@@ -68,8 +68,8 @@ private:
     GLint uTextureULocation = -1;
     GLint uTextureVLocation = -1;
 
-    ESMatrix *uCoordMatrix;
-    ESMatrix *textureMatrix;
+    ESMatrix baseMVPMatrix;
+    ESMatrix textureMatrix;
     void updateMatrix();
 
     ImageCreator *imageCreator;
@@ -79,6 +79,8 @@ private:
     int windowHeight;
     int imageWidth;
     int imageHeight;
+    float originScaleX;
+    float originScaleY;
 };
 
 

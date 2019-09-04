@@ -15,7 +15,6 @@ AVFrame *ImageCreator::readImage(const char *path) {
     if (frame != nullptr) {
         return frame;
     }
-
     AVFormatContext *ic = nullptr;
     int re = avformat_open_input(&ic, path, nullptr, nullptr);
     if (re != 0) {

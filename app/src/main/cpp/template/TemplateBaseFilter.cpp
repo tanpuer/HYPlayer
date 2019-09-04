@@ -54,6 +54,8 @@ TemplateBaseFilter::TemplateBaseFilter() {
     setIdentityM(uCoordMatrix);
     textureMatrix = new ESMatrix();
     setIdentityM(textureMatrix);
+    textureMatrix->m[5] = -1.0f;
+    textureMatrix->m[13] = 1.0f;
 }
 
 TemplateBaseFilter::~TemplateBaseFilter() {

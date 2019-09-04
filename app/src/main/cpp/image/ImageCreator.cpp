@@ -7,6 +7,8 @@
 
 extern "C" {
 #include <libavformat/avformat.h>
+#include "libswscale/swscale.h"
+#include "libavutil/imgutils.h"
 }
 
 AVFrame *ImageCreator::readImage(const char *path) {
@@ -51,13 +53,14 @@ AVFrame *ImageCreator::readImage(const char *path) {
     ALOGD("image codec open success");
 
     AVPacket *pkt = av_packet_alloc();
-    frame = av_frame_alloc();
+    AVFrame *frame = av_frame_alloc();
     re = av_read_frame(ic, pkt);
     if (re != 0) {
         ALOGE("image read frame fail");
         avcodec_close(codecContext);
         avcodec_free_context(&codecContext);
         avformat_close_input(&ic);
+        av_frame_free(&frame);
         return nullptr;
     }
     re = avcodec_send_packet(codecContext, pkt);
@@ -66,6 +69,7 @@ AVFrame *ImageCreator::readImage(const char *path) {
         avcodec_close(codecContext);
         avcodec_free_context(&codecContext);
         avformat_close_input(&ic);
+        av_frame_free(&frame);
         return nullptr;
     }
     while (true) {
@@ -75,10 +79,34 @@ AVFrame *ImageCreator::readImage(const char *path) {
         }
     }
     ALOGD("image receive frame success");
+
+    AVFrame *pFrameYUV = av_frame_alloc();
+    unsigned char *out_buffer = (unsigned char *)av_malloc(av_image_get_buffer_size(AV_PIX_FMT_YUV420P, codecContext->width, codecContext->height, 1));
+    av_image_fill_arrays(pFrameYUV->data, pFrameYUV->linesize, out_buffer,
+                         AV_PIX_FMT_YUV420P, codecContext->width, codecContext->height, 1);
+    SwsContext *img_convert_ctx = sws_getContext(codecContext->width, codecContext->height, codecContext->pix_fmt,
+                                     codecContext->width, codecContext->height, AV_PIX_FMT_YUV420P, SWS_BICUBIC, NULL, NULL, NULL);
+
+    int height = sws_scale(img_convert_ctx, (const unsigned char* const*)frame->data, frame->linesize, 0, codecContext->height,
+              pFrameYUV->data, pFrameYUV->linesize);
+    if (height < 0) {
+        ALOGE("sw_scale error!");
+        avcodec_close(codecContext);
+        avcodec_free_context(&codecContext);
+        avformat_close_input(&ic);
+        av_frame_free(&frame);
+        return nullptr;
+    }
+    pFrameYUV->width = codecContext->width;
+    pFrameYUV->height = codecContext->height;
+
     avcodec_close(codecContext);
     avcodec_free_context(&codecContext);
     avformat_close_input(&ic);
-    return frame;
+    av_frame_free(&frame);
+
+    this->frame = pFrameYUV;
+    return pFrameYUV;
 }
 
 void ImageCreator::releaseImage() {

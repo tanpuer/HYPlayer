@@ -40,7 +40,9 @@ public:
 
 private:
 
-    GLuint textureId = 0;
+    GLuint yTexture;
+    GLuint uTexture;
+    GLuint vTexture;
     GLuint vertexShader = 0;
     GLuint fragmentShader = 0;
     GLuint program = 0;
@@ -49,13 +51,18 @@ private:
     const GLchar *aTextureCoordinate = "aTextureCoordinate";
     const GLchar *uTextureMatrix = "uTextureMatrix";
     const GLchar *uMVPMatrix = "uMVPMatrix";
-    const GLchar *uTextureSampler = "uTextureSampler";
+    const GLchar *uTextureY = "uTextureY";
+    const GLchar *uTextureU = "uTextureU";
+    const GLchar *uTextureV = "uTextureV";
 
     GLint aPositionLocation = 0;
     GLint aTextureCoordinateLocation = 0;
     GLint uTextureMatrixLocation = 0;
     GLint uMVPMatrixLocation = 0;
-    GLint uTextureSamplerLocation = 0;
+
+    GLint uTextureYLocation = -1;
+    GLint uTextureULocation = -1;
+    GLint uTextureVLocation = -1;
 
     ESMatrix *uCoordMatrix;
     ESMatrix *textureMatrix;

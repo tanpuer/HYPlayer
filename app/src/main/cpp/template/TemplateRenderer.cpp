@@ -25,6 +25,7 @@ TemplateRenderer::~TemplateRenderer() {
         delete baseFilter;
         baseFilter = nullptr;
     }
+    ALOGD("TemplateRenderer delete");
 }
 
 void TemplateRenderer::templateCreated(ANativeWindow *nativeWindow) {

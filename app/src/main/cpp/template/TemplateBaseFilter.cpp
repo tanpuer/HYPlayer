@@ -69,7 +69,12 @@ TemplateBaseFilter::~TemplateBaseFilter() {
     textures[0] = yTexture;
     textures[1] = uTexture;
     textures[2] = vTexture;
-    glDeleteTextures(1, textures);
+    glDeleteTextures(3, textures);
+
+    delete uCoordMatrix;
+    delete textureMatrix;
+
+    ALOGD("delete TemplateBaseFilter");
 }
 
 void TemplateBaseFilter::doFrame() {

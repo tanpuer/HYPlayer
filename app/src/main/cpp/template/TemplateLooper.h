@@ -27,6 +27,8 @@ public:
 
     void handleMessage(LooperMessage *msg) override;
 
+    void pthreadExit() override;
+
 private:
 
     ANativeWindow *nativeWindow;

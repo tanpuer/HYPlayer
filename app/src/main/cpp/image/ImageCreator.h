@@ -6,9 +6,11 @@
 #define HYPLAYER_IMAGECREATOR_H
 
 
+
 extern "C" {
 #include <libavutil/frame.h>
-
+#include <libavcodec/avcodec.h>
+#include <libavformat/avformat.h>
 };
 
 class ImageCreator {
@@ -21,7 +23,10 @@ public:
 
 private:
 
-    AVFrame *frame;
+    AVFrame *pFrameYUV;
+    AVPacket *pkt;
+    AVFormatContext *ic;
+    AVCodecContext *codecContext;
 };
 
 

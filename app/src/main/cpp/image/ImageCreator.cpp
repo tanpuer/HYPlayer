@@ -65,7 +65,7 @@ AVFrame *ImageCreator::readImage(const char *path) {
                                      1));
     av_image_fill_arrays(pFrameYUV->data, pFrameYUV->linesize, out_buffer,
                          AV_PIX_FMT_YUV420P, codecContext->width, codecContext->height, 1);
-    SwsContext *img_convert_ctx = sws_getContext(codecContext->width, codecContext->height,
+    img_convert_ctx = sws_getContext(codecContext->width, codecContext->height,
                                                  codecContext->pix_fmt,
                                                  codecContext->width, codecContext->height,
                                                  AV_PIX_FMT_YUV420P, SWS_BICUBIC, NULL, NULL, NULL);

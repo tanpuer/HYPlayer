@@ -23,7 +23,6 @@ void *MediaCodecEncoder::trampoline(void *p) {
     renderer->templateCreated(720, 1280, ((MediaCodecEncoder *) p)->surface,
                               ((MediaCodecEncoder *) p)->javaMediaEncoder,
                               ((MediaCodecEncoder *) p)->vm);
-    renderer->templateDestroyed();
     delete renderer;
     return nullptr;
 }

@@ -58,12 +58,23 @@ OffscreenRenderer::templateCreated(int width, int height, jobject surface, jobje
     }
     env->CallVoidMethod(javaMediaEncoder, jmethodId, true);
     ALOGD("offscreen draw over, time is  %ld", javaTimeMillis() - start);
-}
 
-void OffscreenRenderer::templateDestroyed() {
+    if (baseFilter != nullptr) {
+        baseFilter->release();
+        delete baseFilter;
+        baseFilter = nullptr;
+    }
+    if (inputSurface != nullptr) {
+        inputSurface->release(true);
+        delete inputSurface;
+        inputSurface = nullptr;
+    }
+    if (eglCore != nullptr) {
+        delete eglCore;
+        eglCore = nullptr;
+    }
 
-}
-
-void OffscreenRenderer::templateDoFrame(long frameTimeNanos) {
-
+    env->DeleteGlobalRef(surface);
+    env->DeleteGlobalRef(javaMediaEncoder);
+    vm->DetachCurrentThread();
 }

@@ -22,10 +22,6 @@ public:
 
     void templateCreated(int width, int height, jobject surface, jobject javaMediaEncoder, JavaVM *vm);
 
-    void templateDestroyed();
-
-    void templateDoFrame(long frameTimeNanos);
-
 private:
 
     egl_core *eglCore;

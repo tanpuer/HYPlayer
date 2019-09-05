@@ -188,7 +188,7 @@ void egl_core::swapBuffers(EGLSurface surface) {
     }
 }
 
-void egl_core::setPresentationTime(EGLSurface eglSurface, long nsecs) {
+void egl_core::setPresentationTime(EGLSurface eglSurface, long long nsecs) {
     eglPresentationTimeANDROID(mEGLDisplay, eglSurface, nsecs);
 }
 

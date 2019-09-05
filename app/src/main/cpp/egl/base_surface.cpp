@@ -70,6 +70,6 @@ void base_surface::makeCurrentReadFrom(base_surface *baseSurface) {
     mEglCore->makeCurrent(this, baseSurface->mEGLSurface);
 }
 
-void base_surface::setPresentationTime(long nsecs) {
+void base_surface::setPresentationTime(long long nsecs) {
     mEglCore->setPresentationTime(mEGLSurface, nsecs);
 }

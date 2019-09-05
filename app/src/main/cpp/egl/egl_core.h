@@ -40,7 +40,7 @@ public:
     void swapBuffers(EGLSurface surface);
 
     //设置pts
-    void setPresentationTime(EGLSurface eglSurface, long nsecs);
+    void setPresentationTime(EGLSurface eglSurface, long long nsecs);
 
     //判断是否属于当前上下文
     bool isCurrent(EGLSurface eglSurface);

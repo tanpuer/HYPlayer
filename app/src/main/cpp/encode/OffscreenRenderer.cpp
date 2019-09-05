@@ -38,11 +38,10 @@ OffscreenRenderer::templateCreated(int width, int height, jobject surface, jobje
 
     jclass clazz = env->GetObjectClass(javaMediaEncoder);
     jmethodID jmethodId = env->GetMethodID(clazz, "drainEncoderWithNoTimeOut", "(Z)V");
-    for (int i = 0; i < 480; i++) {
+    for (int i = 0; i < 240; i++) {
         ALOGD("offscreen draw time %d", i);
         glClearColor(0.0, 0.0, 0.0, 1.0);
         glClear(GL_COLOR_BUFFER_BIT);
-
         //recording start
         inputSurface->makeCurrent();
         glClearColor(0.0, 0.0, 0.0, 1.0);
@@ -50,7 +49,7 @@ OffscreenRenderer::templateCreated(int width, int height, jobject surface, jobje
 
         baseFilter->doFrame();
 
-        inputSurface->setPresentationTime(i * 16667L * 1000);
+        inputSurface->setPresentationTime(i * 16667000LL);
         inputSurface->swapBuffer();
         env->CallVoidMethod(javaMediaEncoder, jmethodId, false);
         //recording end

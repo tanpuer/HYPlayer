@@ -29,7 +29,7 @@ public:
 
     void makeCurrentReadFrom(base_surface *baseSurface);
 
-    void setPresentationTime(long nsecs);
+    void setPresentationTime(long long nsecs);
 
     //获取当前帧缓冲
     char * getCurrentFrame();

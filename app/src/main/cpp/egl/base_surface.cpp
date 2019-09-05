@@ -65,3 +65,11 @@ char *base_surface::getCurrentFrame() {
     glReadPixels(0,0,getWidth(),getHeight(),GL_RGBA,GL_UNSIGNED_BYTE,pixels);
     return pixels;
 }
+
+void base_surface::makeCurrentReadFrom(base_surface *baseSurface) {
+    mEglCore->makeCurrent(this, baseSurface->mEGLSurface);
+}
+
+void base_surface::setPresentationTime(long nsecs) {
+    mEglCore->setPresentationTime(mEGLSurface, nsecs);
+}

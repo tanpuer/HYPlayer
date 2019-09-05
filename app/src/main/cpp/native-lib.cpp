@@ -5,6 +5,9 @@
 #include "player/AudioPlayer.h"
 #include "template/TemplateLooper.h"
 #include "base/native_log.h"
+#include "encode/MediaCodecEncoder.h"
+
+JavaVM *javaVM;
 
 //.......................................................
 //AudioPlayer
@@ -190,8 +193,26 @@ JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved) {
     if (vm->GetEnv(reinterpret_cast<void **>(&env), JNI_VERSION_1_6) != JNI_OK) {
         return -1;
     }
+    javaVM = vm;
     //ffmpeg mediacodec
     return JNI_VERSION_1_6;
 }
 
+//......................................................
+//JavaMediaEncoder
+MediaCodecEncoder *mediaCodecEncoder;
+extern "C" JNIEXPORT void JNICALL Java_com_cw_hyplayer_encode_JavaMediaEncoder_nativeInit(
+        JNIEnv *env,
+        jobject instance,
+        jobject surface,
+        jobject javaMediaEncoder
+) {
+    mediaCodecEncoder = new MediaCodecEncoder(surface, javaMediaEncoder, javaVM);
+}
 
+extern "C" JNIEXPORT void JNICALL Java_com_cw_hyplayer_encode_JavaMediaEncoder_nativeCancel(
+        JNIEnv *env,
+        jobject instance
+) {
+
+}

@@ -27,6 +27,10 @@ public:
 
     void swapBuffer();
 
+    void makeCurrentReadFrom(base_surface *baseSurface);
+
+    void setPresentationTime(long nsecs);
+
     //获取当前帧缓冲
     char * getCurrentFrame();
 

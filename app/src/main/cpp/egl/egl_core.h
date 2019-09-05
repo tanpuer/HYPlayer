@@ -61,6 +61,9 @@ private:
 
     //查找合适的egl
     EGLConfig getConfig(int flags, int version);
+
+    // 设置时间戳方法
+    PFNEGLPRESENTATIONTIMEANDROIDPROC eglPresentationTimeANDROID = NULL;
 };
 
 

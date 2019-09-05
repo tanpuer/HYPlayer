@@ -76,6 +76,12 @@ void TemplateBaseFilter::doFrame() {
         updateMatrix();
     }
 
+    //test start..................................................
+    scaleX += 0.002;
+    scaleY = scaleX;
+    updateMatrix();
+    //test end..................................................
+
     glUseProgram(program);
 
     GLint vertexCount = sizeof(vertex) / (sizeof(vertex[0]) * 2);
@@ -124,6 +130,8 @@ void TemplateBaseFilter::doFrame() {
     glDisableVertexAttribArray(aPositionLocation);
     glDisableVertexAttribArray(aTextureCoordinateLocation);
     glBindTexture(GL_TEXTURE_2D, 0);
+
+    time++;
 }
 
 void TemplateBaseFilter::setNativeWindowSize(int width, int height) {
@@ -159,7 +167,7 @@ void TemplateBaseFilter::updateMatrix() {
         }
 
         setIdentityM(&baseMVPMatrix);
-        scaleM(&baseMVPMatrix, 0, originScaleX, originScaleY, 1.0F);
+        scaleM(&baseMVPMatrix, 0, originScaleX * scaleX, originScaleY * scaleY, 1.0F);
     }
 }
 

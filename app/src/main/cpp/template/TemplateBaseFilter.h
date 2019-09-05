@@ -42,6 +42,8 @@ public:
 
     void release();
 
+    int time = 0;
+
 private:
 
     GLuint yTexture;
@@ -81,6 +83,10 @@ private:
     int imageHeight;
     float originScaleX;
     float originScaleY;
+
+    //
+    float scaleX = 1.0f;
+    float scaleY = 1.0f;
 };
 
 

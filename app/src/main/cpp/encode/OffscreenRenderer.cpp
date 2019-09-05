@@ -14,13 +14,17 @@ OffscreenRenderer::~OffscreenRenderer() {
 
 }
 
-void OffscreenRenderer::templateCreated(int width, int height, jobject surface, jobject javaMediaEncoder, JavaVM *vm) {
+void
+OffscreenRenderer::templateCreated(int width, int height, jobject surface, jobject javaMediaEncoder,
+                                   JavaVM *vm) {
     vm->AttachCurrentThread(&env, nullptr);
 
     eglCore = new egl_core(nullptr, FLAG_TRY_GLES3);
-    offscreenSurface = new offscreen_surface(eglCore, width, height);
+    ANativeWindow *nativeWindow = ANativeWindow_fromSurface(env, surface);
+    ALOGD("ANativeWindow create success");
+    inputSurface = new window_surface(nativeWindow, eglCore);
 
-    offscreenSurface->makeCurrent();
+    inputSurface->makeCurrent();
     glClearColor(0.0, 0.0, 0.0, 1.0);
     glDisable(GL_DEPTH_TEST);
     glDisable(GL_CULL_FACE);
@@ -32,24 +36,15 @@ void OffscreenRenderer::templateCreated(int width, int height, jobject surface, 
     baseFilter = new TemplateBaseFilter();
     baseFilter->setNativeWindowSize(width, height);
 
-    ALOGD("1111 %d", surface == nullptr);
-    ANativeWindow *nativeWindow = ANativeWindow_fromSurface(env, surface);
-    ALOGD("2222");
-
-    inputSurface = new window_surface(nativeWindow, eglCore);
-
     jclass clazz = env->GetObjectClass(javaMediaEncoder);
     jmethodID jmethodId = env->GetMethodID(clazz, "drainEncoderWithNoTimeOut", "(Z)V");
-
-    for (int i = 0; i < 240; i++) {
+    for (int i = 0; i < 480; i++) {
         ALOGD("offscreen draw time %d", i);
         glClearColor(0.0, 0.0, 0.0, 1.0);
         glClear(GL_COLOR_BUFFER_BIT);
-        baseFilter->doFrame();
-        offscreenSurface->swapBuffer();
 
         //recording start
-        inputSurface->makeCurrentReadFrom(offscreenSurface);
+        inputSurface->makeCurrent();
         glClearColor(0.0, 0.0, 0.0, 1.0);
         glClear(GL_COLOR_BUFFER_BIT);
 
@@ -59,12 +54,9 @@ void OffscreenRenderer::templateCreated(int width, int height, jobject surface, 
         inputSurface->swapBuffer();
         env->CallVoidMethod(javaMediaEncoder, jmethodId, false);
         //recording end
-        offscreenSurface->makeCurrent();
-        offscreenSurface->swapBuffer();
     }
     env->CallVoidMethod(javaMediaEncoder, jmethodId, true);
     ALOGD("offscreen draw over");
-    //
 }
 
 void OffscreenRenderer::templateDestroyed() {

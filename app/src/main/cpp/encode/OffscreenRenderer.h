@@ -29,7 +29,6 @@ public:
 private:
 
     egl_core *eglCore;
-    offscreen_surface *offscreenSurface;
     window_surface *inputSurface;
     TemplateBaseFilter *baseFilter;
     JNIEnv *env;

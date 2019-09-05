@@ -18,6 +18,9 @@ class JavaMediaEncoder {
 
     fun drainEncoderWithNoTimeOut(endOfStream: Boolean) {
         videoEncoder.drainEncoderWithNoTimeOut(endOfStream)
+        if (endOfStream) {
+            release()
+        }
     }
 
     fun cancel(){

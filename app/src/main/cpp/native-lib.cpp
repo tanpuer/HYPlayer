@@ -201,13 +201,17 @@ JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved) {
 //......................................................
 //JavaMediaEncoder
 MediaCodecEncoder *mediaCodecEncoder;
+jobject globalSurface;
+jobject globalJavaMediaEncoder;
 extern "C" JNIEXPORT void JNICALL Java_com_cw_hyplayer_encode_JavaMediaEncoder_nativeInit(
         JNIEnv *env,
         jobject instance,
         jobject surface,
         jobject javaMediaEncoder
 ) {
-    mediaCodecEncoder = new MediaCodecEncoder(surface, javaMediaEncoder, javaVM);
+    globalSurface = env->NewGlobalRef(surface);
+    globalJavaMediaEncoder = env->NewGlobalRef(javaMediaEncoder);
+    mediaCodecEncoder = new MediaCodecEncoder(globalSurface, globalJavaMediaEncoder, javaVM);
 }
 
 extern "C" JNIEXPORT void JNICALL Java_com_cw_hyplayer_encode_JavaMediaEncoder_nativeCancel(

@@ -23,6 +23,7 @@ void window_surface::release(bool releaseNativeWindow) {
     if (releaseNativeWindow && mSurface != NULL) {
         ANativeWindow_release(mSurface);
         mSurface = NULL;
+        ALOGD("window surface release success");
     }
 }
 

@@ -4,6 +4,7 @@
 #include "android/native_window_jni.h"
 #include "player/AudioPlayer.h"
 #include "template/TemplateLooper.h"
+#include "base/native_log.h"
 
 //.......................................................
 //AudioPlayer
@@ -142,6 +143,11 @@ Java_com_cw_hyplayer_template_TemplateView_nativeTemplateViewCreated(
         jobject instance,
         jobject surface) {
     nativeWindow = ANativeWindow_fromSurface(env, surface);
+    if (templateLooper != nullptr) {
+        delete templateLooper;
+        templateLooper = nullptr;
+    }
+    ALOGD("TemplateLooper is null %d", templateLooper == nullptr);
     templateLooper = new TemplateLooper(nativeWindow);
     templateLooper->sendMessage(templateLooper->kMsgTemplateCreated);
 }

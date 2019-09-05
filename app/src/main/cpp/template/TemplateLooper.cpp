@@ -36,10 +36,12 @@ TemplateLooper::TemplateLooper(ANativeWindow *nativeWindow) {
 }
 
 TemplateLooper::~TemplateLooper() {
-    delete renderer;
+
 }
 
 void TemplateLooper::pthreadExit() {
     ALOGD("template thread exit");
-    delete this;
+    delete renderer;
+    renderer = nullptr;
+    nativeWindow = nullptr;
 }

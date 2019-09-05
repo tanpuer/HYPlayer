@@ -22,6 +22,8 @@ public:
 
     void releaseImage();
 
+    ~ImageCreator();
+
 private:
 
     AVFrame *pFrameYUV;

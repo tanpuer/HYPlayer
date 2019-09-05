@@ -114,6 +114,7 @@ void egl_core::release() {
     mEGLDisplay = EGL_NO_DISPLAY;
     mEGLContext = EGL_NO_CONTEXT;
     mEGLConfig = NULL;
+    ALOGD("egl release success");
 }
 
 EGLContext egl_core::getContext() {

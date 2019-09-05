@@ -12,6 +12,7 @@ TemplateRenderer::TemplateRenderer() {
 
 TemplateRenderer::~TemplateRenderer() {
     if (baseFilter != nullptr) {
+        baseFilter->release();
         delete baseFilter;
         baseFilter = nullptr;
     }
@@ -21,7 +22,7 @@ TemplateRenderer::~TemplateRenderer() {
         windowSurface = nullptr;
     }
     if (eglCore != nullptr) {
-        eglCore->release();
+//        eglCore->release();
         delete eglCore;
         eglCore = nullptr;
     }
@@ -63,7 +64,7 @@ void TemplateRenderer::templateDestroyed() {
         windowSurface = nullptr;
     }
     if (eglCore != nullptr) {
-        eglCore->release();
+//        eglCore->release();
         delete eglCore;
         eglCore = nullptr;
     }

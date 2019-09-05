@@ -93,8 +93,12 @@ void ImageCreator::releaseImage() {
     av_frame_free(&frame);
     av_packet_free(&pkt);
     sws_freeContext(img_convert_ctx);
-//    if (out_buffer != nullptr) {
-//        av_free(&out_buffer);
-//    }
+    if (out_buffer != nullptr) {
+        av_free(out_buffer);
+    }
     ALOGD("imageCreator release");
+}
+
+ImageCreator::~ImageCreator() {
+    ALOGD("imageCreator delete success");
 }

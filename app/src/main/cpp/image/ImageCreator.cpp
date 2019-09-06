@@ -6,15 +6,12 @@
 #include "../base/native_log.h"
 #include "../base/utils.h"
 
-ImageCreator::~ImageCreator() {
-    ALOGD("avFrameCreator delete success");
-}
-
-AVFrame *ImageCreator::readFrame(const char *path, int index) {
+AVFrame *ImageCreator::readFrame(int index) {
     if (pFrameYUV != nullptr) {
         return pFrameYUV;
     }
     long start = javaTimeMillis();
+    ic = avformat_alloc_context();
     int re = avformat_open_input(&ic, path, nullptr, nullptr);
     if (re != 0) {
         char buf[1024] = {0};
@@ -99,5 +96,13 @@ void ImageCreator::releaseFrame() {
     if (out_buffer != nullptr) {
         av_free(out_buffer);
     }
-    ALOGD("avFrameCreator release");
+    ALOGD("ImageCreator release");
+}
+
+ImageCreator::ImageCreator(const char *path) {
+    this->path = path;
+}
+
+ImageCreator::~ImageCreator() {
+    ALOGD("ImageCreator delete");
 }

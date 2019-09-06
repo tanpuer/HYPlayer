@@ -43,6 +43,7 @@ add_library(native-lib
         src/main/cpp/image/VIdeoCreator.cpp
 
         src/main/cpp/encode/MediaCodecEncoder.cpp
+        src/main/cpp/encode/NDKCodecEncoder.cpp
         src/main/cpp/encode/OffscreenRenderer.cpp
         )
 

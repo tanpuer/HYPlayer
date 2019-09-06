@@ -16,24 +16,38 @@ extern "C" {
 #include "libavutil/imgutils.h"
 };
 
+#include "vector"
+
 class GifCreator : public IAVFrameCreator {
 
 public:
 
-    virtual AVFrame *readFrame(const char *path, int index = 0);
+    GifCreator(const char *path);
+
+    virtual AVFrame *readFrame(int index = 0);
 
     virtual void releaseFrame();
 
     ~GifCreator();
 
+    static void *trampoline(void *p);
+
 private:
+
+    void startDecode();
 
     AVFormatContext *ic;
     AVCodecContext *codecContext;
     SwsContext *img_convert_ctx;
     unsigned char *out_buffer;
     AVPacket *pkt;
+    AVFrame *frame;
+    std::vector<AVFrame*> frameList;
+    long long totalMs;
+    int size;
 
+    pthread_t worker_thread;
+    const char *path;
 };
 
 

@@ -6,6 +6,7 @@
 #include "../image/ImageCreator.h"
 #include "../base/matrix_util.h"
 #include "../base/gl_utils.h"
+#include "../image/GifCreator.h"
 
 #define GET_STR(x) #x
 
@@ -48,7 +49,8 @@ TemplateBaseFilter::TemplateBaseFilter() {
     uTexture = createTexture(GL_TEXTURE_2D);
     vTexture = createTexture(GL_TEXTURE_2D);
 
-    avFrameCreator = new ImageCreator();
+//    avFrameCreator = new ImageCreator();
+    avFrameCreator = new GifCreator("sdcard/test.gif");
 
     baseMVPMatrix = ESMatrix();
     textureMatrix = ESMatrix();
@@ -56,6 +58,7 @@ TemplateBaseFilter::TemplateBaseFilter() {
     setIdentityM(&textureMatrix);
     textureMatrix.m[5] = -1.0f;
     textureMatrix.m[13] = 1.0f;
+
 }
 
 TemplateBaseFilter::~TemplateBaseFilter() {
@@ -65,7 +68,7 @@ TemplateBaseFilter::~TemplateBaseFilter() {
 }
 
 void TemplateBaseFilter::doFrame() {
-    AVFrame *avFrame = avFrameCreator->readFrame("sdcard/test.jpeg");
+    AVFrame *avFrame = avFrameCreator->readFrame(time);
     if (avFrame == nullptr) {
         ALOGE("doFrame with avFrame nullptr, pls check");
         return;
@@ -77,9 +80,9 @@ void TemplateBaseFilter::doFrame() {
     }
 
     //test start..................................................
-    scaleX += 0.002;
-    scaleY = scaleX;
-    updateMatrix();
+//    scaleX += 0.002;
+//    scaleY = scaleX;
+//    updateMatrix();
     //test end..................................................
 
     glUseProgram(program);

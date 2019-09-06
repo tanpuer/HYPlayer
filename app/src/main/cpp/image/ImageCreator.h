@@ -20,9 +20,11 @@ class ImageCreator : public IAVFrameCreator{
 
 public:
 
+    ImageCreator(const char *path);
+
     ~ImageCreator();
 
-    virtual AVFrame *readFrame(const char *path, int index = 0);
+    virtual AVFrame *readFrame(int index = 0);
 
     virtual void releaseFrame();
 
@@ -35,6 +37,7 @@ private:
     AVCodecContext *codecContext;
     SwsContext *img_convert_ctx;
     unsigned char *out_buffer;
+    const char *path;
 };
 
 

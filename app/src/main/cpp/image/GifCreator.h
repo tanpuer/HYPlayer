@@ -39,10 +39,10 @@ private:
     AVFormatContext *ic;
     AVCodecContext *codecContext;
     SwsContext *img_convert_ctx;
-    unsigned char *out_buffer;
     AVPacket *pkt;
     AVFrame *frame;
     std::vector<AVFrame*> frameList;
+    std::vector<unsigned char *>bufferList;
     long long totalMs;
     int size;
 

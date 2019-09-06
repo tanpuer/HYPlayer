@@ -27,7 +27,7 @@ AVFrame *GifCreator::readFrame(int index) {
     double currentTime = index * 16.6667;
     auto currentIndex = (unsigned int) (currentTime / (totalMs / size)) % size;
     if (currentIndex < frameList.size()) {
-        ALOGD("currentIndex %d", currentIndex);
+//        ALOGD("currentIndex %d", currentIndex);
         return frameList.at(currentIndex);
     }
     return nullptr;
@@ -68,10 +68,6 @@ void GifCreator::startDecode() {
         return;
     }
     ALOGD("gif codec open success");
-
-    out_buffer = (unsigned char *) av_malloc(
-            av_image_get_buffer_size(AV_PIX_FMT_YUV420P, codecContext->width, codecContext->height,
-                                     1));
     img_convert_ctx = sws_getContext(codecContext->width, codecContext->height,
                                      codecContext->pix_fmt,
                                      codecContext->width, codecContext->height,
@@ -93,7 +89,7 @@ void GifCreator::startDecode() {
         }
 //        ALOGD("gif receive frame success");
         AVFrame *pFrameYUV = av_frame_alloc();
-        out_buffer = (unsigned char *) av_malloc(
+        auto* out_buffer = (unsigned char *) av_malloc(
                 av_image_get_buffer_size(AV_PIX_FMT_YUV420P, codecContext->width,
                                          codecContext->height,
                                          1));
@@ -109,7 +105,8 @@ void GifCreator::startDecode() {
         pFrameYUV->width = codecContext->width;
         pFrameYUV->height = codecContext->height;
         frameList.push_back(pFrameYUV);
-        ALOGD("sw_scale success! %d", count);
+        bufferList.push_back(out_buffer);
+//        ALOGD("sw_scale success! %d", count);
         count++;
     }
     ALOGD("read all images in gif %ld %d", javaTimeMillis() - start, count);
@@ -122,11 +119,11 @@ void GifCreator::releaseFrame() {
     av_packet_free(&pkt);
     av_frame_free(&frame);
     sws_freeContext(img_convert_ctx);
-    if (out_buffer != nullptr) {
-        av_free(out_buffer);
+    for (unsigned int i = 0; i < frameList.size(); ++i) {
+        av_frame_free(&frameList.at(i));
+        av_free(bufferList.at(i));
     }
-    for (int i = 0; i < frameList.size(); ++i) {
-//        frameList.pop_back()
-    }
+    frameList.clear();
+    bufferList.clear();
     ALOGD("GifCreator release");
 }

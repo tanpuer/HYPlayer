@@ -74,7 +74,7 @@ private:
     ESMatrix textureMatrix;
     void updateMatrix();
 
-    ImageCreator *imageCreator;
+    IAVFrameCreator *avFrameCreator;
 
     //size
     int windowWidth;

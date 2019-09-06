@@ -6,6 +6,8 @@
 #define HYPLAYER_IMAGECREATOR_H
 
 
+#include "IAVFrameCreator.h"
+
 extern "C" {
 #include <libavutil/frame.h>
 #include <libavcodec/avcodec.h>
@@ -14,15 +16,15 @@ extern "C" {
 #include "libavutil/imgutils.h"
 };
 
-class ImageCreator {
+class ImageCreator : public IAVFrameCreator{
 
 public:
 
-    AVFrame *readImage(const char *path);
-
-    void releaseImage();
-
     ~ImageCreator();
+
+    virtual AVFrame *readFrame(const char *path);
+
+    virtual void releaseFrame();
 
 private:
 

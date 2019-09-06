@@ -6,7 +6,11 @@
 #include "../base/native_log.h"
 #include "../base/utils.h"
 
-AVFrame *ImageCreator::readImage(const char *path) {
+ImageCreator::~ImageCreator() {
+    ALOGD("avFrameCreator delete success");
+}
+
+AVFrame *ImageCreator::readFrame(const char *path) {
     if (pFrameYUV != nullptr) {
         return pFrameYUV;
     }
@@ -66,9 +70,9 @@ AVFrame *ImageCreator::readImage(const char *path) {
     av_image_fill_arrays(pFrameYUV->data, pFrameYUV->linesize, out_buffer,
                          AV_PIX_FMT_YUV420P, codecContext->width, codecContext->height, 1);
     img_convert_ctx = sws_getContext(codecContext->width, codecContext->height,
-                                                 codecContext->pix_fmt,
-                                                 codecContext->width, codecContext->height,
-                                                 AV_PIX_FMT_YUV420P, SWS_BICUBIC, NULL, NULL, NULL);
+                                     codecContext->pix_fmt,
+                                     codecContext->width, codecContext->height,
+                                     AV_PIX_FMT_YUV420P, SWS_BICUBIC, NULL, NULL, NULL);
 
     int height = sws_scale(img_convert_ctx, (const unsigned char *const *) frame->data,
                            frame->linesize, 0, codecContext->height,
@@ -85,7 +89,7 @@ AVFrame *ImageCreator::readImage(const char *path) {
     return pFrameYUV;
 }
 
-void ImageCreator::releaseImage() {
+void ImageCreator::releaseFrame() {
     avcodec_close(codecContext);
     avcodec_free_context(&codecContext);
     avformat_close_input(&ic);
@@ -96,9 +100,5 @@ void ImageCreator::releaseImage() {
     if (out_buffer != nullptr) {
         av_free(out_buffer);
     }
-    ALOGD("imageCreator release");
-}
-
-ImageCreator::~ImageCreator() {
-    ALOGD("imageCreator delete success");
+    ALOGD("avFrameCreator release");
 }

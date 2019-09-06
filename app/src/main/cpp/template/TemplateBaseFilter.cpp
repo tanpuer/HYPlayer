@@ -48,7 +48,7 @@ TemplateBaseFilter::TemplateBaseFilter() {
     uTexture = createTexture(GL_TEXTURE_2D);
     vTexture = createTexture(GL_TEXTURE_2D);
 
-    imageCreator = new ImageCreator();
+    avFrameCreator = new ImageCreator();
 
     baseMVPMatrix = ESMatrix();
     textureMatrix = ESMatrix();
@@ -59,13 +59,13 @@ TemplateBaseFilter::TemplateBaseFilter() {
 }
 
 TemplateBaseFilter::~TemplateBaseFilter() {
-    imageCreator->releaseImage();
-    delete imageCreator;
+    avFrameCreator->releaseFrame();
+    delete avFrameCreator;
     ALOGD("delete TemplateBaseFilter");
 }
 
 void TemplateBaseFilter::doFrame() {
-    AVFrame *avFrame = imageCreator->readImage("sdcard/test.jpeg");
+    AVFrame *avFrame = avFrameCreator->readFrame("sdcard/test.jpeg");
     if (avFrame == nullptr) {
         ALOGE("doFrame with avFrame nullptr, pls check");
         return;

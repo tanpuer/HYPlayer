@@ -22,7 +22,7 @@ public:
 
     ~ImageCreator();
 
-    virtual AVFrame *readFrame(const char *path);
+    virtual AVFrame *readFrame(const char *path, int index = 0);
 
     virtual void releaseFrame();
 

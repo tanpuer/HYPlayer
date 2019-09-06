@@ -10,7 +10,7 @@ ImageCreator::~ImageCreator() {
     ALOGD("avFrameCreator delete success");
 }
 
-AVFrame *ImageCreator::readFrame(const char *path) {
+AVFrame *ImageCreator::readFrame(const char *path, int index) {
     if (pFrameYUV != nullptr) {
         return pFrameYUV;
     }

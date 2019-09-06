@@ -39,6 +39,7 @@ add_library(native-lib
 
         src/main/cpp/image/ImageCreator.cpp
         src/main/cpp/image/IAVFrameCreator.cpp
+        src/main/cpp/image/GifCreator.cpp
 
         src/main/cpp/encode/MediaCodecEncoder.cpp
         src/main/cpp/encode/OffscreenRenderer.cpp

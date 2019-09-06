@@ -14,7 +14,7 @@ class IAVFrameCreator {
 
 public:
 
-    virtual AVFrame *readFrame(const char *path) = 0;
+    virtual AVFrame *readFrame(const char *path, int index = 0) = 0;
 
     virtual void releaseFrame() = 0;
 

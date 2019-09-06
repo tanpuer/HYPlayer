@@ -45,6 +45,7 @@ add_library(native-lib
         src/main/cpp/encode/MediaCodecEncoder.cpp
         src/main/cpp/encode/NDKCodecEncoder.cpp
         src/main/cpp/encode/OffscreenRenderer.cpp
+        src/main/cpp/encode/FFmpegEncoder.cpp
         )
 
 set(JNI_LIBS_DIR ${CMAKE_SOURCE_DIR}/src/main/jniLibs)
@@ -97,6 +98,7 @@ include_directories(
         ${JNI_LINS_DIR}/includes/libjpeg
         ${JNI_LINS_DIR}/includes/libpng16
         ${JNI_LINS_DIR}/includes/libgif
+        ${JNI_LINS_DIR}/includes/libx264
 )
 
 find_library(z-lib z)
@@ -111,4 +113,5 @@ target_link_libraries(native-lib
         ${JNI_LIBS_DIR}/${ANDROID_ABI}/libjpeg.a
         ${JNI_LIBS_DIR}/${ANDROID_ABI}/libpng16.a
         ${JNI_LIBS_DIR}/${ANDROID_ABI}/libgif.a
+        ${JNI_LIBS_DIR}/${ANDROID_ABI}/libx264.a
         )

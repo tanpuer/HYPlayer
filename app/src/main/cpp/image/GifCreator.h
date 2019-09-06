@@ -8,6 +8,14 @@
 
 #include "IAVFrameCreator.h"
 
+extern "C" {
+#include <libavutil/frame.h>
+#include <libavcodec/avcodec.h>
+#include <libavformat/avformat.h>
+#include "libswscale/swscale.h"
+#include "libavutil/imgutils.h"
+};
+
 class GifCreator : public IAVFrameCreator {
 
 public:
@@ -17,6 +25,14 @@ public:
     virtual void releaseFrame();
 
     ~GifCreator();
+
+private:
+
+    AVFormatContext *ic;
+    AVCodecContext *codecContext;
+    SwsContext *img_convert_ctx;
+    unsigned char *out_buffer;
+    AVPacket *pkt;
 
 };
 

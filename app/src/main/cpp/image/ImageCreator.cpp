@@ -55,11 +55,10 @@ AVFrame *ImageCreator::readFrame(const char *path, int index) {
         ALOGE("image send packet fail");
         return nullptr;
     }
-    while (true) {
-        re = avcodec_receive_frame(codecContext, frame);
-        if (re == 0) {
-            break;
-        }
+    re = avcodec_receive_frame(codecContext, frame);
+    if (re != 0) {
+        ALOGE("image receive frame fail");
+        return nullptr;
     }
     ALOGD("image receive frame success");
 

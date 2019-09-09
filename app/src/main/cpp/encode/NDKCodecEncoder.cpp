@@ -27,12 +27,10 @@ void NDKCodecEncoder::templateCreated() {
     long start = javaTimeMillis();
 
     vm->AttachCurrentThread(&env, nullptr);
-    encoder = new VideoEncoder();
     eglCore = new egl_core(nullptr, FLAG_TRY_GLES3);
     ANativeWindow *nativeWindow = encoder->nativeWindow;
     ALOGD("ANativeWindow create success");
     inputSurface = new window_surface(nativeWindow, eglCore);
-
     inputSurface->makeCurrent();
     glClearColor(0.0, 0.0, 0.0, 1.0);
     glDisable(GL_DEPTH_TEST);
@@ -45,6 +43,7 @@ void NDKCodecEncoder::templateCreated() {
     baseFilter = new TemplateBaseFilter();
     baseFilter->setNativeWindowSize(width, height);
 
+    encoder = new VideoEncoder();
     for (int i = 0; i < 480; i++) {
         ALOGD("offscreen draw time %d", i);
         glClearColor(0.0, 0.0, 0.0, 1.0);

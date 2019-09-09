@@ -26,9 +26,6 @@ NDKCodecEncoder::~NDKCodecEncoder() {
 void NDKCodecEncoder::templateCreated() {
     long start = javaTimeMillis();
 
-    baseFilter = new TemplateBaseFilter();
-    baseFilter->setNativeWindowSize(width, height);
-
     vm->AttachCurrentThread(&env, nullptr);
     eglCore = new egl_core(nullptr, FLAG_TRY_GLES3);
     encoder = new VideoEncoder();
@@ -41,6 +38,9 @@ void NDKCodecEncoder::templateCreated() {
     glDisable(GL_CULL_FACE);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    baseFilter = new TemplateBaseFilter();
+    baseFilter->setNativeWindowSize(width, height);
 
     glViewport(0, 0, width, height);
 

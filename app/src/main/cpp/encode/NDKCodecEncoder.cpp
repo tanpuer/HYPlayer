@@ -26,8 +26,12 @@ NDKCodecEncoder::~NDKCodecEncoder() {
 void NDKCodecEncoder::templateCreated() {
     long start = javaTimeMillis();
 
+    baseFilter = new TemplateBaseFilter();
+    baseFilter->setNativeWindowSize(width, height);
+
     vm->AttachCurrentThread(&env, nullptr);
     eglCore = new egl_core(nullptr, FLAG_TRY_GLES3);
+    encoder = new VideoEncoder();
     ANativeWindow *nativeWindow = encoder->nativeWindow;
     ALOGD("ANativeWindow create success");
     inputSurface = new window_surface(nativeWindow, eglCore);
@@ -40,12 +44,8 @@ void NDKCodecEncoder::templateCreated() {
 
     glViewport(0, 0, width, height);
 
-    baseFilter = new TemplateBaseFilter();
-    baseFilter->setNativeWindowSize(width, height);
-
-    encoder = new VideoEncoder();
     for (int i = 0; i < 480; i++) {
-        ALOGD("offscreen draw time %d", i);
+//        ALOGD("offscreen draw time %d", i);
         glClearColor(0.0, 0.0, 0.0, 1.0);
         glClear(GL_COLOR_BUFFER_BIT);
         //recording start
@@ -57,10 +57,11 @@ void NDKCodecEncoder::templateCreated() {
 
         inputSurface->setPresentationTime(i * 16667000LL);
         inputSurface->swapBuffer();
-        ALOGD("ndk drainEncoderWithNoTimeOut");
+        ALOGD("ndk drainEncoderWithNoTimeOut false");
         encoder->drainEncoderWithNoTimeOut(false);
         //recording end
     }
+    ALOGD("ndk drainEncoderWithNoTimeOut true");
     encoder->drainEncoderWithNoTimeOut(true);
     encoder->release();
     ALOGD("offscreen draw over, time is  %ld", javaTimeMillis() - start);
@@ -71,7 +72,7 @@ void NDKCodecEncoder::templateCreated() {
         baseFilter = nullptr;
     }
     if (inputSurface != nullptr) {
-        inputSurface->release(true);
+        inputSurface->release(false);
         delete inputSurface;
         inputSurface = nullptr;
     }

@@ -15,20 +15,21 @@ VideoEncoder::VideoEncoder() {
     ALOGD("VideoEncoder init start");
     codec = AMediaCodec_createEncoderByType("video/avc");
     bufferInfo = new AMediaCodecBufferInfo();
-    uint32_t flags = AMEDIACODEC_CONFIGURE_FLAG_ENCODE;
     format = AMediaFormat_new();
 
     AMediaFormat_setString(format, AMEDIAFORMAT_KEY_MIME, "video/avc");
     AMediaFormat_setInt32(format, AMEDIAFORMAT_KEY_HEIGHT, 1280);
     AMediaFormat_setInt32(format, AMEDIAFORMAT_KEY_WIDTH, 720);
     AMediaFormat_setInt32(format, AMEDIAFORMAT_KEY_BIT_RATE, 2000000);
-    AMediaFormat_setInt32(format, AMEDIAFORMAT_KEY_I_FRAME_INTERVAL, 2);
+    AMediaFormat_setInt32(format, AMEDIAFORMAT_KEY_I_FRAME_INTERVAL, 1);
     AMediaFormat_setInt32(format, AMEDIAFORMAT_KEY_FRAME_RATE, 30);
-    AMediaFormat_setInt32(format, AMEDIAFORMAT_KEY_COLOR_FORMAT, 21);
+    AMediaFormat_setInt32(format, AMEDIAFORMAT_KEY_COLOR_FORMAT, 0x7F000789);
 
-    AMediaCrypto * crypto = nullptr;
-    media_status_t rc = AMediaCodec_configure(codec, format, nativeWindow, crypto, flags);
+    media_status_t rc = AMediaCodec_configure(codec, format, nullptr, nullptr,
+                                              AMEDIACODEC_CONFIGURE_FLAG_ENCODE);
     if (AMEDIA_OK == rc) {
+        //todo api 26
+        AMediaCodec_createInputSurface(codec, &nativeWindow);
         AMediaCodec_start(codec);
     } else {
         ALOGE("VideoEncoder init error");
@@ -45,9 +46,7 @@ VideoEncoder::~VideoEncoder() {
 
 void VideoEncoder::drainEncoderWithNoTimeOut(bool endOfStream) {
     if (endOfStream) {
-        int bufidx = AMediaCodec_dequeueOutputBuffer(codec, bufferInfo, 0);
-        AMediaCodec_queueInputBuffer(codec, bufidx, 0, 0, 0,
-                                     AMEDIACODEC_BUFFER_FLAG_END_OF_STREAM);
+        AMediaCodec_signalEndOfInputStream(codec);
     }
     while (true) {
         int status = AMediaCodec_dequeueOutputBuffer(codec, bufferInfo, 0);
@@ -66,17 +65,11 @@ void VideoEncoder::drainEncoderWithNoTimeOut(bool endOfStream) {
         } else {
             size_t bufsize;
             uint8_t *encodedData = AMediaCodec_getOutputBuffer(codec, status, &bufsize);
-            if (encodedData == nullptr) {
-                ALOGE("AMediaCodec_getOutputBuffer result is null");
-            }
-            if (bufferInfo->flags != AMEDIACODEC_BUFFER_FLAG_CODEC_CONFIG) {
-                bufferInfo->size = 0;
-            }
-            if (bufferInfo->size != 0) {
-                AMediaMuxer_writeSampleData(muxer, status, encodedData, bufferInfo);
+            if (bufferInfo->size > 0) {
+                AMediaMuxer_writeSampleData(muxer, trackIndex, encodedData, bufferInfo);
             }
             AMediaCodec_releaseOutputBuffer(codec, status, false);
-            if (bufferInfo->size == AMEDIACODEC_BUFFER_FLAG_END_OF_STREAM) {
+            if (bufferInfo->flags == AMEDIACODEC_BUFFER_FLAG_END_OF_STREAM) {
                 break;
             }
         }

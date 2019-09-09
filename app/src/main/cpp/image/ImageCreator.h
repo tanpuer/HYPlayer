@@ -30,13 +30,13 @@ public:
 
 private:
 
-    AVFrame *pFrameYUV;
-    AVFrame *frame;
-    AVPacket *pkt;
-    AVFormatContext *ic;
-    AVCodecContext *codecContext;
-    SwsContext *img_convert_ctx;
-    unsigned char *out_buffer;
+    AVFrame *pFrameYUV = nullptr;
+    AVFrame *frame = nullptr;
+    AVPacket *pkt = nullptr;
+    AVFormatContext *ic = nullptr;
+    AVCodecContext *codecContext = nullptr;
+    SwsContext *img_convert_ctx = nullptr;
+    unsigned char *out_buffer = nullptr;
     const char *path;
 };
 

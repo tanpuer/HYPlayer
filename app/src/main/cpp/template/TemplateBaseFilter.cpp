@@ -49,8 +49,8 @@ TemplateBaseFilter::TemplateBaseFilter() {
     uTexture = createTexture(GL_TEXTURE_2D);
     vTexture = createTexture(GL_TEXTURE_2D);
 
-//    avFrameCreator = new ImageCreator();
-    avFrameCreator = new GifCreator("sdcard/test.gif");
+    avFrameCreator = new ImageCreator("sdcard/test.jpeg");
+//    avFrameCreator = new GifCreator("sdcard/test.gif");
 
     baseMVPMatrix = ESMatrix();
     textureMatrix = ESMatrix();

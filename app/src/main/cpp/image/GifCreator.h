@@ -36,11 +36,11 @@ private:
 
     void startDecode();
 
-    AVFormatContext *ic;
-    AVCodecContext *codecContext;
-    SwsContext *img_convert_ctx;
-    AVPacket *pkt;
-    AVFrame *frame;
+    AVFormatContext *ic = nullptr;
+    AVCodecContext *codecContext = nullptr;
+    SwsContext *img_convert_ctx = nullptr;
+    AVPacket *pkt = nullptr;
+    AVFrame *frame = nullptr;
     std::vector<AVFrame*> frameList;
     std::vector<unsigned char *>bufferList;
     long long totalMs;

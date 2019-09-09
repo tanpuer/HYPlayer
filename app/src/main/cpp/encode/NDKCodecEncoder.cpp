@@ -46,8 +46,6 @@ void NDKCodecEncoder::templateCreated() {
 
     for (int i = 0; i < 480; i++) {
 //        ALOGD("offscreen draw time %d", i);
-        glClearColor(0.0, 0.0, 0.0, 1.0);
-        glClear(GL_COLOR_BUFFER_BIT);
         //recording start
         inputSurface->makeCurrent();
         glClearColor(0.0, 0.0, 0.0, 1.0);

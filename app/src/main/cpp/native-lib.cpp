@@ -6,6 +6,7 @@
 #include "template/TemplateLooper.h"
 #include "base/native_log.h"
 #include "encode/MediaCodecEncoder.h"
+#include "encode/NDKCodecEncoder.h"
 
 JavaVM *javaVM;
 
@@ -215,6 +216,28 @@ extern "C" JNIEXPORT void JNICALL Java_com_cw_hyplayer_encode_JavaMediaEncoder_n
 }
 
 extern "C" JNIEXPORT void JNICALL Java_com_cw_hyplayer_encode_JavaMediaEncoder_nativeCancel(
+        JNIEnv *env,
+        jobject instance
+) {
+
+}
+
+//......................................................
+//NDKMediaCodecEncoder
+NDKCodecEncoder *ndkCodecEncoder;
+extern "C" JNIEXPORT void JNICALL Java_com_cw_hyplayer_encode_NDKMediaEncoder_nativeInit(
+        JNIEnv *env,
+        jobject instance,
+        jint width,
+        jint height,
+        jint bitRate,
+        jstring path
+) {
+    const char *url = env->GetStringUTFChars(path, nullptr);
+    ndkCodecEncoder = new NDKCodecEncoder(width, height, bitRate, url, javaVM);
+}
+
+extern "C" JNIEXPORT void JNICALL Java_com_cw_hyplayer_encode_NDKMediaEncoder_nativeCancel(
         JNIEnv *env,
         jobject instance
 ) {

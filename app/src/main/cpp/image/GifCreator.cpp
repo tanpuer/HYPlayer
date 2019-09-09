@@ -25,6 +25,9 @@ void *GifCreator::trampoline(void *p) {
 
 AVFrame *GifCreator::readFrame(int index) {
     double currentTime = index * 16.6667;
+    if (totalMs == 0 || size == 0) {
+        return nullptr;
+    }
     auto currentIndex = (unsigned int) (currentTime / (totalMs / size)) % size;
     if (currentIndex < frameList.size()) {
 //        ALOGD("currentIndex %d", currentIndex);
@@ -89,7 +92,7 @@ void GifCreator::startDecode() {
         }
 //        ALOGD("gif receive frame success");
         AVFrame *pFrameYUV = av_frame_alloc();
-        auto* out_buffer = (unsigned char *) av_malloc(
+        auto *out_buffer = (unsigned char *) av_malloc(
                 av_image_get_buffer_size(AV_PIX_FMT_YUV420P, codecContext->width,
                                          codecContext->height,
                                          1));

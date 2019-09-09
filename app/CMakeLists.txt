@@ -46,6 +46,7 @@ add_library(native-lib
         src/main/cpp/encode/NDKCodecEncoder.cpp
         src/main/cpp/encode/OffscreenRenderer.cpp
         src/main/cpp/encode/FFmpegEncoder.cpp
+        src/main/cpp/encode/VideoEncoder.cpp
         )
 
 set(JNI_LIBS_DIR ${CMAKE_SOURCE_DIR}/src/main/jniLibs)
@@ -106,7 +107,7 @@ find_library(z-lib z)
 target_link_libraries(native-lib
         avutil swresample swscale avcodec avformat avfilter
         ${log-lib} ${android-lib}
-        android EGL GLESv3 jnigraphics OpenSLES
+        android EGL GLESv3 jnigraphics OpenSLES mediandk OpenMAXAL
 
         ${z-lib}
 

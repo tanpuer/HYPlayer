@@ -39,6 +39,7 @@ void NDKCodecEncoder::templateCreated() {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+    //egl初始化完成才能执行gl指令
     baseFilter = new TemplateBaseFilter();
     baseFilter->setNativeWindowSize(width, height);
 

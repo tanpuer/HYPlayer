@@ -6,6 +6,7 @@
 #include "assert.h"
 #include "../base/native_log.h"
 #include <GLES2/gl2.h>
+#include <malloc.h>
 
 base_surface::base_surface(egl_core *eglCore) {
     mEglCore = eglCore;
@@ -13,7 +14,7 @@ base_surface::base_surface(egl_core *eglCore) {
 
 void base_surface::createWindowSurface(ANativeWindow *nativeWindow) {
     assert(mEGLSurface == EGL_NO_SURFACE);
-    if (mEGLSurface != EGL_NO_SURFACE){
+    if (mEGLSurface != EGL_NO_SURFACE) {
         ALOGD("createWindowSurface: surface already created");
         return;
     }
@@ -22,25 +23,25 @@ void base_surface::createWindowSurface(ANativeWindow *nativeWindow) {
 
 void base_surface::createOffscreenSurface(int width, int height) {
     assert(mEGLSurface == EGL_NO_SURFACE);
-    if (mEGLSurface != EGL_NO_SURFACE){
+    if (mEGLSurface != EGL_NO_SURFACE) {
         ALOGD("createOffscreenSurface : surface already created");
         return;
     }
-    mEGLSurface = mEglCore->createOffscreenSurface(width,height);
+    mEGLSurface = mEglCore->createOffscreenSurface(width, height);
     mWidth = width;
     mHeight = height;
 }
 
 int base_surface::getHeight() {
-    if (mHeight <0){
-        return mEglCore->querySurface(mEGLSurface,EGL_HEIGHT);
+    if (mHeight < 0) {
+        return mEglCore->querySurface(mEGLSurface, EGL_HEIGHT);
     }
     return mHeight;
 }
 
 int base_surface::getWidth() {
-    if (mWidth<0){
-        return mEglCore->querySurface(mEGLSurface,EGL_WIDTH);
+    if (mWidth < 0) {
+        return mEglCore->querySurface(mEGLSurface, EGL_WIDTH);
     }
     return mWidth;
 }
@@ -61,9 +62,10 @@ void base_surface::swapBuffer() {
 
 //获取当前像素
 char *base_surface::getCurrentFrame() {
-    char* pixels = NULL;
-    glReadPixels(0,0,getWidth(),getHeight(),GL_RGBA,GL_UNSIGNED_BYTE,pixels);
-    return pixels;
+    char *buffer = static_cast<char *>(malloc(
+            (size_t) getWidth() * getHeight() * 4));
+    glReadPixels(0, 0, getWidth(), getHeight(), GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+    return buffer;
 }
 
 void base_surface::makeCurrentReadFrom(base_surface *baseSurface) {

@@ -48,6 +48,8 @@ private:
     const int frame_rate = 25;
     const int bit_rate = 2000000;
     const int gop_size = 100;
+
+    FILE *fp_out;
 };
 
 

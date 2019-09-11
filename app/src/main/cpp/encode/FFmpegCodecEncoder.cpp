@@ -45,7 +45,7 @@ void FFmpegCodecEncoder::templateCreated() {
 
     glViewport(0, 0, width, height);
 
-    for (int i = 0; i < 480; i++) {
+    for (int i = 0; i < 60; i++) {
 //        ALOGD("offscreen draw time %d", i);
         //recording start
         inputSurface->makeCurrent();
@@ -53,10 +53,10 @@ void FFmpegCodecEncoder::templateCreated() {
         glClear(GL_COLOR_BUFFER_BIT);
 
         baseFilter->doFrame();
-
-//        inputSurface->setPresentationTime(i * 16667000LL);
         inputSurface->swapBuffer();
-        encoder->EncoderBuffer(reinterpret_cast<unsigned char *>(inputSurface->getCurrentFrame()), i * 16667000LL);
+        unsigned char *buffer = static_cast<unsigned char *>(malloc((size_t) width * height * 4));
+        glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+        encoder->EncoderBuffer(buffer, i * 16667000LL);
         //recording end
     }
     encoder->EncoderEnd();
@@ -80,6 +80,6 @@ void FFmpegCodecEncoder::templateCreated() {
 }
 
 void *FFmpegCodecEncoder::trampoline(void *p) {
-    ((FFmpegCodecEncoder*) p)->templateCreated();
+    ((FFmpegCodecEncoder *) p)->templateCreated();
     return nullptr;
 }

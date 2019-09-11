@@ -28,7 +28,6 @@ void FFmpegCodecEncoder::templateCreated() {
 
     vm->AttachCurrentThread(&env, nullptr);
     eglCore = new egl_core(nullptr, FLAG_TRY_GLES3);
-    ALOGD("ANativeWindow create success");
     inputSurface = new offscreen_surface(eglCore, width, height);
     inputSurface->makeCurrent();
     encoder = new FFVideoEncoder();
@@ -57,12 +56,10 @@ void FFmpegCodecEncoder::templateCreated() {
 
 //        inputSurface->setPresentationTime(i * 16667000LL);
         inputSurface->swapBuffer();
-        ALOGD("ndk drainEncoderWithNoTimeOut false");
         encoder->EncoderBuffer(reinterpret_cast<unsigned char *>(inputSurface->getCurrentFrame()), i * 16667000LL);
         //recording end
     }
     encoder->EncoderEnd();
-    ALOGD("ndk drainEncoderWithNoTimeOut true");
     ALOGD("offscreen draw over, time is  %ld", javaTimeMillis() - start);
 
     if (baseFilter != nullptr) {

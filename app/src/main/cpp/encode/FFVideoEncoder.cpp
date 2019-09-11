@@ -94,13 +94,13 @@ int i = 0;
 void FFVideoEncoder::EncoderBuffer(unsigned char *buffer, long long pts) {
     //sws_scale is slower than libyuv
 
-//    int inlinesize[AV_NUM_DATA_POINTERS] = {0};
-//    inlinesize[0] = width * 4;
-//    uint8_t *indata[AV_NUM_DATA_POINTERS] = {0};
-//    indata[0] = buffer;
-//    int height = sws_scale(swsContext, indata, inlinesize,
+//    int rgbaLineSize[AV_NUM_DATA_POINTERS] = {0};
+//    rgbaLineSize[0] = width * 4;
+//    uint8_t *rgbaData[AV_NUM_DATA_POINTERS] = {0};
+//    rgbaData[0] = buffer;
+//    int res = sws_scale(swsContext, rgbaData, rgbaLineSize,
 //                           0, pCodecCtx->height, pFrame->data, pFrame->linesize);
-//    if (height <=0) {
+//    if (res <=0) {
 //        ALOGE("sw_scale error!");
 //        return;
 //    }
@@ -113,17 +113,9 @@ void FFVideoEncoder::EncoderBuffer(unsigned char *buffer, long long pts) {
 //
 //    free(buffer);
 
-
-    uint8_t *i420_y = pFrameBuffer;
-    uint8_t *i420_u = pFrameBuffer + width * height;
-    uint8_t *i420_v = pFrameBuffer + width * height * 5 / 4;
-    //RGBA转I420
-    libyuv::RGBAToI420(buffer, width * 4, i420_y, width, i420_u, width / 2, i420_v, width / 2,
+    //ABGR not RGBA!
+    libyuv::ABGRToI420(buffer, width * 4, pFrame->data[0], width, pFrame->data[1], width / 2, pFrame->data[2], width / 2,
                        width, height);
-    pFrame->data[0] = i420_y;
-    pFrame->data[1] = i420_u;
-    pFrame->data[2] = i420_v;
-    //AVFrame PTS
     pFrame->pts = i;
     i++;
     //编码数据

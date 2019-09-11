@@ -42,6 +42,7 @@ void FFmpegCodecEncoder::templateCreated() {
 
     baseFilter = new TemplateBaseFilter();
     baseFilter->setNativeWindowSize(width, height);
+    baseFilter->identifyTextureMatrix();
 
     glViewport(0, 0, width, height);
 
@@ -53,7 +54,8 @@ void FFmpegCodecEncoder::templateCreated() {
         glClear(GL_COLOR_BUFFER_BIT);
 
         baseFilter->doFrame();
-        inputSurface->swapBuffer();
+        //do not need to swapBuffer
+//        inputSurface->swapBuffer();
         unsigned char *buffer = static_cast<unsigned char *>(malloc((size_t) width * height * 4));
         glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
         encoder->EncoderBuffer(buffer, i * 16667000LL);

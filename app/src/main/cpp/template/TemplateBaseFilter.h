@@ -44,6 +44,8 @@ public:
 
     int time = 0;
 
+    void identifyTextureMatrix();
+
 private:
 
     GLuint yTexture;

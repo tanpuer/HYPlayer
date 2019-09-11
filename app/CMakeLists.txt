@@ -45,8 +45,10 @@ add_library(native-lib
         src/main/cpp/encode/MediaCodecEncoder.cpp
         src/main/cpp/encode/NDKCodecEncoder.cpp
         src/main/cpp/encode/OffscreenRenderer.cpp
-        src/main/cpp/encode/FFmpegEncoder.cpp
         src/main/cpp/encode/VideoEncoder.cpp
+        src/main/cpp/encode/IVideoEncoder.cpp
+        src/main/cpp/encode/FFVideoEncoder.cpp
+        src/main/cpp/encode/FFmpegCodecEncoder.cpp
         )
 
 set(JNI_LIBS_DIR ${CMAKE_SOURCE_DIR}/src/main/jniLibs)
@@ -93,6 +95,13 @@ set_target_properties(avfilter
         PROPERTIES IMPORTED_LOCATION
         ${JNI_LIBS_DIR}/${ANDROID_ABI}/libavfilter.so)
 
+add_library(libyuv
+        SHARED
+        IMPORTED)
+set_target_properties(libyuv
+        PROPERTIES IMPORTED_LOCATION
+        ${JNI_LIBS_DIR}/${ANDROID_ABI}/libyuv.so)
+
 
 include_directories(
         ${JNI_LIBS_DIR}/includes
@@ -100,12 +109,13 @@ include_directories(
         ${JNI_LINS_DIR}/includes/libpng16
         ${JNI_LINS_DIR}/includes/libgif
         ${JNI_LINS_DIR}/includes/libx264
+        ${JNI_LINS_DIR}/includes/libyuv
 )
 
 find_library(z-lib z)
 
 target_link_libraries(native-lib
-        avutil swresample swscale avcodec avformat avfilter
+        avutil swresample swscale avcodec avformat avfilter libyuv
         ${log-lib} ${android-lib}
         android EGL GLESv3 jnigraphics OpenSLES mediandk OpenMAXAL
 

@@ -35,6 +35,18 @@ class EncodeActivity : AppCompatActivity() {
             }
             ndkMediaEncoder.start(720, 1280, 2500000, outputFile)
         }
+
+        ffmpeg_encode.setOnClickListener {
+            val fFmpegMediaEncoder = FFmpegMediaEncoder()
+            var outputFile =
+                File(Environment.getExternalStorageDirectory().absolutePath, "trailer_test.mp4")
+            if (outputFile.exists()) {
+                outputFile.delete()
+                outputFile =
+                    File(Environment.getExternalStorageDirectory().absolutePath, "trailer_test.mp4")
+            }
+            fFmpegMediaEncoder.start(720, 1280, 2500000, outputFile)
+        }
     }
 
 }

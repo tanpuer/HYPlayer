@@ -7,6 +7,7 @@
 #include "base/native_log.h"
 #include "encode/MediaCodecEncoder.h"
 #include "encode/NDKCodecEncoder.h"
+#include "encode/FFmpegCodecEncoder.h"
 
 JavaVM *javaVM;
 
@@ -242,4 +243,19 @@ extern "C" JNIEXPORT void JNICALL Java_com_cw_hyplayer_encode_NDKMediaEncoder_na
         jobject instance
 ) {
 
+}
+
+//......................................................
+//FFmpegMediaEncoder
+FFmpegCodecEncoder *ffmpegCodecEncoder;
+extern "C" JNIEXPORT void JNICALL Java_com_cw_hyplayer_encode_FFmpegMediaEncoder_nativeInit(
+        JNIEnv *env,
+        jobject instance,
+        jint width,
+        jint height,
+        jint bitRate,
+        jstring path
+) {
+    const char *url = env->GetStringUTFChars(path, nullptr);
+    ffmpegCodecEncoder = new FFmpegCodecEncoder(width, height, bitRate, url, javaVM);
 }

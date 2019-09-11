@@ -49,6 +49,7 @@ void FFVideoEncoder::EncodeStart() {
     pCodecCtx->time_base.den = frame_rate;
     pCodecCtx->bit_rate = bit_rate;
     pCodecCtx->gop_size = gop_size;
+    pCodecCtx->thread_count = 2;
     //将AVCodecContext的成员复制到AVCodecParameters结构体
     avcodec_parameters_from_context(pStream->codecpar, pCodecCtx);
     //打开编码器
@@ -84,17 +85,6 @@ void FFVideoEncoder::EncodeStart() {
                                 AV_PIX_FMT_RGBA,
                                 pCodecCtx->width, pCodecCtx->height,
                                 AV_PIX_FMT_YUV420P, SWS_FAST_BILINEAR, nullptr, nullptr, nullptr);
-
-//    pFrameRGBA = av_frame_alloc();
-//    pFrameRGBA->width = pCodecCtx->width;
-//    pFrameRGBA->height = pCodecCtx->height;
-//    pFrameRGBA->format = AV_PIX_FMT_RGBA;
-//    int rgba_buffer_size = av_image_get_buffer_size(AV_PIX_FMT_RGBA, pFrameRGBA->width,
-//                                                    pFrameRGBA->height, 1);
-//    pFrameRGBABuffer = static_cast<uint8_t *>(av_malloc(rgba_buffer_size));
-//    av_image_fill_arrays(pFrameRGBA->data, pFrameRGBA->linesize, pFrameRGBABuffer, AV_PIX_FMT_RGBA,
-//                         pFrameRGBA->width, pFrameRGBA->height, 1);
-
     ALOGD("FFVideoEncoder start finish");
 
 }
@@ -102,46 +92,43 @@ void FFVideoEncoder::EncodeStart() {
 int i = 0;
 
 void FFVideoEncoder::EncoderBuffer(unsigned char *buffer, long long pts) {
-    int inlinesize[AV_NUM_DATA_POINTERS] = {0};
-    inlinesize[0] = width * 4;
-    uint8_t *indata[AV_NUM_DATA_POINTERS] = {0};
-    indata[0] = buffer;
-    int height = sws_scale(swsContext, indata, inlinesize,
-                           0, pCodecCtx->height, pFrame->data, pFrame->linesize);
-    if (height <=0) {
-        ALOGE("sw_scale error!");
-        return;
-    }
-    ALOGD("sw_scale success %d", height);
-    pFrame->pts = pts / 1000000;
-    i++;
-    AVPacket avPacket;
-    av_init_packet(&avPacket);
-    EncoderFrame(pCodecCtx, pFrame, &avPacket);
+    //sws_scale is slower than libyuv
 
-    free(buffer);
-
-
-//    uint8_t *i420_y = pFrameBuffer;
-//    uint8_t *i420_u = pFrameBuffer + width * height / 4;
-//    uint8_t *i420_v = pFrameBuffer + width * height / 2;
-//
-//
-//    //RGBA转I420
-//    libyuv::RGBAToI420(buffer, width * 4, i420_y, width, i420_u, width / 2, i420_v, width / 2,
-//                       width, height);
-//
-//    pFrame->data[0] = i420_y;
-//    pFrame->data[1] = i420_u;
-//    pFrame->data[2] = i420_v;
-//
-//    //AVFrame PTS
-//    pFrame->pts = pts / 1000000;
+//    int inlinesize[AV_NUM_DATA_POINTERS] = {0};
+//    inlinesize[0] = width * 4;
+//    uint8_t *indata[AV_NUM_DATA_POINTERS] = {0};
+//    indata[0] = buffer;
+//    int height = sws_scale(swsContext, indata, inlinesize,
+//                           0, pCodecCtx->height, pFrame->data, pFrame->linesize);
+//    if (height <=0) {
+//        ALOGE("sw_scale error!");
+//        return;
+//    }
+//    ALOGD("sw_scale success %d", height);
+//    pFrame->pts = i;
 //    i++;
-//
-//    //编码数据
+//    AVPacket avPacket;
+//    av_init_packet(&avPacket);
 //    EncoderFrame(pCodecCtx, pFrame, &avPacket);
+//
 //    free(buffer);
+
+
+    uint8_t *i420_y = pFrameBuffer;
+    uint8_t *i420_u = pFrameBuffer + width * height;
+    uint8_t *i420_v = pFrameBuffer + width * height * 5 / 4;
+    //RGBA转I420
+    libyuv::RGBAToI420(buffer, width * 4, i420_y, width, i420_u, width / 2, i420_v, width / 2,
+                       width, height);
+    pFrame->data[0] = i420_y;
+    pFrame->data[1] = i420_u;
+    pFrame->data[2] = i420_v;
+    //AVFrame PTS
+    pFrame->pts = i;
+    i++;
+    //编码数据
+    EncoderFrame(pCodecCtx, pFrame, &avPacket);
+    free(buffer);
 
 }
 
@@ -164,14 +151,6 @@ void FFVideoEncoder::EncoderEnd() {
         if (pFrameBuffer != nullptr) {
             av_free(pFrameBuffer);
             pFrameBuffer = nullptr;
-        }
-        if (pFrameRGBA != nullptr) {
-            av_free(pFrameRGBA);
-            pFrameRGBA = nullptr;
-        }
-        if (pFrameRGBABuffer != nullptr) {
-            av_free(pFrameRGBABuffer);
-            pFrameRGBABuffer = nullptr;
         }
         if (pFormatCtx != nullptr) {
             avio_close(pFormatCtx->pb);

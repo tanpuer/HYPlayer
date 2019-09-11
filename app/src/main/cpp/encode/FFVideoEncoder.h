@@ -41,11 +41,9 @@ private:
     AVCodec *pCodec = nullptr;
     uint8_t *pFrameBuffer = nullptr;
     AVFrame *pFrame = nullptr;
-    AVFrame *pFrameRGBA = nullptr;
-    uint8_t *pFrameRGBABuffer = nullptr;
     SwsContext *swsContext = nullptr;
 
-    const int frame_rate = 25;
+    const int frame_rate = 60;
     const int bit_rate = 2000000;
     const int gop_size = 100;
 

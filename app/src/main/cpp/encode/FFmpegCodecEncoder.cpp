@@ -45,7 +45,7 @@ void FFmpegCodecEncoder::templateCreated() {
 
     glViewport(0, 0, width, height);
 
-    for (int i = 0; i < 60; i++) {
+    for (int i = 0; i < 240; i++) {
 //        ALOGD("offscreen draw time %d", i);
         //recording start
         inputSurface->makeCurrent();

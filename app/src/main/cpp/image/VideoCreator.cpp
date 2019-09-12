@@ -62,7 +62,7 @@ void VideoCreator::startEncode() {
         return;
     }
     videoIndex = re;
-    AVCodecParameters *codecParameters = ic->streams[0]->codecpar;
+    AVCodecParameters *codecParameters = ic->streams[videoIndex]->codecpar;
     if (ic->streams[videoIndex]->duration > 0) {
         totalMs =
                 ic->streams[videoIndex]->duration * r2d(ic->streams[videoIndex]->time_base) * 1000LL;

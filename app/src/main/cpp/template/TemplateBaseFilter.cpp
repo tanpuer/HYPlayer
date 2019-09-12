@@ -7,6 +7,7 @@
 #include "../base/matrix_util.h"
 #include "../base/gl_utils.h"
 #include "../image/GifCreator.h"
+#include "../image/VideoCreator.h"
 
 #define GET_STR(x) #x
 
@@ -51,6 +52,7 @@ TemplateBaseFilter::TemplateBaseFilter() {
 
 //    avFrameCreator = new ImageCreator("sdcard/test.jpeg");
     avFrameCreator = new GifCreator("sdcard/test.gif");
+//    avFrameCreator = new VideoCreator("sdcard/trailer111.mp4");
 
     baseMVPMatrix = ESMatrix();
     textureMatrix = ESMatrix();

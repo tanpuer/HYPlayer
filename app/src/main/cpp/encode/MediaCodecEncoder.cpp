@@ -3,7 +3,7 @@
 //
 
 #include "MediaCodecEncoder.h"
-#include "OffscreenRenderer.h"
+#include "JavaMediaEncoder.h"
 
 MediaCodecEncoder::MediaCodecEncoder(jobject surface, jobject javaMediaEncoder, JavaVM *vm) {
     pthread_attr_t attr;
@@ -19,7 +19,7 @@ MediaCodecEncoder::~MediaCodecEncoder() {
 }
 
 void *MediaCodecEncoder::trampoline(void *p) {
-    OffscreenRenderer *renderer = new OffscreenRenderer();
+    auto *renderer = new JavaMediaEncoder();
     renderer->templateCreated(720, 1280, ((MediaCodecEncoder *) p)->surface,
                               ((MediaCodecEncoder *) p)->javaMediaEncoder,
                               ((MediaCodecEncoder *) p)->vm);

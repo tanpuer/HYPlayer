@@ -2,8 +2,8 @@
 // Created by templechen on 2019-09-05.
 //
 
-#ifndef HYPLAYER_OFFSCREENRENDERER_H
-#define HYPLAYER_OFFSCREENRENDERER_H
+#ifndef HYPLAYER_JAVAMEDIAENCODER_H
+#define HYPLAYER_JAVAMEDIAENCODER_H
 
 
 #include <jni.h>
@@ -12,13 +12,13 @@
 #include "../template/TemplateBaseFilter.h"
 #include "../egl/window_surface.h"
 
-class OffscreenRenderer {
+class JavaMediaEncoder {
 
 public:
 
-    OffscreenRenderer();
+    JavaMediaEncoder();
 
-    ~OffscreenRenderer();
+    ~JavaMediaEncoder();
 
     void templateCreated(int width, int height, jobject surface, jobject javaMediaEncoder, JavaVM *vm);
 
@@ -32,4 +32,4 @@ private:
 };
 
 
-#endif //HYPLAYER_OFFSCREENRENDERER_H
+#endif //HYPLAYER_JAVAMEDIAENCODER_H

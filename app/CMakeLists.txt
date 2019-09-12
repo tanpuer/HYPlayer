@@ -44,7 +44,7 @@ add_library(native-lib
 
         src/main/cpp/encode/MediaCodecEncoder.cpp
         src/main/cpp/encode/NDKCodecEncoder.cpp
-        src/main/cpp/encode/OffscreenRenderer.cpp
+        src/main/cpp/encode/JavaMediaEncoder.cpp
         src/main/cpp/encode/VideoEncoder.cpp
         src/main/cpp/encode/IVideoEncoder.cpp
         src/main/cpp/encode/FFVideoEncoder.cpp

@@ -2,21 +2,21 @@
 // Created by templechen on 2019-09-05.
 //
 
-#include "OffscreenRenderer.h"
+#include "JavaMediaEncoder.h"
 #include "android/native_window_jni.h"
 #include "../base/native_log.h"
 #include "../base/utils.h"
 
-OffscreenRenderer::OffscreenRenderer() {
+JavaMediaEncoder::JavaMediaEncoder() {
 
 }
 
-OffscreenRenderer::~OffscreenRenderer() {
+JavaMediaEncoder::~JavaMediaEncoder() {
 
 }
 
 void
-OffscreenRenderer::templateCreated(int width, int height, jobject surface, jobject javaMediaEncoder,
+JavaMediaEncoder::templateCreated(int width, int height, jobject surface, jobject javaMediaEncoder,
                                    JavaVM *vm) {
     long start = javaTimeMillis();
 

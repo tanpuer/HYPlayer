@@ -49,7 +49,6 @@ void FFmpegCodecEncoder::templateCreated() {
     for (int i = 0; i < 480; i++) {
 //        ALOGD("offscreen draw time %d", i);
         //recording start
-        inputSurface->makeCurrent();
         glClearColor(0.0, 0.0, 0.0, 1.0);
         glClear(GL_COLOR_BUFFER_BIT);
 

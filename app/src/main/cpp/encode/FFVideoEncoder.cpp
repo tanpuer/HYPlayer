@@ -81,10 +81,10 @@ void FFVideoEncoder::EncodeStart() {
     //创建已编码帧
     av_new_packet(&avPacket, buffer_size * 3);
 
-    swsContext = sws_getContext(pCodecCtx->width, pCodecCtx->height,
-                                AV_PIX_FMT_RGBA,
-                                pCodecCtx->width, pCodecCtx->height,
-                                AV_PIX_FMT_YUV420P, SWS_FAST_BILINEAR, nullptr, nullptr, nullptr);
+//    swsContext = sws_getContext(pCodecCtx->width, pCodecCtx->height,
+//                                AV_PIX_FMT_RGBA,
+//                                pCodecCtx->width, pCodecCtx->height,
+//                                AV_PIX_FMT_YUV420P, SWS_FAST_BILINEAR, nullptr, nullptr, nullptr);
     ALOGD("FFVideoEncoder start finish");
 
 }

@@ -54,10 +54,19 @@ void VideoCreator::startEncode() {
         ALOGE("no video stream %d", ic->nb_streams);
         return;
     }
+    re = av_find_best_stream(ic, AVMEDIA_TYPE_VIDEO, -1, -1, nullptr, 0);
+    if (re < 0) {
+        char buf[1024] = {0};
+        av_strerror(re, buf, sizeof(buf));
+        ALOGD("av_find_best_stream failed %s", buf);
+        return;
+    }
+    videoIndex = re;
     AVCodecParameters *codecParameters = ic->streams[0]->codecpar;
-    if (ic->streams[0]->duration > 0) {
-        totalMs = ic->streams[0]->duration * r2d(ic->streams[0]->time_base) * 1000;
-        size = (int) ic->streams[0]->nb_frames;
+    if (ic->streams[videoIndex]->duration > 0) {
+        totalMs =
+                ic->streams[videoIndex]->duration * r2d(ic->streams[videoIndex]->time_base) * 1000LL;
+        size = (int) ic->streams[videoIndex]->nb_frames;
         ALOGD("video total duration is %lld %d", totalMs, size);
     }
     AVCodec *codec = avcodec_find_decoder(codecParameters->codec_id);

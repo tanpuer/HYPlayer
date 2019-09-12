@@ -53,7 +53,7 @@ void GifCreator::startDecode() {
     }
     AVCodecParameters *codecParameters = ic->streams[0]->codecpar;
     if (ic->streams[0]->duration > 0) {
-        totalMs = ic->streams[0]->duration * r2d(ic->streams[0]->time_base) * 1000;
+        totalMs = ic->streams[0]->duration * r2d(ic->streams[0]->time_base) * 1000LL;
         size = (int) ic->streams[0]->nb_frames;
         ALOGD("gif total duration is %lld %d", totalMs, size);
     }

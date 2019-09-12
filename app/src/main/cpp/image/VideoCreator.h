@@ -40,6 +40,7 @@ private:
     int size;
     pthread_t worker_thread;
     const char *path;
+    int videoIndex;
 };
 
 

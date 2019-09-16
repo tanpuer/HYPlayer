@@ -19,6 +19,15 @@ VideoCreator::~VideoCreator() {
 }
 
 AVFrame *VideoCreator::readFrame(int index) {
+    double currentTime = index * 16.6667;
+    if (totalMs == 0 || size == 0) {
+        return nullptr;
+    }
+    auto currentIndex = (unsigned int) (currentTime / (totalMs / size)) % size;
+    if (currentIndex < frameList.size()) {
+//        ALOGD("currentIndex %d", currentIndex);
+        return frameList.at(currentIndex);
+    }
     return nullptr;
 }
 
@@ -67,6 +76,7 @@ void VideoCreator::startEncode() {
         totalMs =
                 ic->streams[videoIndex]->duration * r2d(ic->streams[videoIndex]->time_base) * 1000LL;
         size = (int) ic->streams[videoIndex]->nb_frames;
+        timeBase = r2d(ic->streams[videoIndex]->time_base);
         ALOGD("video total duration is %lld %d", totalMs, size);
     }
     AVCodec *codec = avcodec_find_decoder(codecParameters->codec_id);
@@ -86,21 +96,27 @@ void VideoCreator::startEncode() {
     int count = 0;
     pkt = av_packet_alloc();
     while (av_read_frame(ic, pkt) == 0) {
+        if (pkt->stream_index != videoIndex) {
+            continue;
+        }
         re = avcodec_send_packet(codecContext, pkt);
         if (re != 0) {
-            ALOGE("video send packet fail");
+            char buf[1024] = {0};
+            av_strerror(re, buf, sizeof(buf));
+            ALOGE("video send packet fail %s", buf);
             return;
         }
         AVFrame *pFrameYUV = av_frame_alloc();
         re = avcodec_receive_frame(codecContext, pFrameYUV);
         if (re != 0) {
-            ALOGE("video receive frame fail");
+            ALOGE("video receive frame fail %d", re);
             return;
         }
         pFrameYUV->width = codecContext->width;
         pFrameYUV->height = codecContext->height;
+        pFrameYUV->pts * 1000 * timeBase;
         frameList.push_back(pFrameYUV);
         count++;
     }
-    ALOGD("read all images in gif %ld %d", javaTimeMillis() - start, count);
+    ALOGD("read all video %ld %d", javaTimeMillis() - start, count);
 }

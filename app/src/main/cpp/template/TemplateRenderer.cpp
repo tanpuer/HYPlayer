@@ -4,6 +4,7 @@
 
 #include "TemplateRenderer.h"
 #include "../base/native_log.h"
+#include "TemplateFBOFilter.h"
 #include <GLES3/gl3.h>
 
 TemplateRenderer::TemplateRenderer() {
@@ -41,7 +42,8 @@ void TemplateRenderer::templateCreated(ANativeWindow *nativeWindow) {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    baseFilter = new TemplateBaseFilter();
+//    baseFilter = new TemplateBaseFilter();
+    baseFilter = new TemplateFBOFilter();
 }
 
 void TemplateRenderer::templateChanged(int width, int height) {

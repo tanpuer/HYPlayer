@@ -42,6 +42,7 @@ private:
     GLint fboTextureCoordinateLocation = 0;
     GLint fboTextureLocation = 0;
 
+    ESMatrix fboTexMatrix;
 };
 
 

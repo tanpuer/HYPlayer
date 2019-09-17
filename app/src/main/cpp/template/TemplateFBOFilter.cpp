@@ -33,6 +33,9 @@ TemplateFBOFilter::TemplateFBOFilter() {
     fboVertexShader = loadShader(GL_VERTEX_SHADER, VERTEX_SHADER_STR);
     fboFragmentShader = loadShader(GL_FRAGMENT_SHADER, FRAGMENT_SHADER_STR);
     fboProgram = createShaderProgram(fboVertexShader, fboFragmentShader);
+    ALOGD("fbo %d %d %d", fboProgram, fboFragmentShader, fboVertexShader);
+    fboTexMatrix = ESMatrix();
+    setIdentityM(&fboTexMatrix);
 }
 
 TemplateFBOFilter::~TemplateFBOFilter() {
@@ -41,10 +44,14 @@ TemplateFBOFilter::~TemplateFBOFilter() {
 
 void TemplateFBOFilter::doFrame() {
     glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
+
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
+                           frameBufferTextureId, 0);
+
     TemplateBaseFilter::doFrame();
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-    //...
+    //fbo
     glUseProgram(fboProgram);
 
     GLint vertexCount = sizeof(vertex) / (sizeof(vertex[0]) * 2);
@@ -57,12 +64,12 @@ void TemplateFBOFilter::doFrame() {
     glVertexAttribPointer(fboTextureCoordinateLocation, 2, GL_FLOAT, GL_FALSE, 8, texture);
 
     fboTextureMatrixLocation = glGetUniformLocation(fboProgram, fboTextureMatrix);
-    glUniformMatrix4fv(fboTextureMatrixLocation, 1, GL_FALSE, this->textureMatrix.m);
+    glUniformMatrix4fv(fboTextureMatrixLocation, 1, GL_FALSE, fboTexMatrix.m);
 
     fboTextureLocation = glGetUniformLocation(fboProgram, fboTexture);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, frameBufferTextureId);
-    glUniform1i(fboPositionLocation, 0);
+    glUniform1i(fboTextureLocation, 0);
 
     glDrawArrays(GL_TRIANGLES, 0, vertexCount);
     glDisableVertexAttribArray(fboPositionLocation);
@@ -74,15 +81,15 @@ void TemplateFBOFilter::doFrame() {
 void TemplateFBOFilter::genFrameBuffer(int width, int height) {
     glGenFramebuffers(1, &frameBuffer);
     frameBufferTextureId = createTexture(GL_TEXTURE_2D);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
-                           frameBufferTextureId, 0);
+    glBindTexture(GL_TEXTURE_2D, frameBufferTextureId);
     glViewport(0, 0, width, height);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
-        ALOGE("glFramebufferTexture2D error");
+        ALOGE("fbo glFramebufferTexture2D error");
     }
     glBindTexture(GL_TEXTURE_2D, 0);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    ALOGD("fbo genFrameBuffer %d %d", frameBuffer, frameBufferTextureId);
 }
 
 void TemplateFBOFilter::setNativeWindowSize(int width, int height) {

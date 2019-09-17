@@ -36,9 +36,9 @@ public:
 
     virtual ~TemplateBaseFilter();
 
-    void setNativeWindowSize(int width, int height);
+    virtual void setNativeWindowSize(int width, int height);
 
-    void doFrame();
+    virtual void doFrame();
 
     void release();
 
@@ -46,7 +46,7 @@ public:
 
     void identifyTextureMatrix();
 
-private:
+protected:
 
     GLuint yTexture;
     GLuint uTexture;

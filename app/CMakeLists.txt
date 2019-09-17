@@ -36,6 +36,7 @@ add_library(native-lib
         src/main/cpp/template/TemplateLooper.cpp
         src/main/cpp/template/TemplateRenderer.cpp
         src/main/cpp/template/TemplateBaseFilter.cpp
+        src/main/cpp/template/TemplateFBOFilter.cpp
 
         src/main/cpp/image/ImageCreator.cpp
         src/main/cpp/image/IAVFrameCreator.cpp

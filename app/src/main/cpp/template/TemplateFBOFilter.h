@@ -20,6 +20,8 @@ public:
 
     void setNativeWindowSize(int width, int height) override;
 
+    void release() override;
+
 private:
 
     void genFrameBuffer(int width, int height);

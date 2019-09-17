@@ -89,3 +89,15 @@ void TemplateFBOFilter::setNativeWindowSize(int width, int height) {
     TemplateBaseFilter::setNativeWindowSize(width, height);
     genFrameBuffer(width, height);
 }
+
+void TemplateFBOFilter::release() {
+    TemplateBaseFilter::release();
+
+    ALOGD("TemplateFBOFilter release");
+    glDeleteProgram(fboProgram);
+    glDeleteShader(fboFragmentShader);
+    glDeleteShader(fboVertexShader);
+    auto textures = new GLuint[1];
+    textures[0] = frameBufferTextureId;
+    glDeleteTextures(3, textures);
+}

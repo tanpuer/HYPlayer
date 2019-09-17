@@ -40,7 +40,7 @@ public:
 
     virtual void doFrame();
 
-    void release();
+    virtual void release();
 
     int time = 0;
 

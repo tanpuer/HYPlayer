@@ -1,6 +1,7 @@
 #include <jni.h>
 #include <string>
 #include <android/native_window.h>
+#include <flutter/FlutterLooper.h>
 #include "android/native_window_jni.h"
 #include "player/AudioPlayer.h"
 #include "template/TemplateLooper.h"
@@ -258,4 +259,55 @@ extern "C" JNIEXPORT void JNICALL Java_com_cw_hyplayer_encode_FFmpegMediaEncoder
 ) {
     const char *url = env->GetStringUTFChars(path, nullptr);
     ffmpegCodecEncoder = new FFmpegCodecEncoder(width, height, bitRate, url, javaVM);
+}
+
+
+//......................................................
+//FlutterView
+
+FlutterLooper *flutterLooper;
+extern "C" JNIEXPORT void JNICALL
+Java_com_cw_hyplayer_flutter_FlutterView_nativeFlutterViewCreated(
+        JNIEnv *env,
+        jobject instance,
+        jobject surface) {
+    nativeWindow = ANativeWindow_fromSurface(env, surface);
+    if (flutterLooper != nullptr) {
+        delete flutterLooper;
+        flutterLooper = nullptr;
+    }
+    flutterLooper = new FlutterLooper(nativeWindow);
+    flutterLooper->sendMessage(flutterLooper->kMsgFlutterCreated);
+}
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_cw_hyplayer_flutter_FlutterView_nativeFlutterViewChanged(
+        JNIEnv *env,
+        jobject instance,
+        jint width,
+        jint height) {
+    if (flutterLooper != nullptr) {
+        flutterLooper->sendMessage(flutterLooper->kMsgFlutterChanged, width, height);
+    }
+}
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_cw_hyplayer_flutter_FlutterView_nativeFlutterViewDestroyed(
+        JNIEnv *env,
+        jobject instance) {
+    if (flutterLooper != nullptr) {
+        flutterLooper->sendMessage(flutterLooper->kMsgFlutterDestroyed);
+        flutterLooper->quit();
+    }
+}
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_cw_hyplayer_flutter_FlutterView_nativeFlutterViewDoFrame(
+        JNIEnv *env,
+        jobject instance,
+        jlong frameTimeNanos) {
+    if (flutterLooper != nullptr) {
+        flutterLooper->sendMessage(flutterLooper->kMsgFlutterDoFrame,
+                                   reinterpret_cast<void *>(frameTimeNanos));
+    }
 }

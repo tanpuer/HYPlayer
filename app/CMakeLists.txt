@@ -61,8 +61,8 @@ aux_source_directory(src/main/cpp/egl                                         sr
 aux_source_directory(src/main/cpp/encode                                         srcs)
 aux_source_directory(src/main/cpp/image                                         srcs)
 aux_source_directory(src/main/cpp/player                                         srcs)
-aux_source_directory(src/main/cpp/skia                                         srcs)
 aux_source_directory(src/main/cpp/template                                         srcs)
+aux_source_directory(src/main/cpp/skia                                         srcs)
 
 
 # Creates and names a library, sets it as either STATIC
@@ -77,7 +77,7 @@ add_library( # Sets the name of the library.
         SHARED
 
         # Provides a relative path to your source file(s).
-        ${srcs} )
+        ${srcs})
 
 set(JNI_LIBS_DIR ${CMAKE_SOURCE_DIR}/src/main/jniLibs)
 
@@ -139,18 +139,6 @@ include_directories(
         ${JNI_LINS_DIR}/includes/libx264
         ${JNI_LINS_DIR}/includes/libyuv
 
-
-        src/main/cpp
-        src/main/cpp/audio
-        src/main/cpp/base
-        src/main/cpp/decode
-        src/main/cpp/demux
-        src/main/cpp/egl
-        src/main/cpp/encode
-        src/main/cpp/image
-        src/main/cpp/player
-        src/main/cpp/template
-
         src/main/cpp/skia
         src/main/cpp/skia/android
         src/main/cpp/skia/atlastext
@@ -167,6 +155,17 @@ include_directories(
         src/main/cpp/skia/svg
         src/main/cpp/skia/utils
         src/main/cpp/skia/views
+
+        src/main/cpp
+        src/main/cpp/audio
+        src/main/cpp/base
+        src/main/cpp/decode
+        src/main/cpp/demux
+        src/main/cpp/egl
+        src/main/cpp/encode
+        src/main/cpp/image
+        src/main/cpp/player
+        src/main/cpp/template
 )
 
 find_library(z-lib z)

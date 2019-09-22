@@ -2,8 +2,8 @@
 // Created by templechen on 2019-09-16.
 //
 
+#include "TemplateFBOFilter.h"
 #include <skia/gpu/gl/GrGLInterface.h>
-#include <skia/gpu/GrContext.h>
 #include <skia/core/SkPaint.h>
 #include <skia/core/SkCanvas.h>
 #include <skia/core/SkGraphics.h>
@@ -11,8 +11,6 @@
 #include <skia/effects/SkDiscretePathEffect.h>
 #include <skia/gpu/gl/GrGLDefines.h>
 #include <skia/effects/Sk2DPathEffect.h>
-#include <skia/core/SkSurface.h>
-#include "TemplateFBOFilter.h"
 #include "../base/gl_utils.h"
 
 #define GET_STR(x) #x
@@ -61,33 +59,30 @@ void TemplateFBOFilter::doFrame() {
     TemplateBaseFilter::doFrame();
     SkGraphics::Init();
 
-    sk_sp<const GrGLInterface> interface(GrGLMakeNativeInterface());
-    sk_sp<GrContext> context = GrContext::MakeGL(interface);
-    if (context == nullptr) {
-        ALOGE("skia context is null");
+    if (skia_surface == nullptr) {
+        sk_sp<const GrGLInterface> interface(GrGLMakeNativeInterface());
+        context = GrContext::MakeGL(interface);
+        SkASSERT(context);
+        // Wrap the frame buffer object attached to the screen in a Skia render target so Skia can
+        // render to it
+        GrGLint buffer = frameBuffer;
+        GrGLFramebufferInfo info;
+        info.fFBOID = (GrGLuint) buffer;
+        SkColorType colorType;
+        info.fFormat = GR_GL_RGBA8;
+        colorType = kRGBA_8888_SkColorType;
+        GrBackendRenderTarget target(windowWidth, windowHeight, 0, 8, info);
+
+        // setup SkSurface
+        // To use distance field text, use commented out SkSurfaceProps instead
+        // SkSurfaceProps props(SkSurfaceProps::kUseDeviceIndependentFonts_Flag,
+        //                      SkSurfaceProps::kLegacyFontHost_InitType);
+        SkSurfaceProps props(SkSurfaceProps::kLegacyFontHost_InitType);
+        skia_surface = (SkSurface::MakeFromBackendRenderTarget(context.get(), target,
+                                                               kBottomLeft_GrSurfaceOrigin,
+                                                               colorType, nullptr, &props));
+        SkASSERT(skia_surface);
     }
-
-    // Wrap the frame buffer object attached to the screen in a Skia render target so Skia can
-    // render to it
-    GrGLint buffer = frameBuffer;
-    GrGLFramebufferInfo info;
-    info.fFBOID = (GrGLuint) buffer;
-    SkColorType colorType;
-    info.fFormat = GR_GL_RGBA8;
-    colorType = kRGBA_8888_SkColorType;
-
-    GrBackendRenderTarget target(windowWidth, windowHeight, 0, 8, info);
-
-    // setup SkSurface
-    // To use distance field text, use commented out SkSurfaceProps instead
-    // SkSurfaceProps props(SkSurfaceProps::kUseDeviceIndependentFonts_Flag,
-    //                      SkSurfaceProps::kLegacyFontHost_InitType);
-    SkSurfaceProps props(SkSurfaceProps::kLegacyFontHost_InitType);
-
-    sk_sp<SkSurface> skia_surface = (SkSurface::MakeFromBackendRenderTarget(context.get(), target,
-                                                           kBottomLeft_GrSurfaceOrigin,
-                                                           colorType, nullptr, &props));
-    //.................................
     SkCanvas* canvas = skia_surface->getCanvas();
 //    canvas->drawColor(SK_ColorWHITE);
     SkPaint paint;

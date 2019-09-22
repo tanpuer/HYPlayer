@@ -144,7 +144,8 @@ static void setRotateM(ESMatrix *result, int rmOffset,
     }
 }
 
-#define I(_i, _j) ((_j)+ 4*(_i))
+//#define I(_i, _j) ((_j)+ 4*(_i))
+#define HYI(_i, _j) ((_j)+ 4*(_i))
 
 /**
  * 矩阵相乘
@@ -155,22 +156,22 @@ static void setRotateM(ESMatrix *result, int rmOffset,
 static void multiplyMM(ESMatrix *result, ESMatrix *lhs, ESMatrix *rhs) {
 
     for (int i = 0; i < 4; i++) {
-        const float rhs_i0 = rhs->m[I(i, 0)];
-        float ri0 = lhs->m[I(0, 0)] * rhs_i0;
-        float ri1 = lhs->m[I(0, 1)] * rhs_i0;
-        float ri2 = lhs->m[I(0, 2)] * rhs_i0;
-        float ri3 = lhs->m[I(0, 3)] * rhs_i0;
+        const float rhs_i0 = rhs->m[HYI(i, 0)];
+        float ri0 = lhs->m[HYI(0, 0)] * rhs_i0;
+        float ri1 = lhs->m[HYI(0, 1)] * rhs_i0;
+        float ri2 = lhs->m[HYI(0, 2)] * rhs_i0;
+        float ri3 = lhs->m[HYI(0, 3)] * rhs_i0;
         for (int j = 1; j < 4; j++) {
-            const float rhs_ij = rhs->m[I(i, j)];
-            ri0 += lhs->m[I(j, 0)] * rhs_ij;
-            ri1 += lhs->m[I(j, 1)] * rhs_ij;
-            ri2 += lhs->m[I(j, 2)] * rhs_ij;
-            ri3 += lhs->m[I(j, 3)] * rhs_ij;
+            const float rhs_ij = rhs->m[HYI(i, j)];
+            ri0 += lhs->m[HYI(j, 0)] * rhs_ij;
+            ri1 += lhs->m[HYI(j, 1)] * rhs_ij;
+            ri2 += lhs->m[HYI(j, 2)] * rhs_ij;
+            ri3 += lhs->m[HYI(j, 3)] * rhs_ij;
         }
-        result->m[I(i, 0)] = ri0;
-        result->m[I(i, 1)] = ri1;
-        result->m[I(i, 2)] = ri2;
-        result->m[I(i, 3)] = ri3;
+        result->m[HYI(i, 0)] = ri0;
+        result->m[HYI(i, 1)] = ri1;
+        result->m[HYI(i, 2)] = ri2;
+        result->m[HYI(i, 3)] = ri3;
     }
 
 }

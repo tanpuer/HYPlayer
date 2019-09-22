@@ -63,6 +63,7 @@ aux_source_directory(src/main/cpp/image                                         
 aux_source_directory(src/main/cpp/player                                         srcs)
 aux_source_directory(src/main/cpp/template                                         srcs)
 aux_source_directory(src/main/cpp/flutter                                         srcs)
+aux_source_directory(src/main/cpp/flutter/paint                                    srcs)
 aux_source_directory(src/main/cpp/skia                                         srcs)
 
 
@@ -168,6 +169,7 @@ include_directories(
         src/main/cpp/player
         src/main/cpp/template
         src/main/cpp/flutter
+        src/main/cpp/flutter/paint
 )
 
 find_library(z-lib z)

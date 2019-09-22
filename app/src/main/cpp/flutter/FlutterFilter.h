@@ -11,6 +11,7 @@
 #include <image/IAVFrameCreator.h>
 #include <gpu/GrContext.h>
 #include <core/SkSurface.h>
+#include <flutter/paint/FlutterBasePaint.h>
 
 //static GLfloat vertex[] = {
 //        1.0f, 1.0f,
@@ -73,6 +74,8 @@ protected:
 
     int windowWidth;
     int windowHeight;
+
+    FlutterBasePaint *basePaint;
 };
 
 

@@ -71,7 +71,7 @@ void FlutterRenderer::flutterDestroyed() {
 }
 
 void FlutterRenderer::flutterDoFrame(long frameTimeNanos) {
-    glClearColor(0.0, 0.0, 0.0, 1.0);
+    glClearColor(1.0, 1.0, 1.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT);
 
     baseFilter->doFrame();

@@ -12,6 +12,8 @@
 #include <skia/gpu/gl/GrGLDefines.h>
 #include <template/TemplateBaseFilter.h>
 #include <flutter/paint/SimplePaint.h>
+#include <flutter/paint/SimplePaint2.h>
+#include <flutter/paint/SimplePaint3.h>
 
 #define GET_STR(x) #x
 
@@ -44,7 +46,9 @@ FlutterFilter::FlutterFilter() {
     ALOGD("fbo %d %d %d", fboProgram, fboFragmentShader, fboVertexShader);
     fboTexMatrix = ESMatrix();
     setIdentityM(&fboTexMatrix);
-    basePaint = new SimplePaint();
+//    basePaint = new SimplePaint();
+//    basePaint = new SimplePaint2();
+    basePaint = new SimplePaint3();
 }
 
 FlutterFilter::~FlutterFilter() {
@@ -58,7 +62,6 @@ void FlutterFilter::setNativeWindowSize(int width, int height) {
 }
 
 void FlutterFilter::doFrame() {
-    ALOGD("FlutterFilter doFrame");
     glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
                            frameBufferTextureId, 0);

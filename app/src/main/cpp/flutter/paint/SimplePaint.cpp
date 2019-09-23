@@ -13,7 +13,7 @@
 #include <skia/effects/Sk2DPathEffect.h>
 
 void SimplePaint::onDraw(SkCanvas *canvas) {
-    canvas->drawColor(SK_ColorWHITE, SkBlendMode::kSrcOut);
+//    canvas->drawColor(SK_ColorWHITE, SkBlendMode::kSrcOut);
     SkPaint paint;
     paint.setStyle(SkPaint::kFill_Style);
     paint.setAntiAlias(true);

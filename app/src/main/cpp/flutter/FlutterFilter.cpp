@@ -11,9 +11,7 @@
 #include <skia/gpu/GrBackendSurface.h>
 #include <skia/gpu/gl/GrGLDefines.h>
 #include <template/TemplateBaseFilter.h>
-#include <flutter/paint/SimplePaint.h>
-#include <flutter/paint/SimplePaint2.h>
-#include <flutter/paint/SimplePaint3.h>
+#include <flutter/paint/TestPaint.h>
 
 #define GET_STR(x) #x
 
@@ -46,9 +44,7 @@ FlutterFilter::FlutterFilter() {
     ALOGD("fbo %d %d %d", fboProgram, fboFragmentShader, fboVertexShader);
     fboTexMatrix = ESMatrix();
     setIdentityM(&fboTexMatrix);
-//    basePaint = new SimplePaint();
-//    basePaint = new SimplePaint2();
-    basePaint = new SimplePaint3();
+    basePaint = new TestPaint();
 }
 
 FlutterFilter::~FlutterFilter() {
@@ -139,6 +135,9 @@ void FlutterFilter::release() {
 
     delete basePaint;
     basePaint = nullptr;
+
+//    delete context;
+//    delete skia_surface;
 }
 
 void FlutterFilter::genFrameBuffer(int width, int height) {

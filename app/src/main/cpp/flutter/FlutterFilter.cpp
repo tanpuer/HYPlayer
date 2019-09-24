@@ -88,7 +88,7 @@ void FlutterFilter::doFrame() {
         SkASSERT(skia_surface);
     }
     SkCanvas* canvas = skia_surface->getCanvas();
-    basePaint->onDraw(canvas);
+    basePaint->onDraw(canvas, windowWidth, windowHeight);
     canvas->flush();
 
 

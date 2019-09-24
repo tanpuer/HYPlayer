@@ -12,7 +12,7 @@ class FlutterBasePaint {
 
 public:
 
-    virtual void onDraw(SkCanvas *canvas) = 0;
+    virtual void onDraw(SkCanvas *canvas, int windowWidth, int windowHeight) = 0;
 
 };
 

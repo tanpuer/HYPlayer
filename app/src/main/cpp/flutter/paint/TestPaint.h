@@ -10,7 +10,7 @@
 
 class TestPaint : public FlutterBasePaint{
 
-    virtual void onDraw(SkCanvas *canvas);
+    virtual void onDraw(SkCanvas *canvas, int windowWidth, int windowHeight);
 
     virtual ~TestPaint();
 };

@@ -8,16 +8,18 @@
 #include <base/native_log.h>
 #include "TestPaint.h"
 
-void TestPaint::onDraw(SkCanvas *canvas) {
+void TestPaint::onDraw(SkCanvas *canvas, int windowWidth, int windowHeight) {
 
     SkPaint imagePaint;
     imagePaint.setAntiAlias(true);
     sk_sp<SkData> imageData = SkData::MakeFromFileName("sdcard/test.jpeg");
     auto image = SkImage::MakeFromEncoded(imageData);
-    ALOGD("%d %d", image->width(), image->height());
-//    SkRect rect = SkRect::MakeXYWH(0, 0, 1080, 1920);
-//    canvas->drawImageRect(image, rect, rect, &imagePaint);
-    canvas->drawImage(image, 500, 500, &imagePaint);
+    SkRect src1;
+    src1.setWH(image->width(), image->height());
+    SkRect dst1;
+    dst1.setLTRB(0, 0, windowWidth, windowHeight);
+    canvas->drawImageRect(image, src1, dst1, &imagePaint);
+//    canvas->drawImage(image, 500, 500, &imagePaint);
 
     SkPaint paint;
     paint.setAntiAlias(true);

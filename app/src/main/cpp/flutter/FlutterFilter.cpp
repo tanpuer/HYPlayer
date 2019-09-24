@@ -69,9 +69,8 @@ void FlutterFilter::doFrame() {
         SkASSERT(context);
         // Wrap the frame buffer object attached to the screen in a Skia render target so Skia can
         // render to it
-        GrGLint buffer = frameBuffer;
         GrGLFramebufferInfo info;
-        info.fFBOID = (GrGLuint) buffer;
+        info.fFBOID = frameBuffer;
         SkColorType colorType;
         info.fFormat = GR_GL_RGBA8;
         colorType = kRGBA_8888_SkColorType;

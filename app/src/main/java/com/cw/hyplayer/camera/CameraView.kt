@@ -16,16 +16,27 @@ class CameraView : SurfaceView, SurfaceHolder.Callback {
         defStyleAttr
     )
 
+    init {
+        holder.addCallback(this)
+    }
+
+    private val camerav1 = CameraV1()
+
     override fun surfaceCreated(holder: SurfaceHolder?) {
         nativeCameraCreated(holder!!.surface, display.mode.physicalWidth, display.mode.physicalHeight)
+        camerav1.setContext(context)
+//        camerav1.setPreviewView(this)
+        camerav1.surfaceCreated(holder)
     }
 
     override fun surfaceChanged(holder: SurfaceHolder?, format: Int, width: Int, height: Int) {
         nativeCameraChanged(width, height)
+        camerav1.surfaceChanged(holder, format, width, height)
     }
 
     override fun surfaceDestroyed(holder: SurfaceHolder?) {
         nativeCameraDestroyed()
+        camerav1.surfaceDestroyed(holder)
     }
 
     private external fun nativeCameraCreated(surface: Surface, windowWidth: Int, windowHeight: Int)

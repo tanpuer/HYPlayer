@@ -311,3 +311,34 @@ Java_com_cw_hyplayer_flutter_FlutterView_nativeFlutterViewDoFrame(
                                    reinterpret_cast<void *>(frameTimeNanos));
     }
 }
+
+
+//......................................................
+extern "C" JNIEXPORT void JNICALL
+Java_com_cw_hyplayer_camera_CameraView_nativeCameraCreated(
+        JNIEnv *env,
+        jobject instance,
+        jobject surface,
+        jint windowWidth,
+        jint windowHeight
+) {
+
+}
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_cw_hyplayer_camera_CameraView_nativeCameraChanged(
+        JNIEnv *env,
+        jobject instance,
+        int width,
+        int height
+) {
+
+}
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_cw_hyplayer_camera_CameraView_nativeCameraDestroyed(
+        JNIEnv *env,
+        jobject instance
+) {
+
+}

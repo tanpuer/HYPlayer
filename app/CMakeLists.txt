@@ -55,6 +55,7 @@ find_library(android-lib android)
 aux_source_directory(src/main/cpp                                                srcs)
 aux_source_directory(src/main/cpp/audio                                         srcs)
 aux_source_directory(src/main/cpp/base                                         srcs)
+aux_source_directory(src/main/cpp/camera                                         srcs)
 aux_source_directory(src/main/cpp/decode                                         srcs)
 aux_source_directory(src/main/cpp/demux                                         srcs)
 aux_source_directory(src/main/cpp/egl                                         srcs)
@@ -162,6 +163,7 @@ include_directories(
         src/main/cpp
         src/main/cpp/audio
         src/main/cpp/base
+        src/main/cpp/camera
         src/main/cpp/decode
         src/main/cpp/demux
         src/main/cpp/egl
@@ -175,6 +177,8 @@ include_directories(
 )
 
 find_library(z-lib z)
+find_library(camera-lib camera2ndk )
+find_library(media-lib mediandk )
 
 target_link_libraries(native-lib
         avutil swresample swscale avcodec avformat avfilter libyuv
@@ -182,6 +186,8 @@ target_link_libraries(native-lib
         android EGL GLESv3 jnigraphics OpenSLES mediandk OpenMAXAL
 
         ${z-lib}
+        ${camera2ndk}
+        ${mediandk}
 
         ${JNI_LIBS_DIR}/${ANDROID_ABI}/libjpeg.a
         ${JNI_LIBS_DIR}/${ANDROID_ABI}/libpng16.a

@@ -40,7 +40,7 @@ void VideoCreator::releaseFrame() {
         av_frame_free(&frameList.at(i));
     }
     frameList.clear();
-    ALOGD("GifCreator release");
+    ALOGD("VideoCreator release");
 }
 
 void *VideoCreator::trampoline(void *p) {
@@ -114,7 +114,7 @@ void VideoCreator::startEncode() {
         }
         pFrameYUV->width = codecContext->width;
         pFrameYUV->height = codecContext->height;
-        pFrameYUV->pts * 1000 * timeBase;
+        pFrameYUV->pts = 1000 * timeBase;
         frameList.push_back(pFrameYUV);
         count++;
     }

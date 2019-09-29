@@ -70,7 +70,7 @@ void GifCreator::startDecode() {
         ALOGE("gif codec open error %s", path);
         return;
     }
-    ALOGD("gif codec open success");
+    ALOGD("gif codec open success %d", codecContext->pix_fmt);
     img_convert_ctx = sws_getContext(codecContext->width, codecContext->height,
                                      codecContext->pix_fmt,
                                      codecContext->width, codecContext->height,

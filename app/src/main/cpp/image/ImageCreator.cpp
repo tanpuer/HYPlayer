@@ -57,7 +57,7 @@ AVFrame *ImageCreator::readFrame(int index) {
         ALOGE("image receive frame fail");
         return nullptr;
     }
-    ALOGD("image receive frame success");
+    ALOGD("image receive frame success %d", frame->format);
 
     pFrameYUV = av_frame_alloc();
     out_buffer = (unsigned char *) av_malloc(
@@ -82,7 +82,7 @@ AVFrame *ImageCreator::readFrame(int index) {
 
     long end = javaTimeMillis();
     ALOGD("read image time %ld", end - start);
-    return pFrameYUV;
+    return frame;
 }
 
 void ImageCreator::releaseFrame() {

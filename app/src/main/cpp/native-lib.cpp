@@ -2,6 +2,7 @@
 #include <string>
 #include <android/native_window.h>
 #include <flutter/FlutterLooper.h>
+#include <live/LiveEncoder.h>
 #include "android/native_window_jni.h"
 #include "player/AudioPlayer.h"
 #include "template/TemplateLooper.h"
@@ -314,6 +315,7 @@ Java_com_cw_hyplayer_flutter_FlutterView_nativeFlutterViewDoFrame(
 
 
 //......................................................
+LiveEncoder *liveEncoder;
 extern "C" JNIEXPORT void JNICALL
 Java_com_cw_hyplayer_camera_CameraView_nativeCameraCreated(
         JNIEnv *env,
@@ -322,7 +324,8 @@ Java_com_cw_hyplayer_camera_CameraView_nativeCameraCreated(
         jint windowWidth,
         jint windowHeight
 ) {
-
+    liveEncoder = new LiveEncoder(javaVM);
+    liveEncoder->sendMessage(liveEncoder->kLiveEncoderStart);
 }
 
 extern "C" JNIEXPORT void JNICALL
@@ -340,5 +343,30 @@ Java_com_cw_hyplayer_camera_CameraView_nativeCameraDestroyed(
         JNIEnv *env,
         jobject instance
 ) {
+    if (liveEncoder != nullptr) {
+        liveEncoder->sendMessage(liveEncoder->kLiveEncoderStop);
+    }
+}
 
+extern "C" JNIEXPORT void JNICALL
+Java_com_cw_hyplayer_camera_CameraView_nativeEncodeCameraData(
+        JNIEnv *env,
+        jobject instance,
+        jbyteArray data,
+        jint width,
+        jint height,
+        jlong pts
+) {
+    if (liveEncoder != nullptr) {
+        jbyte *yuv420Buffer = env->GetByteArrayElements(data, 0);
+        auto *buffer = static_cast<unsigned char *>(malloc((size_t) width * height * 5 / 4));
+        memcpy(buffer, yuv420Buffer, width * height * 5 / 4);
+        auto *nv21Data = new CameraNV21Data();
+        nv21Data->data = reinterpret_cast<unsigned char *>(yuv420Buffer);
+        nv21Data->width = width;
+        nv21Data->height = height;
+        nv21Data->pts = pts;
+        liveEncoder->sendMessage(liveEncoder->kLiveEncoderDoFrame, nv21Data);
+        env->ReleaseByteArrayElements(data, yuv420Buffer, 0);
+    }
 }

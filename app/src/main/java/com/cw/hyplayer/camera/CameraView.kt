@@ -1,10 +1,12 @@
 package com.cw.hyplayer.camera
 
 import android.content.Context
+import android.os.Environment
 import android.util.AttributeSet
 import android.view.Surface
 import android.view.SurfaceHolder
 import android.view.SurfaceView
+import java.io.File
 
 class CameraView : SurfaceView, SurfaceHolder.Callback {
 
@@ -20,12 +22,23 @@ class CameraView : SurfaceView, SurfaceHolder.Callback {
         holder.addCallback(this)
     }
 
-    private val camerav1 = CameraV1()
+    private val camerav1 = CameraV1(context, this)
+    private var currentMillSecond = -1L
 
     override fun surfaceCreated(holder: SurfaceHolder?) {
-        nativeCameraCreated(holder!!.surface, display.mode.physicalWidth, display.mode.physicalHeight)
-        camerav1.setContext(context)
-//        camerav1.setPreviewView(this)
+        var outputFile =
+            File(Environment.getExternalStorageDirectory().absolutePath, "trailer_test.mp4")
+        if (outputFile.exists()) {
+            outputFile.delete()
+            outputFile =
+                File(Environment.getExternalStorageDirectory().absolutePath, "trailer_test.mp4")
+        }
+
+        nativeCameraCreated(
+            holder!!.surface,
+            display.mode.physicalWidth,
+            display.mode.physicalHeight
+        )
         camerav1.surfaceCreated(holder)
     }
 
@@ -39,9 +52,19 @@ class CameraView : SurfaceView, SurfaceHolder.Callback {
         camerav1.surfaceDestroyed(holder)
     }
 
+    fun encodeCameraData(data: ByteArray, width: Int, height: Int) {
+        if (currentMillSecond < 0) {
+            currentMillSecond = System.currentTimeMillis()
+            nativeEncodeCameraData(data, width, height, 0)
+        } else {
+            nativeEncodeCameraData(data, width, height, System.currentTimeMillis() - currentMillSecond)
+        }
+    }
+
     private external fun nativeCameraCreated(surface: Surface, windowWidth: Int, windowHeight: Int)
     private external fun nativeCameraChanged(width: Int, height: Int)
     private external fun nativeCameraDestroyed()
+    private external fun nativeEncodeCameraData(data: ByteArray, width: Int, height: Int, pts: Long)
 
     companion object {
         init {

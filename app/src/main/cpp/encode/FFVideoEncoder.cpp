@@ -114,7 +114,8 @@ void FFVideoEncoder::EncoderBuffer(unsigned char *buffer, long long pts) {
 //    free(buffer);
 
     //ABGR not RGBA!
-    libyuv::ABGRToI420(buffer, width * 4, pFrame->data[0], width, pFrame->data[1], width / 2, pFrame->data[2], width / 2,
+    libyuv::ABGRToI420(buffer, width * 4, pFrame->data[0], width, pFrame->data[1], width / 2,
+                       pFrame->data[2], width / 2,
                        width, height);
     pFrame->pts = i;
     i++;
@@ -122,6 +123,24 @@ void FFVideoEncoder::EncoderBuffer(unsigned char *buffer, long long pts) {
     EncoderFrame(pCodecCtx, pFrame, &avPacket);
     free(buffer);
 
+}
+
+void
+FFVideoEncoder::EncoderNV21Buffer(unsigned char *buffer, int width, int height, long long pts) {
+    ALOGD("EncoderNV21Buffer")
+    libyuv::NV21ToI420(buffer, width, buffer + width * height, width, pFrame->data[0], this->width,
+                       pFrame->data[1], this->width / 2, pFrame->data[2], this->width / 2, width,
+                       height);
+
+
+//    ALOGD("EncoderNV21Buffer %d %d %d %d", width, height, this->width, this->height);
+//    libyuv::ConvertToI420(buffer, width * height, pFrame->data[0], this->width, pFrame->data[1],
+//                          this->width / 2, pFrame->data[2], this->width / 2, 0, 0, height, width,
+//                          this->width, this->height, libyuv::kRotate270, libyuv::FOURCC_NV21);
+
+    pFrame->pts = i * 2;
+    i++;
+    EncoderFrame(pCodecCtx, pFrame, &avPacket);
 }
 
 void FFVideoEncoder::EncoderEnd() {

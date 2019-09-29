@@ -7,22 +7,19 @@ import android.hardware.Camera;
 import android.util.Log;
 import android.view.Surface;
 import android.view.SurfaceHolder;
-import android.view.SurfaceView;
-
-import java.io.IOException;
 
 
-/**
- * @anchor: andy
- * @date: 2018-11-02
- * @description:
- */
 public class CameraV1 implements Camera.PreviewCallback {
 
     private static final String TAG = "CameraV1";
 
-    private SurfaceView mSurfaceView;
     private Context mContext;
+    private CameraView cameraView;
+
+    public CameraV1(Context mContext, CameraView cameraView) {
+        this.mContext = mContext;
+        this.cameraView = cameraView;
+    }
 
     /**
      * 相机实例
@@ -34,16 +31,10 @@ public class CameraV1 implements Camera.PreviewCallback {
      */
     private int mCameraId = Camera.CameraInfo.CAMERA_FACING_FRONT;
 
-    public void setContext(Context context) {
-        this.mContext = context;
-    }
-
-    //    @Override
     public void surfaceCreated(SurfaceHolder holder) {
         mCamera = openCamera();
     }
 
-    //    @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
         try {
             setCameraDisplayOrientation(mCameraId, mCamera);
@@ -69,7 +60,7 @@ public class CameraV1 implements Camera.PreviewCallback {
     @Override
     public void onPreviewFrame(byte[] data, Camera camera) {
         this.mPreviewSize = camera.getParameters().getPreviewSize();
-        Log.d(TAG, "onPreviewFrame callback");
+        cameraView.encodeCameraData(data, mPreviewSize.width, mPreviewSize.height);
     }
 
     public void onDestroy() {

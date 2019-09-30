@@ -61,40 +61,6 @@ void TemplateFBOFilter::doFrame() {
 
     TemplateBaseFilter::doFrame();
 
-    long start = javaTimeMillis();
-    if (skia_surface == nullptr) {
-        SkGraphics::Init();
-//    }
-        sk_sp<const GrGLInterface> interface(GrGLMakeNativeInterface());
-        context = GrContext::MakeGL(interface);
-
-        SkASSERT(context);
-        // Wrap the frame buffer object attached to the screen in a Skia render target so Skia can
-        // render to it
-        GrGLint buffer = frameBuffer;
-        GrGLFramebufferInfo info;
-        info.fFBOID = (GrGLuint) buffer;
-        SkColorType colorType;
-        info.fFormat = GR_GL_RGBA8;
-        colorType = kRGBA_8888_SkColorType;
-        GrBackendRenderTarget target(windowWidth, windowHeight, 0, 8, info);
-
-        // setup SkSurface
-        // To use distance field text, use commented out SkSurfaceProps instead
-        // SkSurfaceProps props(SkSurfaceProps::kUseDeviceIndependentFonts_Flag,
-        //                      SkSurfaceProps::kLegacyFontHost_InitType);
-        SkSurfaceProps props(SkSurfaceProps::kLegacyFontHost_InitType);
-        skia_surface = (SkSurface::MakeFromBackendRenderTarget(context.get(), target,
-                                                               kBottomLeft_GrSurfaceOrigin,
-                                                               colorType, nullptr, &props));
-        SkASSERT(skia_surface);
-    }
-    SkCanvas* canvas = skia_surface->getCanvas();
-    paint->onDraw(canvas, windowWidth, windowHeight);
-    canvas->flush();
-    ALOGD("skia draw time %ld", javaTimeMillis() - start);
-
-
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     //fbo
@@ -118,9 +84,40 @@ void TemplateFBOFilter::doFrame() {
     glUniform1i(fboTextureLocation, 0);
 
     glDrawArrays(GL_TRIANGLES, 0, vertexCount);
+
+    long start = javaTimeMillis();
+    if (skia_surface == nullptr) {
+        SkGraphics::Init();
+        sk_sp<const GrGLInterface> interface(GrGLMakeNativeInterface());
+        context = GrContext::MakeGL(interface);
+        SkASSERT(context);
+        // Wrap the frame buffer object attached to the screen in a Skia render target so Skia can
+        // render to it
+        GrGLint buffer = 0;
+        GrGLFramebufferInfo info;
+        info.fFBOID = (GrGLuint) buffer;
+        SkColorType colorType;
+        info.fFormat = GR_GL_RGBA8;
+        colorType = kRGBA_8888_SkColorType;
+        GrBackendRenderTarget target(windowWidth, windowHeight, 0, 8, info);
+
+        // setup SkSurface
+        // To use distance field text, use commented out SkSurfaceProps instead
+        // SkSurfaceProps props(SkSurfaceProps::kUseDeviceIndependentFonts_Flag,
+        //                      SkSurfaceProps::kLegacyFontHost_InitType);
+        SkSurfaceProps props(SkSurfaceProps::kLegacyFontHost_InitType);
+        skia_surface = (SkSurface::MakeFromBackendRenderTarget(context.get(), target,
+                                                               kBottomLeft_GrSurfaceOrigin,
+                                                               colorType, nullptr, &props));
+        SkASSERT(skia_surface);
+    }
+    SkCanvas* canvas = skia_surface->getCanvas();
+    paint->onDraw(canvas, windowWidth, windowHeight);
+    canvas->flush();
+    ALOGD("skia draw time %ld", javaTimeMillis() - start);
+
     glDisableVertexAttribArray(fboPositionLocation);
     glDisableVertexAttribArray(fboTextureCoordinateLocation);
-
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 

@@ -21,6 +21,20 @@ public:
     int scaleType;
 
     void onDraw(SkCanvas *canvas, int parentWidth, int parentHeight) override;
+
+    ImageView();
+
+    virtual ~ImageView();
+
+    void setSrc(char *src);
+
+private:
+
+    SkPaint *paint;
+
+    sk_sp<SkImage> image;
+
+    SkRect *srcRect;
 };
 
 

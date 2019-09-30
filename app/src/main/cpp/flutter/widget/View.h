@@ -14,6 +14,21 @@ class View {
 public:
 
     //只支持百分比布局
+
+    virtual void onDraw(SkCanvas *canvas, int parentWidth, int parentHeight);
+
+    View();
+
+    virtual ~View();
+
+    void setRect(float top, float left, float width, float height);
+
+    void setBackgroundColor(SkColor backgroundColor);
+
+    void setCornerRadius(int cornerRadius);
+
+protected:
+
     float top;
     float left;
     float width;
@@ -21,7 +36,9 @@ public:
     int cornerRadius;
     SkColor backgroundColor;
 
-    virtual void onDraw(SkCanvas *canvas, int parentWidth, int parentHeight);
+private:
+
+    SkPaint *paint;
 
 };
 

@@ -7,14 +7,25 @@
 
 
 #include "FlutterBasePaint.h"
+#include "widget/View.h"
+#include "widget/TextView.h"
+#include "widget/ImageView.h"
 
 class TestPaint : public FlutterBasePaint {
 
 public:
 
+    TestPaint();
+
     virtual void onDraw(SkCanvas *canvas, int windowWidth, int windowHeight);
 
     virtual ~TestPaint();
+
+private:
+
+    View *view;
+    TextView *textView;
+    ImageView *imageView;
 };
 
 

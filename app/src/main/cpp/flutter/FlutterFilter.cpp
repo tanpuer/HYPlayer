@@ -12,6 +12,7 @@
 #include <skia/gpu/gl/GrGLDefines.h>
 #include <template/TemplateBaseFilter.h>
 #include <flutter/paint/TestPaint.h>
+#include <base/utils.h>
 
 #define GET_STR(x) #x
 
@@ -86,9 +87,11 @@ void FlutterFilter::doFrame() {
                                                                colorType, nullptr, &props));
         SkASSERT(skia_surface);
     }
+    long start = javaTimeMillis();
     SkCanvas* canvas = skia_surface->getCanvas();
     basePaint->onDraw(canvas, windowWidth, windowHeight);
     canvas->flush();
+    ALOGD("Flutter draw time %ld", javaTimeMillis() - start);
 
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);

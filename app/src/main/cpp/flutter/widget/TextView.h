@@ -19,6 +19,22 @@ public:
 
     void onDraw(SkCanvas *canvas, int parentWidth, int parentHeight) override;
 
+    TextView();
+
+    virtual ~TextView();
+
+    void setText(char *text);
+
+    void setTextSize(int textSize);
+
+    void setColor(SkColor color);
+
+    void setBold(bool bold);
+
+private:
+
+    SkPaint *paint;
+
 };
 
 

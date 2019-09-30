@@ -9,9 +9,7 @@
 
 VideoCreator::VideoCreator(const char *path) {
     this->path = path;
-    pthread_attr_t attr;
-    pthread_attr_init(&attr);
-    pthread_create(&worker_thread, &attr, trampoline, this);
+    sendMessage(kMsgVideoCreatorStart);
 }
 
 VideoCreator::~VideoCreator() {
@@ -32,24 +30,12 @@ AVFrame *VideoCreator::readFrame(int index) {
 }
 
 void VideoCreator::releaseFrame() {
-    //todo 线程问题 改为Looper
-    avcodec_close(codecContext);
-    avcodec_free_context(&codecContext);
-    avformat_close_input(&ic);
-    av_packet_free(&pkt);
-    for (unsigned int i = 0; i < frameList.size(); ++i) {
-        av_frame_free(&frameList.at(i));
-    }
-    frameList.clear();
-    ALOGD("VideoCreator release");
+    isDecoding = false;
+    sendMessage(kMsgVideoCreatorStop);
+    quit();
 }
 
-void *VideoCreator::trampoline(void *p) {
-    ((VideoCreator *) p)->startEncode();
-    return nullptr;
-}
-
-void VideoCreator::startEncode() {
+void VideoCreator::startDecode() {
     long start = javaTimeMillis();
     ic = avformat_alloc_context();
     int re = avformat_open_input(&ic, path, nullptr, nullptr);
@@ -75,7 +61,8 @@ void VideoCreator::startEncode() {
     AVCodecParameters *codecParameters = ic->streams[videoIndex]->codecpar;
     if (ic->streams[videoIndex]->duration > 0) {
         totalMs =
-                ic->streams[videoIndex]->duration * r2d(ic->streams[videoIndex]->time_base) * 1000LL;
+                ic->streams[videoIndex]->duration * r2d(ic->streams[videoIndex]->time_base) *
+                1000LL;
         size = (int) ic->streams[videoIndex]->nb_frames;
         timeBase = r2d(ic->streams[videoIndex]->time_base);
         ALOGD("video total duration is %lld %d", totalMs, size);
@@ -96,7 +83,7 @@ void VideoCreator::startEncode() {
     ALOGD("video codec open success");
     int count = 0;
     pkt = av_packet_alloc();
-    while (av_read_frame(ic, pkt) == 0) {
+    while (isDecoding && av_read_frame(ic, pkt) == 0) {
         if (pkt->stream_index != videoIndex) {
             continue;
         }
@@ -120,4 +107,35 @@ void VideoCreator::startEncode() {
         count++;
     }
     ALOGD("read all video %ld %d", javaTimeMillis() - start, count);
+}
+
+void VideoCreator::handleMessage(Looper::LooperMessage *msg) {
+    switch (msg->what) {
+        case kMsgVideoCreatorStart : {
+            isDecoding = true;
+            startDecode();
+            break;
+        }
+        case kMsgVideoCreatorStop: {
+            break;
+        }
+        default: {
+            ALOGE("unknown type for VideoCreator");
+            break;
+        }
+    }
+}
+
+void VideoCreator::pthreadExit() {
+    Looper::pthreadExit();
+
+    avcodec_close(codecContext);
+    avcodec_free_context(&codecContext);
+    avformat_close_input(&ic);
+    av_packet_free(&pkt);
+    for (unsigned int i = 0; i < frameList.size(); ++i) {
+        av_frame_free(&frameList.at(i));
+    }
+    frameList.clear();
+    ALOGE("VideoCreator release");
 }

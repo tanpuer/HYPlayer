@@ -9,18 +9,11 @@
 
 GifCreator::GifCreator(const char *path) {
     this->path = path;
-    pthread_attr_t attr;
-    pthread_attr_init(&attr);
-    pthread_create(&worker_thread, &attr, trampoline, this);
+    sendMessage(kMsgGifCreatorStart);
 }
 
 GifCreator::~GifCreator() {
 
-}
-
-void *GifCreator::trampoline(void *p) {
-    ((GifCreator *) p)->startDecode();
-    return nullptr;
 }
 
 AVFrame *GifCreator::readFrame(int index) {
@@ -116,6 +109,31 @@ void GifCreator::startDecode() {
 }
 
 void GifCreator::releaseFrame() {
+    isDecoding = false;
+    sendMessage(kMsgGifCreatorStop);
+    quit();
+}
+
+void GifCreator::handleMessage(Looper::LooperMessage *msg) {
+    switch (msg->what) {
+        case kMsgGifCreatorStart: {
+            isDecoding = true;
+            startDecode();
+            break;
+        }
+        case kMsgGifCreatorStop: {
+            break;
+        }
+        default: {
+            ALOGE("unknown type for GifCreator");
+            break;
+        }
+    }
+}
+
+void GifCreator::pthreadExit() {
+    Looper::pthreadExit();
+
     avcodec_close(codecContext);
     avcodec_free_context(&codecContext);
     avformat_close_input(&ic);
@@ -128,5 +146,5 @@ void GifCreator::releaseFrame() {
     }
     frameList.clear();
     bufferList.clear();
-    ALOGD("GifCreator release");
+    ALOGE("GifCreator release");
 }

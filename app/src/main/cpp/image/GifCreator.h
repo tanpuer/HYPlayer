@@ -6,6 +6,7 @@
 #define HYPLAYER_GIFCREATOR_H
 
 
+#include <base/Looper.h>
 #include "IAVFrameCreator.h"
 
 extern "C" {
@@ -18,7 +19,7 @@ extern "C" {
 
 #include "vector"
 
-class GifCreator : public IAVFrameCreator {
+class GifCreator : public IAVFrameCreator, public Looper{
 
 public:
 
@@ -30,9 +31,18 @@ public:
 
     ~GifCreator();
 
-    static void *trampoline(void *p);
+    void handleMessage(LooperMessage *msg) override;
+
+    void pthreadExit() override;
 
 private:
+
+    enum {
+        kMsgGifCreatorStart,
+        kMsgGifCreatorStop
+    };
+
+    bool isDecoding = true;
 
     void startDecode();
 
@@ -46,7 +56,6 @@ private:
     long long totalMs;
     int size;
 
-    pthread_t worker_thread;
     const char *path;
 };
 

@@ -11,10 +11,11 @@ extern "C" {
 #include <libavformat/avformat.h>
 };
 
+#include <base/Looper.h>
 #include "vector"
 #include "IAVFrameCreator.h"
 
-class VideoCreator : public IAVFrameCreator {
+class VideoCreator : public IAVFrameCreator, public Looper {
 
 public:
 
@@ -26,11 +27,20 @@ public:
 
     virtual void releaseFrame();
 
-    static void *trampoline(void *p);
+    void handleMessage(LooperMessage *msg) override;
+
+    void pthreadExit() override;
 
 private:
 
-    void startEncode();
+    enum {
+        kMsgVideoCreatorStart,
+        kMsgVideoCreatorStop
+    };
+
+    bool isDecoding = true;
+
+    void startDecode();
 
     AVFormatContext *ic = nullptr;
     AVCodecContext *codecContext = nullptr;
@@ -38,7 +48,6 @@ private:
     std::vector<AVFrame *> frameList;
     long long totalMs;
     int size;
-    pthread_t worker_thread;
     const char *path;
     int videoIndex;
     double timeBase;

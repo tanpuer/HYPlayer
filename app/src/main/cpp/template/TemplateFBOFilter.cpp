@@ -57,9 +57,9 @@ void TemplateFBOFilter::doFrame() {
                            frameBufferTextureId, 0);
 
     TemplateBaseFilter::doFrame();
-    SkGraphics::Init();
 
     if (skia_surface == nullptr) {
+        SkGraphics::Init();
         sk_sp<const GrGLInterface> interface(GrGLMakeNativeInterface());
         context = GrContext::MakeGL(interface);
         SkASSERT(context);
@@ -90,7 +90,7 @@ void TemplateFBOFilter::doFrame() {
     paint.setAntiAlias(true);
     paint.setStrokeWidth(4);
     paint.setColor(0xff4285F4);
-    SkRect rect = SkRect::MakeXYWH(10, 10, 100, 160);
+    SkRect rect = SkRect::MakeXYWH(10, 10, 500, 800);
     canvas->drawRect(rect, paint);
     SkRRect oval;
     oval.setOval(rect);

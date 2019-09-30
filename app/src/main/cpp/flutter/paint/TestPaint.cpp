@@ -18,7 +18,7 @@ TestPaint::TestPaint() {
     view->setRect(0.1f, 0.1f, 0.5f, 0.1f);
 
     textView = new TextView();
-    textView->setRect(0.3f, 0.1f, 0.3f, 0.1f);
+    textView->setRect(0.5f, 0.3f, 0.3f, 0.1f);
     textView->setColor(SK_ColorRED);
     textView->setBold(true);
     textView->setTextSize(100);
@@ -30,8 +30,6 @@ TestPaint::TestPaint() {
 }
 
 void TestPaint::onDraw(SkCanvas *canvas, int windowWidth, int windowHeight) {
-
-    ALOGD("TestPaint onDraw");
 
     //View
     view->onDraw(canvas, windowWidth, windowHeight);

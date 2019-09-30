@@ -3,6 +3,7 @@
 //
 
 #include <pthread.h>
+#include <template/TemplateFBOFilter.h>
 #include "FFmpegCodecEncoder.h"
 #include "../base/utils.h"
 #include "../base/native_log.h"
@@ -40,7 +41,8 @@ void FFmpegCodecEncoder::templateCreated() {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    baseFilter = new TemplateBaseFilter();
+//    baseFilter = new TemplateBaseFilter();
+    baseFilter = new TemplateFBOFilter();
     baseFilter->setNativeWindowSize(width, height);
     baseFilter->identifyTextureMatrix();
 

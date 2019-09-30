@@ -95,7 +95,7 @@ void TestPaint::onDraw(SkCanvas *canvas, int windowWidth, int windowHeight) {
 
     //ImageView
     ImageView imageView;
-    imageView.left = 0.1f;
+    imageView.left = 0.7f;
     imageView.top = 0.4f;
     imageView.width = 0.5f;
     imageView.height = 0.5f;

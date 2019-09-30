@@ -3,14 +3,7 @@
 //
 
 #include "TemplateFBOFilter.h"
-#include <skia/gpu/gl/GrGLInterface.h>
-#include <skia/core/SkPaint.h>
-#include <skia/core/SkCanvas.h>
-#include <skia/core/SkGraphics.h>
-#include <skia/gpu/GrBackendSurface.h>
-#include <skia/effects/SkDiscretePathEffect.h>
-#include <skia/gpu/gl/GrGLDefines.h>
-#include <skia/effects/Sk2DPathEffect.h>
+#include <base/utils.h>
 #include "../base/gl_utils.h"
 
 #define GET_STR(x) #x
@@ -44,12 +37,10 @@ TemplateFBOFilter::TemplateFBOFilter() {
     ALOGD("fbo %d %d %d", fboProgram, fboFragmentShader, fboVertexShader);
     fboTexMatrix = ESMatrix();
     setIdentityM(&fboTexMatrix);
-
-    paint = new TestPaint();
 }
 
 TemplateFBOFilter::~TemplateFBOFilter() {
-    delete paint;
+
 }
 
 void TemplateFBOFilter::doFrame() {
@@ -59,56 +50,6 @@ void TemplateFBOFilter::doFrame() {
                            frameBufferTextureId, 0);
 
     TemplateBaseFilter::doFrame();
-
-    if (skia_surface == nullptr) {
-        SkGraphics::Init();
-        sk_sp<const GrGLInterface> interface(GrGLMakeNativeInterface());
-        context = GrContext::MakeGL(interface);
-        SkASSERT(context);
-        // Wrap the frame buffer object attached to the screen in a Skia render target so Skia can
-        // render to it
-        GrGLint buffer = frameBuffer;
-        GrGLFramebufferInfo info;
-        info.fFBOID = (GrGLuint) buffer;
-        SkColorType colorType;
-        info.fFormat = GR_GL_RGBA8;
-        colorType = kRGBA_8888_SkColorType;
-        GrBackendRenderTarget target(windowWidth, windowHeight, 0, 8, info);
-
-        // setup SkSurface
-        // To use distance field text, use commented out SkSurfaceProps instead
-        // SkSurfaceProps props(SkSurfaceProps::kUseDeviceIndependentFonts_Flag,
-        //                      SkSurfaceProps::kLegacyFontHost_InitType);
-        SkSurfaceProps props(SkSurfaceProps::kLegacyFontHost_InitType);
-        skia_surface = (SkSurface::MakeFromBackendRenderTarget(context.get(), target,
-                                                               kBottomLeft_GrSurfaceOrigin,
-                                                               colorType, nullptr, &props));
-        SkASSERT(skia_surface);
-    }
-    SkCanvas* canvas = skia_surface->getCanvas();
-//    SkPaint paint;
-//    paint.setStyle(SkPaint::kFill_Style);
-//    paint.setAntiAlias(true);
-//    paint.setStrokeWidth(4);
-//    paint.setColor(0xff4285F4);
-//    SkRect rect = SkRect::MakeXYWH(10, 10, 500, 800);
-//    canvas->drawRect(rect, paint);
-//    SkRRect oval;
-//    oval.setOval(rect);
-//    oval.offset(40, 80);
-//    paint.setColor(0xffDB4437);
-//    canvas->drawRRect(oval, paint);
-//    paint.setColor(0xff0F9D58);
-//    canvas->drawCircle(180, 50, 25, paint);
-//    rect.offset(80, 50);
-//    paint.setColor(0xffF4B400);
-//    paint.setStyle(SkPaint::kStroke_Style);
-//    canvas->drawRoundRect(rect, 10, 10, paint);
-
-    paint->onDraw(canvas, windowWidth, windowHeight);
-
-    canvas->flush();
-
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 

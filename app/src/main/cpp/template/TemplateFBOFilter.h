@@ -7,9 +7,6 @@
 
 
 #include "TemplateBaseFilter.h"
-#include <skia/core/SkSurface.h>
-#include <skia/gpu/GrContext.h>
-#include <flutter/paint/TestPaint.h>
 
 class TemplateFBOFilter : public TemplateBaseFilter {
 
@@ -46,16 +43,6 @@ private:
     GLint fboTextureLocation = 0;
 
     ESMatrix fboTexMatrix;
-
-
-    //skia
-//    void* context = nullptr;
-//    void* skia_surface = nullptr;
-
-    sk_sp<GrContext> context = nullptr;
-    sk_sp<SkSurface> skia_surface = nullptr;
-
-    TestPaint *paint = nullptr;
 };
 
 

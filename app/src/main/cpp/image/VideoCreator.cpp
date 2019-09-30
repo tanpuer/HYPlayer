@@ -32,6 +32,7 @@ AVFrame *VideoCreator::readFrame(int index) {
 }
 
 void VideoCreator::releaseFrame() {
+    //todo 线程问题 改为Looper
     avcodec_close(codecContext);
     avcodec_free_context(&codecContext);
     avformat_close_input(&ic);
@@ -114,7 +115,7 @@ void VideoCreator::startEncode() {
         }
         pFrameYUV->width = codecContext->width;
         pFrameYUV->height = codecContext->height;
-        pFrameYUV->pts = 1000 * timeBase;
+//        pFrameYUV->pts = 1000 * timeBase;
         frameList.push_back(pFrameYUV);
         count++;
     }

@@ -8,7 +8,9 @@
 
 #include "FlutterBasePaint.h"
 
-class TestPaint : public FlutterBasePaint{
+class TestPaint : public FlutterBasePaint {
+
+public:
 
     virtual void onDraw(SkCanvas *canvas, int windowWidth, int windowHeight);
 

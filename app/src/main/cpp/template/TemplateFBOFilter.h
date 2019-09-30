@@ -9,6 +9,7 @@
 #include "TemplateBaseFilter.h"
 #include <skia/core/SkSurface.h>
 #include <skia/gpu/GrContext.h>
+#include <flutter/paint/TestPaint.h>
 
 class TemplateFBOFilter : public TemplateBaseFilter {
 
@@ -53,6 +54,8 @@ private:
 
     sk_sp<GrContext> context = nullptr;
     sk_sp<SkSurface> skia_surface = nullptr;
+
+    TestPaint *paint = nullptr;
 };
 
 

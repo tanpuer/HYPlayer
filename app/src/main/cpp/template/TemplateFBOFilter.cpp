@@ -17,23 +17,28 @@
 #define GET_STR(x) #x
 
 static const char *VERTEX_SHADER_STR = GET_STR(
-        attribute vec4 fboPosition;
-        uniform mat4 fboTextureMatrix;
-        attribute vec4 fboTextureCoordinate;
-        varying vec2 fboTextureCoord;
-        void main()
-        {
+        attribute
+        vec4 fboPosition;
+        uniform
+        mat4 fboTextureMatrix;
+        attribute
+        vec4 fboTextureCoordinate;
+        varying
+        vec2 fboTextureCoord;
+        void main() {
             fboTextureCoord = (fboTextureMatrix * fboTextureCoordinate).xy;
             gl_Position = fboPosition;
         }
 );
 
 static const char *FRAGMENT_SHADER_STR = GET_STR(
-        precision highp float;
-        varying vec2 fboTextureCoord;
-        uniform sampler2D fboTexture;
-        void main()
-        {
+        precision
+        highp float;
+        varying
+        vec2 fboTextureCoord;
+        uniform
+        sampler2D fboTexture;
+        void main() {
             gl_FragColor = texture2D(fboTexture, fboTextureCoord);
         }
 );
@@ -107,11 +112,12 @@ void TemplateFBOFilter::doFrame() {
         //                      SkSurfaceProps::kLegacyFontHost_InitType);
         SkSurfaceProps props(SkSurfaceProps::kLegacyFontHost_InitType);
         skia_surface = (SkSurface::MakeFromBackendRenderTarget(context.get(), target,
-                                                               kBottomLeft_GrSurfaceOrigin,
+                                                               reverse ? kBottomLeft_GrSurfaceOrigin
+                                                                       : kTopLeft_GrSurfaceOrigin,
                                                                colorType, nullptr, &props));
         SkASSERT(skia_surface);
     }
-    SkCanvas* canvas = skia_surface->getCanvas();
+    SkCanvas *canvas = skia_surface->getCanvas();
     paint->onDraw(canvas, windowWidth, windowHeight);
     canvas->flush();
     ALOGD("skia draw time %ld", javaTimeMillis() - start);

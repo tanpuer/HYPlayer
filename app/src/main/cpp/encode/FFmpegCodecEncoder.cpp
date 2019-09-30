@@ -43,6 +43,9 @@ void FFmpegCodecEncoder::templateCreated() {
 
 //    baseFilter = new TemplateBaseFilter();
     baseFilter = new TemplateFBOFilter();
+    if (auto *filter = dynamic_cast<TemplateFBOFilter*>(baseFilter)) {
+        filter->reverse = false;
+    }
     baseFilter->setNativeWindowSize(width, height);
     baseFilter->identifyTextureMatrix();
 

@@ -25,6 +25,8 @@ public:
 
     void release() override;
 
+    bool reverse = true;
+
 private:
 
     void genFrameBuffer(int width, int height);

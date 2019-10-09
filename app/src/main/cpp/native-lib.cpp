@@ -3,6 +3,7 @@
 #include <android/native_window.h>
 #include <flutter/FlutterLooper.h>
 #include <live/LiveEncoder.h>
+#include <camera/NDKCamera.h>
 #include "android/native_window_jni.h"
 #include "player/AudioPlayer.h"
 #include "template/TemplateLooper.h"
@@ -369,4 +370,35 @@ Java_com_cw_hyplayer_camera_CameraView_nativeEncodeCameraData(
         liveEncoder->sendMessage(liveEncoder->kLiveEncoderDoFrame, nv21Data);
         env->ReleaseByteArrayElements(data, yuv420Buffer, 0);
     }
+}
+
+//......................................................
+NDKCamera *ndkCamera;
+extern "C" JNIEXPORT void JNICALL
+Java_com_cw_hyplayer_camera_NativeCameraView_nativeCameraCreated(
+        JNIEnv *env,
+        jobject instance,
+        jobject surface
+) {
+    ANativeWindow *window = ANativeWindow_fromSurface(env, surface);
+    ndkCamera = new NDKCamera();
+    ndkCamera->startPreview(window);
+}
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_cw_hyplayer_camera_NativeCameraView_nativeCameraChanged(
+        JNIEnv *env,
+        jobject instance,
+        int width,
+        int height
+) {
+
+}
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_cw_hyplayer_camera_NativeCameraView_nativeCameraDestroyed(
+        JNIEnv *env,
+        jobject instance
+) {
+    ndkCamera->stopPreview();
 }

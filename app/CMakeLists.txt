@@ -185,7 +185,7 @@ find_library(media-lib mediandk )
 target_link_libraries(native-lib
         avutil swresample swscale avcodec avformat avfilter libyuv
         ${log-lib} ${android-lib}
-        android EGL GLESv3 jnigraphics OpenSLES mediandk OpenMAXAL
+        android EGL GLESv3 jnigraphics OpenSLES mediandk OpenMAXAL camera2ndk
 
         ${z-lib}
         ${camera2ndk}

@@ -122,3 +122,23 @@ void NDKCamera::stopPreview() {
         nativeWindow = nullptr;
     }
 }
+
+void NDKCamera::camera_device_on_disconnected(void *context, ACameraDevice *device) {
+
+}
+
+void NDKCamera::camera_device_on_error(void *context, ACameraDevice *device, int error) {
+
+}
+
+void NDKCamera::capture_session_on_ready(void *context, ACameraCaptureSession *session) {
+
+}
+
+void NDKCamera::capture_session_on_active(void *context, ACameraCaptureSession *session) {
+
+}
+
+void NDKCamera::capture_session_on_closed(void *context, ACameraCaptureSession *session) {
+
+}

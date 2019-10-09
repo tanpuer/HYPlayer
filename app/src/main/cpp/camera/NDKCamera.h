@@ -37,25 +37,15 @@ private:
     ACameraDevice_StateCallbacks deviceStateCallbacks;
     ACameraCaptureSession_stateCallbacks captureSessionStateCallbacks;
 
-    static void camera_device_on_disconnected(void *context, ACameraDevice *device) {
-        ALOGD("Camera(id: %s) is diconnected.\n", ACameraDevice_getId(device));
-    }
+    static void camera_device_on_disconnected(void *context, ACameraDevice *device);
 
-    static void camera_device_on_error(void *context, ACameraDevice *device, int error) {
-        ALOGD("Error(code: %d) on Camera(id: %s).\n", error, ACameraDevice_getId(device));
-    }
+    static void camera_device_on_error(void *context, ACameraDevice *device, int error);
 
-    static void capture_session_on_ready(void *context, ACameraCaptureSession *session) {
-        ALOGD("Session is ready. %p\n", session);
-    }
+    static void capture_session_on_ready(void *context, ACameraCaptureSession *session);
 
-    static void capture_session_on_active(void *context, ACameraCaptureSession *session) {
-        ALOGD("Session is activated. %p\n", session);
-    }
+    static void capture_session_on_active(void *context, ACameraCaptureSession *session);
 
-    static void capture_session_on_closed(void *context, ACameraCaptureSession *session) {
-        ALOGD("Session is closed. %p\n", session);
-    }
+    static void capture_session_on_closed(void *context, ACameraCaptureSession *session);
 
 };
 

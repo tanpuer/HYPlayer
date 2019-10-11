@@ -5,8 +5,10 @@
 #include <base/native_log.h>
 #include "CameraLooper.h"
 
-CameraLooper::CameraLooper(ANativeWindow *nativeWindow) {
+CameraLooper::CameraLooper(ANativeWindow *nativeWindow, JavaVM *vm, jobject javaCameraView) {
     this->nativeWindow = nativeWindow;
+    this->vm = vm;
+    this->javaCameraView = javaCameraView;
 }
 
 CameraLooper::~CameraLooper() {
@@ -16,7 +18,7 @@ CameraLooper::~CameraLooper() {
 void CameraLooper::handleMessage(Looper::LooperMessage *msg) {
     switch (msg->what) {
         case kMsgCameraViewCreated: {
-            renderer = new CameraRenderer();
+            renderer = new CameraRenderer(vm, javaCameraView);
             renderer->cameraViewCreated(nativeWindow);
             break;
         }

@@ -7,6 +7,7 @@
 
 
 #include <android/native_window.h>
+#include <jni.h>
 #include "../base/Looper.h"
 #include "CameraRenderer.h"
 
@@ -21,7 +22,7 @@ public:
         kMsgCameraViewDoFrame
     };
 
-    CameraLooper(ANativeWindow *nativeWindow);
+    CameraLooper(ANativeWindow *nativeWindow, JavaVM *vm, jobject javaCameraView);
 
     ~CameraLooper();
 
@@ -34,6 +35,10 @@ private:
     ANativeWindow *nativeWindow;
 
     CameraRenderer *renderer;
+
+    JavaVM *vm;
+
+    jobject javaCameraView;
 
 };
 

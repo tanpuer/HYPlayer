@@ -5,20 +5,22 @@
 #include <base/native_log.h>
 #include <GLES2/gl2.h>
 #include "CameraRenderer.h"
+#include "NDKCamera.h"
 
-CameraRenderer::CameraRenderer() {
-
+CameraRenderer::CameraRenderer(JavaVM *vm, jobject javaCameraView) {
+    this->vm = vm;
+    this->javaCameraView = javaCameraView;
+    vm->AttachCurrentThread(&env, nullptr);
 }
 
 CameraRenderer::~CameraRenderer() {
-
+    vm->DetachCurrentThread();
 }
 
 void CameraRenderer::cameraViewCreated(ANativeWindow *nativeWindow) {
     ALOGD("cameraViewCreated");
     eglCore = new egl_core(nullptr, FLAG_TRY_GLES3);
     windowSurface = new window_surface(nativeWindow, eglCore);
-
     windowSurface->makeCurrent();
     glClearColor(0.0, 0.0, 0.0, 1.0);
     glDisable(GL_DEPTH_TEST);
@@ -27,6 +29,15 @@ void CameraRenderer::cameraViewCreated(ANativeWindow *nativeWindow) {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     baseFilter = new CameraBaseFilter();
+
+    jclass clazz = env->GetObjectClass(this->javaCameraView);
+    jmethodID methodId = env->GetMethodID(clazz, "createOESSurface", "(I)Landroid/view/Surface;");
+    jobject surface = env->CallObjectMethod(this->javaCameraView, methodId, baseFilter->oesTextureId);
+    ANativeWindow *oesWindow = ANativeWindow_fromSurface(env, surface);
+    if (oesWindow != nullptr) {
+        NDKCamera *ndkCamera = new NDKCamera();
+        ndkCamera->startPreview(oesWindow);
+    }
 }
 
 void CameraRenderer::cameraViewChanged(int width, int height) {
@@ -58,6 +69,10 @@ void CameraRenderer::cameraViewDestroyed() {
 void CameraRenderer::cameraViewDoFrame() {
     glClearColor(0.0, 0.0, 0.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT);
+
+    jclass clazz = env->GetObjectClass(this->javaCameraView);
+    jmethodID methodId = env->GetMethodID(clazz, "update", "()V");
+    env->CallVoidMethod(this->javaCameraView, methodId);
 
     baseFilter->doFrame();
 

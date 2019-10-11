@@ -107,6 +107,7 @@ void NDKCamera::startPreview(ANativeWindow *nativeWindow) {
     ACaptureRequest_addTarget(captureRequest, cameraOutputTarget);
 
     ACaptureSessionOutput_create(nativeWindow, &sessionOutput);
+    ACaptureSessionOutputContainer_create(&captureSessionOutputContainer);
     ACaptureSessionOutputContainer_add(captureSessionOutputContainer, sessionOutput);
 
     ACameraDevice_createCaptureSession(cameraDevice, captureSessionOutputContainer,

@@ -1,6 +1,7 @@
 package com.cw.hyplayer.camera
 
 import android.content.Context
+import android.graphics.SurfaceTexture
 import android.util.AttributeSet
 import android.view.Choreographer
 import android.view.Surface
@@ -22,10 +23,11 @@ class NativeCameraView : SurfaceView, SurfaceHolder.Callback, Choreographer.Fram
     }
 
     private var active = false
+    private var surafaceTexture : SurfaceTexture? = null
 
     override fun surfaceCreated(holder: SurfaceHolder?) {
         active = true
-        nativeCameraCreated(holder!!.surface)
+        nativeCameraCreated(holder!!.surface, this)
         Choreographer.getInstance().postFrameCallback(this)
     }
 
@@ -46,7 +48,16 @@ class NativeCameraView : SurfaceView, SurfaceHolder.Callback, Choreographer.Fram
         Choreographer.getInstance().postFrameCallback(this)
     }
 
-    private external fun nativeCameraCreated(surface: Surface)
+    fun createOESSurface(oesTextureId: Int): Surface {
+        surafaceTexture = SurfaceTexture(oesTextureId)
+        return Surface(surafaceTexture)
+    }
+
+    fun update() {
+        surafaceTexture?.updateTexImage()
+    }
+
+    private external fun nativeCameraCreated(surface: Surface, nativeCameraView: NativeCameraView)
     private external fun nativeCameraChanged(width: Int, height: Int)
     private external fun nativeCameraDestroyed()
     private external fun nativeCameraDoFrame()

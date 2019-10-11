@@ -9,13 +9,14 @@
 #include <android/native_window.h>
 #include <egl/egl_core.h>
 #include <egl/window_surface.h>
+#include <jni.h>
 #include "CameraBaseFilter.h"
 
 class CameraRenderer {
 
 public:
 
-    CameraRenderer();
+    CameraRenderer(JavaVM *vm, jobject javaCameraView);
 
     ~CameraRenderer();
 
@@ -34,6 +35,12 @@ private:
     egl_core *eglCore;
 
     window_surface *windowSurface;
+
+    JavaVM *vm;
+
+    JNIEnv *env;
+
+    jobject javaCameraView;
 };
 
 

@@ -2,11 +2,12 @@ package com.cw.hyplayer.camera
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.Choreographer
 import android.view.Surface
 import android.view.SurfaceHolder
 import android.view.SurfaceView
 
-class NativeCameraView : SurfaceView, SurfaceHolder.Callback {
+class NativeCameraView : SurfaceView, SurfaceHolder.Callback, Choreographer.FrameCallback{
 
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
@@ -20,8 +21,12 @@ class NativeCameraView : SurfaceView, SurfaceHolder.Callback {
         holder.addCallback(this)
     }
 
+    private var active = false
+
     override fun surfaceCreated(holder: SurfaceHolder?) {
+        active = true
         nativeCameraCreated(holder!!.surface)
+        Choreographer.getInstance().postFrameCallback(this)
     }
 
     override fun surfaceChanged(holder: SurfaceHolder?, format: Int, width: Int, height: Int) {
@@ -29,12 +34,22 @@ class NativeCameraView : SurfaceView, SurfaceHolder.Callback {
     }
 
     override fun surfaceDestroyed(holder: SurfaceHolder?) {
+        active = false
         nativeCameraDestroyed()
+        Choreographer.getInstance().removeFrameCallback(this)
+    }
+
+    override fun doFrame(frameTimeNanos: Long) {
+        if (active) {
+            nativeCameraDoFrame()
+        }
+        Choreographer.getInstance().postFrameCallback(this)
     }
 
     private external fun nativeCameraCreated(surface: Surface)
     private external fun nativeCameraChanged(width: Int, height: Int)
     private external fun nativeCameraDestroyed()
+    private external fun nativeCameraDoFrame()
 
     companion object {
         init {

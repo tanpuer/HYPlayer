@@ -4,6 +4,7 @@
 #include <flutter/FlutterLooper.h>
 #include <live/LiveEncoder.h>
 #include <camera/NDKCamera.h>
+#include <camera/CameraLooper.h>
 #include "android/native_window_jni.h"
 #include "player/AudioPlayer.h"
 #include "template/TemplateLooper.h"
@@ -373,7 +374,7 @@ Java_com_cw_hyplayer_camera_CameraView_nativeEncodeCameraData(
 }
 
 //......................................................
-NDKCamera *ndkCamera;
+CameraLooper *cameraLooper;
 extern "C" JNIEXPORT void JNICALL
 Java_com_cw_hyplayer_camera_NativeCameraView_nativeCameraCreated(
         JNIEnv *env,
@@ -381,8 +382,10 @@ Java_com_cw_hyplayer_camera_NativeCameraView_nativeCameraCreated(
         jobject surface
 ) {
     ANativeWindow *window = ANativeWindow_fromSurface(env, surface);
-    ndkCamera = new NDKCamera();
-    ndkCamera->startPreview(window);
+    cameraLooper = new CameraLooper(window);
+    cameraLooper->sendMessage(cameraLooper->kMsgCameraViewCreated);
+//    ndkCamera = new NDKCamera();
+//    ndkCamera->startPreview(window);
 }
 
 extern "C" JNIEXPORT void JNICALL
@@ -392,7 +395,9 @@ Java_com_cw_hyplayer_camera_NativeCameraView_nativeCameraChanged(
         int width,
         int height
 ) {
-
+    if (cameraLooper != nullptr) {
+        cameraLooper->sendMessage(cameraLooper->kMsgCameraViewChanged, width, height);
+    }
 }
 
 extern "C" JNIEXPORT void JNICALL
@@ -400,5 +405,18 @@ Java_com_cw_hyplayer_camera_NativeCameraView_nativeCameraDestroyed(
         JNIEnv *env,
         jobject instance
 ) {
-    ndkCamera->stopPreview();
+//    ndkCamera->stopPreview();
+    if (cameraLooper != nullptr) {
+        cameraLooper->sendMessage(cameraLooper->kMsgCameraViewDestroyed);
+    }
+}
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_cw_hyplayer_camera_NativeCameraView_nativeCameraDoFrame(
+        JNIEnv *env,
+        jobject instance
+) {
+    if (cameraLooper != nullptr) {
+        cameraLooper->sendMessage(cameraLooper->kMsgCameraViewDoFrame);
+    }
 }

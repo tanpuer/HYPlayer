@@ -23,7 +23,7 @@ void NDKCamera::openCamera(ACameraDevice_request_template templateId) {
         return;
     }
 
-    selectedCameraId = cameraIdList->cameraIds[0];
+    selectedCameraId = cameraIdList->cameraIds[1];
 
     ALOGE("Trying to open Camera2 (id: %s, num of camera : %d)\n", selectedCameraId,
           cameraIdList->numCameras);

@@ -12,6 +12,7 @@ CameraBaseFilter::CameraBaseFilter() {
     setIdentityM(textureMatrix);
     coordMatrix = new ESMatrix();
     setIdentityM(coordMatrix);
+    rotateM(coordMatrix, 90.0, 0.0, 0.0, 1.0);
 
     readShaderString();
     vertexShader = loadShader(GL_VERTEX_SHADER, vertex_shader_string);

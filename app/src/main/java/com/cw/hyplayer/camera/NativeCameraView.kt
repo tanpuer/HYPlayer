@@ -1,8 +1,8 @@
 package com.cw.hyplayer.camera
 
+import android.app.Activity
 import android.content.Context
 import android.graphics.SurfaceTexture
-import android.os.Looper
 import android.util.AttributeSet
 import android.view.Choreographer
 import android.view.Surface
@@ -21,10 +21,13 @@ class NativeCameraView : SurfaceView, SurfaceHolder.Callback, Choreographer.Fram
 
     init {
         holder.addCallback(this)
+        cameraV2 = CameraV2(context as Activity)
+        cameraV2!!.openCamera(1080, 1920, 0)
     }
 
     private var active = false
-    private var surafaceTexture: SurfaceTexture? = null
+    private var surfaceTexture: SurfaceTexture? = null
+    private var cameraV2: CameraV2? = null
 
     override fun surfaceCreated(holder: SurfaceHolder?) {
         active = true
@@ -38,9 +41,11 @@ class NativeCameraView : SurfaceView, SurfaceHolder.Callback, Choreographer.Fram
 
     override fun surfaceDestroyed(holder: SurfaceHolder?) {
         active = false
+        cameraV2?.stopPreview()
+        cameraV2?.releaseCamera()
         nativeCameraDestroyed()
         Choreographer.getInstance().removeFrameCallback(this)
-        postDelayed({ surafaceTexture?.release() }, 1000)
+        postDelayed({ surfaceTexture?.release() }, 1000)
     }
 
     override fun doFrame(frameTimeNanos: Long) {
@@ -50,13 +55,14 @@ class NativeCameraView : SurfaceView, SurfaceHolder.Callback, Choreographer.Fram
         Choreographer.getInstance().postFrameCallback(this)
     }
 
-    fun createOESSurface(oesTextureId: Int): Surface {
-        surafaceTexture = SurfaceTexture(oesTextureId)
-        return Surface(surafaceTexture)
+    fun createOESSurface(oesTextureId: Int) {
+        surfaceTexture = SurfaceTexture(oesTextureId)
+        cameraV2?.setSurfaceTexture(surfaceTexture)
+        cameraV2?.startPreview()
     }
 
     fun update() {
-        surafaceTexture?.updateTexImage()
+        surfaceTexture?.updateTexImage()
     }
 
     private external fun nativeCameraCreated(surface: Surface, nativeCameraView: NativeCameraView)

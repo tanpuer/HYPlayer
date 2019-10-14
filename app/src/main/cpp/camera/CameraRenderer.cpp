@@ -5,7 +5,6 @@
 #include <base/native_log.h>
 #include <GLES2/gl2.h>
 #include "CameraRenderer.h"
-#include "NDKCamera.h"
 
 CameraRenderer::CameraRenderer(JavaVM *vm, jobject javaCameraView) {
     this->vm = vm;
@@ -31,13 +30,8 @@ void CameraRenderer::cameraViewCreated(ANativeWindow *nativeWindow) {
     baseFilter = new CameraBaseFilter();
 
     jclass clazz = env->GetObjectClass(this->javaCameraView);
-    jmethodID methodId = env->GetMethodID(clazz, "createOESSurface", "(I)Landroid/view/Surface;");
-    jobject surface = env->CallObjectMethod(this->javaCameraView, methodId, baseFilter->oesTextureId);
-    ANativeWindow *oesWindow = ANativeWindow_fromSurface(env, surface);
-    if (oesWindow != nullptr) {
-        NDKCamera *ndkCamera = new NDKCamera();
-        ndkCamera->startPreview(oesWindow);
-    }
+    jmethodID methodId = env->GetMethodID(clazz, "createOESSurface", "(I)V");
+    env->CallVoidMethod(this->javaCameraView, methodId, baseFilter->oesTextureId);
 }
 
 void CameraRenderer::cameraViewChanged(int width, int height) {

@@ -29,7 +29,7 @@ void CameraRenderer::cameraViewCreated(ANativeWindow *nativeWindow) {
 
     baseFilter = new CameraBaseFilter();
 
-    jclass clazz = env->GetObjectClass(this->javaCameraView);
+    clazz = env->GetObjectClass(this->javaCameraView);
     jmethodID methodId = env->GetMethodID(clazz, "createOESSurface", "(I)V");
     env->CallVoidMethod(this->javaCameraView, methodId, baseFilter->oesTextureId);
 }
@@ -43,28 +43,35 @@ void CameraRenderer::cameraViewChanged(int width, int height) {
 
 void CameraRenderer::cameraViewDestroyed() {
     ALOGD("cameraViewDestroyed");
+    if (javaCameraView != nullptr) {
+        env->DeleteGlobalRef(javaCameraView);
+    }
     if (baseFilter != nullptr) {
+        ALOGD("cameraViewDestroyed success11111");
         baseFilter->release();
         delete baseFilter;
         baseFilter = nullptr;
     }
+    ALOGD("cameraViewDestroyed success1");
     if (windowSurface != nullptr) {
         windowSurface->release(true);
         delete windowSurface;
         windowSurface = nullptr;
     }
+    ALOGD("cameraViewDestroyed success2");
     if (eglCore != nullptr) {
-//        eglCore->release();
+        eglCore->release();
         delete eglCore;
         eglCore = nullptr;
     }
+    ALOGD("cameraViewDestroyed success");
 }
 
 void CameraRenderer::cameraViewDoFrame() {
     glClearColor(0.0, 0.0, 0.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    jclass clazz = env->GetObjectClass(this->javaCameraView);
+//    jclass clazz = env->GetObjectClass(this->javaCameraView);
     jmethodID methodId = env->GetMethodID(clazz, "update", "()V");
     env->CallVoidMethod(this->javaCameraView, methodId);
 

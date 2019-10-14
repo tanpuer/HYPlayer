@@ -12,7 +12,8 @@ CameraLooper::CameraLooper(ANativeWindow *nativeWindow, JavaVM *vm, jobject java
 }
 
 CameraLooper::~CameraLooper() {
-
+    delete renderer;
+    delete this;
 }
 
 void CameraLooper::handleMessage(Looper::LooperMessage *msg) {

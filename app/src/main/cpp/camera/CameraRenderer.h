@@ -41,6 +41,8 @@ private:
     JNIEnv *env;
 
     jobject javaCameraView;
+
+    jclass clazz;
 };
 
 

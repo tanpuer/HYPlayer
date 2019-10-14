@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.graphics.SurfaceTexture
 import android.util.AttributeSet
+import android.util.Log
 import android.view.Choreographer
 import android.view.Surface
 import android.view.SurfaceHolder
@@ -22,7 +23,6 @@ class NativeCameraView : SurfaceView, SurfaceHolder.Callback, Choreographer.Fram
     init {
         holder.addCallback(this)
         cameraV2 = CameraV2(context as Activity)
-        cameraV2!!.openCamera(1080, 1920, 0)
     }
 
     private var active = false
@@ -45,7 +45,7 @@ class NativeCameraView : SurfaceView, SurfaceHolder.Callback, Choreographer.Fram
         cameraV2?.releaseCamera()
         nativeCameraDestroyed()
         Choreographer.getInstance().removeFrameCallback(this)
-        postDelayed({ surfaceTexture?.release() }, 1000)
+        surfaceTexture?.release()
     }
 
     override fun doFrame(frameTimeNanos: Long) {
@@ -56,6 +56,8 @@ class NativeCameraView : SurfaceView, SurfaceHolder.Callback, Choreographer.Fram
     }
 
     fun createOESSurface(oesTextureId: Int) {
+        Log.d(TAG, "$oesTextureId")
+        cameraV2?.openCamera(1080, 1920, 1)
         surfaceTexture = SurfaceTexture(oesTextureId)
         cameraV2?.setSurfaceTexture(surfaceTexture)
         cameraV2?.startPreview()
@@ -74,6 +76,7 @@ class NativeCameraView : SurfaceView, SurfaceHolder.Callback, Choreographer.Fram
         init {
             System.loadLibrary("native-lib")
         }
+        private const val TAG = "HYPlayer"
     }
 
 }

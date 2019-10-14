@@ -38,9 +38,6 @@ void CameraBaseFilter::release() {
     glDeleteShader(fragmentShader);
     glDeleteProgram(program);
 
-    delete vertex_shader_string;
-    delete fragment_shader_string;
-
     delete textureMatrix;
     delete coordMatrix;
 }

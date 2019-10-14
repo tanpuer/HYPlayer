@@ -375,7 +375,6 @@ Java_com_cw_hyplayer_camera_CameraView_nativeEncodeCameraData(
 
 //......................................................
 CameraLooper *cameraLooper;
-NDKCamera *ndkCamera;
 jobject javaCameraView;
 extern "C" JNIEXPORT void JNICALL
 Java_com_cw_hyplayer_camera_NativeCameraView_nativeCameraCreated(
@@ -388,9 +387,6 @@ Java_com_cw_hyplayer_camera_NativeCameraView_nativeCameraCreated(
     ANativeWindow *window = ANativeWindow_fromSurface(env, surface);
     cameraLooper = new CameraLooper(window, javaVM, javaCameraView);
     cameraLooper->sendMessage(cameraLooper->kMsgCameraViewCreated);
-
-//    ndkCamera = new NDKCamera();
-//    ndkCamera->startPreview(window);
 }
 
 extern "C" JNIEXPORT void JNICALL
@@ -410,9 +406,9 @@ Java_com_cw_hyplayer_camera_NativeCameraView_nativeCameraDestroyed(
         JNIEnv *env,
         jobject instance
 ) {
-    ndkCamera->stopPreview();
     if (cameraLooper != nullptr) {
         cameraLooper->sendMessage(cameraLooper->kMsgCameraViewDestroyed);
+        cameraLooper->quit();
     }
 }
 

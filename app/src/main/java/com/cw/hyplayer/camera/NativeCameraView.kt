@@ -63,10 +63,9 @@ class NativeCameraView : SurfaceView, SurfaceHolder.Callback, Choreographer.Fram
 
     fun createOESSurface(oesTextureId: Int) {
         Log.d(TAG, "$oesTextureId")
-        cameraV2?.openCamera(1080, 1920, 1)
         surfaceTexture = SurfaceTexture(oesTextureId)
         cameraV2?.setSurfaceTexture(surfaceTexture)
-        cameraV2?.startPreview()
+        cameraV2?.openCamera(1080, 1920, 1)
     }
 
     fun update() {

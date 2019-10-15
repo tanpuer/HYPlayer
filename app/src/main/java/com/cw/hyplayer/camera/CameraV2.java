@@ -78,6 +78,9 @@ public class CameraV2 extends BaseCamera {
                     StreamConfigurationMap map = cameraCharacteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
                     mPreviewSize = getOptimalSize(map.getOutputSizes(SurfaceTexture.class), width, height);
                     Log.d(TAG, "openCamera with cameraId :" + cameraId + ", preview-width: " + mPreviewSize.getWidth() + " height: " + mPreviewSize.getHeight());
+                    if (iCameraSizeListener != null) {
+                        iCameraSizeListener.onCameraSizeChanged(mPreviewSize.getHeight(), mPreviewSize.getWidth());
+                    }
                     openCameraV2();
                     return true;
                 }
@@ -136,17 +139,18 @@ public class CameraV2 extends BaseCamera {
         @Override
         public void onOpened(@NonNull CameraDevice camera) {
             cameraDevice = camera;
+            startPreview();
         }
 
         @Override
         public void onDisconnected(@NonNull CameraDevice camera) {
-            cameraDevice.close();
             cameraDevice = null;
         }
 
         @Override
         public void onError(@NonNull CameraDevice camera, int error) {
-            cameraDevice.close();
+            stopPreview();
+            releaseCamera();
             cameraDevice = null;
             Log.d(TAG, "onError: " + error);
         }
@@ -179,24 +183,17 @@ public class CameraV2 extends BaseCamera {
 
                 }
             }, cameraHandler);
-
-            //callback preview size
-            if (iCameraSizeListener != null) {
-                Handler mainHandler = new Handler(mActivity.getMainLooper());
-                mainHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        iCameraSizeListener.onCameraSizeChanged(mPreviewSize.getHeight(), mPreviewSize.getWidth());
-                    }
-                });
-            }
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
     }
 
     public void stopPreview() {
-
+        try {
+            mSession.stopRepeating();
+        } catch (CameraAccessException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

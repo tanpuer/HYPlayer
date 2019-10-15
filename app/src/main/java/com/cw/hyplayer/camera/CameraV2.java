@@ -2,6 +2,7 @@ package com.cw.hyplayer.camera;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.ImageFormat;
 import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
@@ -10,6 +11,8 @@ import android.hardware.camera2.CameraDevice;
 import android.hardware.camera2.CameraManager;
 import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.params.StreamConfigurationMap;
+import android.media.Image;
+import android.media.ImageReader;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.util.Log;
@@ -51,10 +54,11 @@ public class CameraV2 extends BaseCamera {
     private CaptureRequest mCaptureRequest;
     private CameraCaptureSession mSession;
 
+    private ImageReader mImageReader;
+
 
     public CameraV2(Activity activity) {
         this.mActivity = activity;
-        setCameraThread();
     }
 
     private void setCameraThread() {
@@ -64,6 +68,7 @@ public class CameraV2 extends BaseCamera {
     }
 
     public boolean openCamera(int width, int height, int cameraFacing) {
+        setCameraThread();
         if (width == 0 || height == 0) {
             width = CAMERA_WIDTH;
             height = CAMERA_HEIGHT;
@@ -81,6 +86,7 @@ public class CameraV2 extends BaseCamera {
                     if (iCameraSizeListener != null) {
                         iCameraSizeListener.onCameraSizeChanged(mPreviewSize.getHeight(), mPreviewSize.getWidth());
                     }
+                    initImageReader();
                     openCameraV2();
                     return true;
                 }
@@ -135,6 +141,22 @@ public class CameraV2 extends BaseCamera {
         }
     }
 
+    private void initImageReader() {
+        mImageReader = ImageReader.newInstance(
+                mPreviewSize.getWidth(), // 宽度
+                mPreviewSize.getHeight(), // 高度
+                ImageFormat.YUV_420_888, // 图像格式
+                2);
+        mImageReader.setOnImageAvailableListener(new ImageReader.OnImageAvailableListener() {
+            @Override
+            public void onImageAvailable(ImageReader reader) {
+                Image img = reader.acquireNextImage();
+                Log.d(TAG, "onImageAvailable format: " + img.getFormat() + ", width: " + img.getWidth() + ", height: " + img.getHeight());
+                img.close();
+            }
+        }, cameraHandler);
+    }
+
     private final CameraDevice.StateCallback stateCallback = new CameraDevice.StateCallback() {
         @Override
         public void onOpened(@NonNull CameraDevice camera) {
@@ -166,12 +188,17 @@ public class CameraV2 extends BaseCamera {
         try {
             mCaptureRequestBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
             mCaptureRequestBuilder.addTarget(surface);
-            cameraDevice.createCaptureSession(Arrays.asList(surface), new CameraCaptureSession.StateCallback() {
+            mCaptureRequestBuilder.addTarget(mImageReader.getSurface());
+            cameraDevice.createCaptureSession(Arrays.asList(surface, mImageReader.getSurface()), new CameraCaptureSession.StateCallback() {
                 @Override
                 public void onConfigured(@NonNull CameraCaptureSession session) {
                     mSession = session;
                     mCaptureRequest = mCaptureRequestBuilder.build();
                     try {
+                        // 自动对焦
+                        mCaptureRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_VIDEO);
+                        // 打开闪光灯
+//                        mCaptureRequestBuilder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_ON_AUTO_FLASH);
                         mSession.setRepeatingRequest(mCaptureRequest, null, cameraHandler);
                     } catch (CameraAccessException e) {
                         e.printStackTrace();
@@ -198,9 +225,25 @@ public class CameraV2 extends BaseCamera {
 
     @Override
     public void releaseCamera() {
+        if (mImageReader != null) {
+            mImageReader.close();
+            mImageReader = null;
+        }
+        if (mSession != null) {
+            mSession.close();
+            mSession = null;
+        }
         if (cameraDevice != null) {
             cameraDevice.close();
             cameraDevice = null;
+        }
+        cameraThread.quitSafely();
+        try {
+            cameraThread.join();
+            cameraThread = null;
+            cameraHandler = null;
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 

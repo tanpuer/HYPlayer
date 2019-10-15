@@ -87,9 +87,9 @@ void CameraRenderer::cameraViewDoFrame() {
     windowSurface->swapBuffer();
 
     //record
-    auto *buffer = static_cast<unsigned char *>(malloc((size_t) width * height * 4));
-    glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
-    cameraFfVideoEncoder->sendMessage(cameraFfVideoEncoder->kMsgCameraEncoderFrame, width, height, buffer);
+//    auto *buffer = static_cast<unsigned char *>(malloc((size_t) width * height * 4));
+//    glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+//    cameraFfVideoEncoder->sendMessage(cameraFfVideoEncoder->kMsgCameraEncoderFrame, width, height, buffer);
 }
 
 void CameraRenderer::cameraSizeChanged(int width, int height) {

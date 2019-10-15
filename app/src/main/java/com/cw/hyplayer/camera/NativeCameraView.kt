@@ -10,7 +10,7 @@ import android.view.Surface
 import android.view.SurfaceHolder
 import android.view.SurfaceView
 
-class NativeCameraView : SurfaceView, SurfaceHolder.Callback, Choreographer.FrameCallback {
+class NativeCameraView : SurfaceView, SurfaceHolder.Callback, Choreographer.FrameCallback, ICameraSizeListener{
 
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
@@ -23,6 +23,7 @@ class NativeCameraView : SurfaceView, SurfaceHolder.Callback, Choreographer.Fram
     init {
         holder.addCallback(this)
         cameraV2 = CameraV2(context as Activity)
+        cameraV2?.setCameraSizeListener(this)
     }
 
     private var active = false
@@ -55,6 +56,11 @@ class NativeCameraView : SurfaceView, SurfaceHolder.Callback, Choreographer.Fram
         Choreographer.getInstance().postFrameCallback(this)
     }
 
+    override fun onCameraSizeChanged(width: Int, height: Int) {
+        Log.d(TAG, "$width, $height")
+        nativeCameraSetSize(width, height)
+    }
+
     fun createOESSurface(oesTextureId: Int) {
         Log.d(TAG, "$oesTextureId")
         cameraV2?.openCamera(1080, 1920, 1)
@@ -71,6 +77,7 @@ class NativeCameraView : SurfaceView, SurfaceHolder.Callback, Choreographer.Fram
     private external fun nativeCameraChanged(width: Int, height: Int)
     private external fun nativeCameraDestroyed()
     private external fun nativeCameraDoFrame()
+    private external fun nativeCameraSetSize(width: Int, height: Int)
 
     companion object {
         init {

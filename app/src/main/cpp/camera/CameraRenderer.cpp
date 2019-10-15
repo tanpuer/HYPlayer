@@ -79,3 +79,9 @@ void CameraRenderer::cameraViewDoFrame() {
 
     windowSurface->swapBuffer();
 }
+
+void CameraRenderer::cameraSizeChanged(int width, int height) {
+    if (baseFilter != nullptr) {
+        baseFilter->setVideoSize(width, height);
+    }
+}

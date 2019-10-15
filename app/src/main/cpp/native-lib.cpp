@@ -402,6 +402,18 @@ Java_com_cw_hyplayer_camera_NativeCameraView_nativeCameraChanged(
 }
 
 extern "C" JNIEXPORT void JNICALL
+Java_com_cw_hyplayer_camera_NativeCameraView_nativeCameraSetSize(
+        JNIEnv *env,
+        jobject instance,
+        int width,
+        int height
+) {
+    if (cameraLooper != nullptr) {
+        cameraLooper->sendMessage(cameraLooper->kMsgCameraSizeChanged, width, height);
+    }
+}
+
+extern "C" JNIEXPORT void JNICALL
 Java_com_cw_hyplayer_camera_NativeCameraView_nativeCameraDestroyed(
         JNIEnv *env,
         jobject instance

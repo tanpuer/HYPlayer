@@ -11,8 +11,7 @@ CameraBaseFilter::CameraBaseFilter() {
     textureMatrix = new ESMatrix();
     setIdentityM(textureMatrix);
     coordMatrix = new ESMatrix();
-    setIdentityM(coordMatrix);
-    rotateM(coordMatrix, 90.0, 0.0, 0.0, 1.0);
+    updateMatrix();
 
     readShaderString();
     vertexShader = loadShader(GL_VERTEX_SHADER, vertex_shader_string);
@@ -22,10 +21,6 @@ CameraBaseFilter::CameraBaseFilter() {
 }
 
 CameraBaseFilter::~CameraBaseFilter() {
-
-}
-
-void CameraBaseFilter::setNativeWindowSize(int width, int height) {
 
 }
 
@@ -92,4 +87,48 @@ void CameraBaseFilter::readShaderString() {
             "    gl_FragColor = texture2D(uTextureSampler, vTextureCoord);\n"
             "}\n"
     };
+}
+
+void CameraBaseFilter::setVideoSize(int width, int height) {
+    this->viewWidth = width;
+    this->viewHeight = height;
+    updateMatrix();
+}
+
+void CameraBaseFilter::setNativeWindowSize(int width, int height) {
+    this->videoWidth = width;
+    this->videoHeight = height;
+    updateMatrix();
+}
+
+void CameraBaseFilter::updateMatrix() {
+    if (videoWidth > 0 && videoHeight > 0 && viewWidth > 0 && viewHeight > 0) {
+        if (true) {
+            //fit_center
+            if (videoWidth * 1.0 / videoHeight > viewWidth * 1.0 / viewHeight) {
+                //横屏视频
+                originScaleY = viewWidth * 1.0F / videoWidth * videoHeight / viewHeight;
+                originScaleX = 1.0F;
+            } else {
+                //竖屏视频
+                originScaleY = 1.0F;
+                originScaleX = viewHeight * 1.0F / videoHeight * videoWidth / viewWidth;
+            }
+        } else {
+            //center_crop
+            if (videoWidth * 1.0 / videoHeight > viewWidth * 1.0 / viewHeight) {
+                //横屏视频
+                originScaleY = 1.0F;
+                originScaleX = viewHeight * 1.0F / videoHeight * videoWidth / viewWidth;
+            } else {
+                //竖屏视频
+                originScaleY = viewWidth * 1.0F / videoWidth * videoHeight / viewHeight;
+                originScaleX = 1.0F;
+            }
+        }
+    }
+    setIdentityM(coordMatrix);
+    rotateM(coordMatrix, 180, 0.0, 1.0, 0.0);
+    rotateM(coordMatrix, 270.0, 0.0, 0.0, 1.0);
+    scaleM(coordMatrix, 0, originScaleX, originScaleY, 1.0);
 }

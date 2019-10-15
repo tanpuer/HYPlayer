@@ -28,6 +28,8 @@ public:
 
     void cameraViewDoFrame();
 
+    void cameraSizeChanged(int width, int height);
+
 private:
 
     CameraBaseFilter *baseFilter;
@@ -43,6 +45,7 @@ private:
     jobject javaCameraView;
 
     jclass clazz;
+
 };
 
 

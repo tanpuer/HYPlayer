@@ -37,6 +37,8 @@ public:
 
     void setNativeWindowSize(int width, int height);
 
+    void setVideoSize(int width, int height);
+
     void release();
 
     void doFrame();
@@ -63,6 +65,8 @@ public:
 
 private:
 
+    void updateMatrix();
+
     const char *vertex_shader_string = nullptr;
     const char *fragment_shader_string = nullptr;
 
@@ -71,15 +75,8 @@ private:
     int viewWidth = 0;
     int viewHeight = 0;
 
-//    GLfloat myVertex[12] = {
-//            1.0f, 1.0f,
-//            -1.0f, 1.0f,
-//            -1.0f, -1.0f,
-//            1.0f, 1.0f,
-//            -1.0f, -1.0f,
-//            1.0f, -1.0f,
-//    };
-
+    float originScaleY = 1.0f;
+    float originScaleX = 1.0f;
 
 };
 

@@ -35,6 +35,10 @@ void CameraLooper::handleMessage(Looper::LooperMessage *msg) {
             renderer->cameraViewDoFrame();
             break;
         }
+        case kMsgCameraSizeChanged: {
+            renderer->cameraSizeChanged(msg->arg1, msg->arg2);
+            break;
+        }
         default: {
             ALOGE("unknown type for CameraLooper");
             break;

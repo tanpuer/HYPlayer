@@ -19,7 +19,8 @@ public:
         kMsgCameraViewCreated,
         kMsgCameraViewChanged,
         kMsgCameraViewDestroyed,
-        kMsgCameraViewDoFrame
+        kMsgCameraViewDoFrame,
+        kMsgCameraSizeChanged
     };
 
     CameraLooper(ANativeWindow *nativeWindow, JavaVM *vm, jobject javaCameraView);

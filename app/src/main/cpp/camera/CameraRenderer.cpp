@@ -10,6 +10,9 @@ CameraRenderer::CameraRenderer(JavaVM *vm, jobject javaCameraView) {
     this->vm = vm;
     this->javaCameraView = javaCameraView;
     vm->AttachCurrentThread(&env, nullptr);
+
+    cameraFfVideoEncoder = new CameraFFVideoEncoder();
+    cameraFfVideoEncoder->sendMessage(cameraFfVideoEncoder->kMsgCameraEncodeStart);
 }
 
 CameraRenderer::~CameraRenderer() {
@@ -36,6 +39,8 @@ void CameraRenderer::cameraViewCreated(ANativeWindow *nativeWindow) {
 
 void CameraRenderer::cameraViewChanged(int width, int height) {
     ALOGD("cameraViewChanged");
+    this->width = width;
+    this->height = height;
     windowSurface->makeCurrent();
     glViewport(0, 0, width, height);
     baseFilter->setNativeWindowSize(width, height);
@@ -65,6 +70,8 @@ void CameraRenderer::cameraViewDestroyed() {
         eglCore = nullptr;
     }
     ALOGD("cameraViewDestroyed success");
+
+    cameraFfVideoEncoder->sendMessage(cameraFfVideoEncoder->kMsgCameraEncoderEnd);
 }
 
 void CameraRenderer::cameraViewDoFrame() {
@@ -78,6 +85,11 @@ void CameraRenderer::cameraViewDoFrame() {
     baseFilter->doFrame();
 
     windowSurface->swapBuffer();
+
+    //record
+    auto *buffer = static_cast<unsigned char *>(malloc((size_t) width * height * 4));
+    glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+    cameraFfVideoEncoder->sendMessage(cameraFfVideoEncoder->kMsgCameraEncoderFrame, width, height, buffer);
 }
 
 void CameraRenderer::cameraSizeChanged(int width, int height) {

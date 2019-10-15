@@ -3,12 +3,14 @@ package com.cw.hyplayer.camera
 import android.app.Activity
 import android.content.Context
 import android.graphics.SurfaceTexture
+import android.os.Environment
 import android.util.AttributeSet
 import android.util.Log
 import android.view.Choreographer
 import android.view.Surface
 import android.view.SurfaceHolder
 import android.view.SurfaceView
+import java.io.File
 
 class NativeCameraView : SurfaceView, SurfaceHolder.Callback, Choreographer.FrameCallback, ICameraSizeListener{
 
@@ -31,6 +33,7 @@ class NativeCameraView : SurfaceView, SurfaceHolder.Callback, Choreographer.Fram
     private var cameraV2: CameraV2? = null
 
     override fun surfaceCreated(holder: SurfaceHolder?) {
+        initVideoFile()
         active = true
         nativeCameraCreated(holder!!.surface, this)
         Choreographer.getInstance().postFrameCallback(this)
@@ -70,6 +73,16 @@ class NativeCameraView : SurfaceView, SurfaceHolder.Callback, Choreographer.Fram
 
     fun update() {
         surfaceTexture?.updateTexImage()
+    }
+
+    private fun initVideoFile() {
+        var outputFile =
+            File(Environment.getExternalStorageDirectory().absolutePath, "trailer_test.mp4")
+        if (outputFile.exists()) {
+            outputFile.delete()
+            outputFile =
+                File(Environment.getExternalStorageDirectory().absolutePath, "trailer_test.mp4")
+        }
     }
 
     private external fun nativeCameraCreated(surface: Surface, nativeCameraView: NativeCameraView)

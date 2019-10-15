@@ -11,6 +11,7 @@
 #include <egl/window_surface.h>
 #include <jni.h>
 #include "CameraBaseFilter.h"
+#include "CameraFFVideoEncoder.h"
 
 class CameraRenderer {
 
@@ -45,6 +46,10 @@ private:
     jobject javaCameraView;
 
     jclass clazz;
+
+    CameraFFVideoEncoder *cameraFfVideoEncoder;
+
+    int width, height;
 
 };
 

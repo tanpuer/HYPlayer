@@ -26,6 +26,8 @@ public:
 
     virtual void EncoderNV21Buffer(unsigned char *buffer, int width, int height, long long pts);
 
+    virtual void EncoderRGBABuffer(unsigned char *buffer, int width, int height);
+
     virtual void EncoderEnd();
 
 private:

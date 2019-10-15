@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -8,8 +8,7 @@
     <!--        android:layout_height="match_parent" />-->
 
     <com.cw.hyplayer.camera.NativeCameraView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="100dp" />
+        android:layout_width="720px"
+        android:layout_height="1280px" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

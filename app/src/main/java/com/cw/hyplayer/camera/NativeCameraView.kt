@@ -12,7 +12,8 @@ import android.view.SurfaceHolder
 import android.view.SurfaceView
 import java.io.File
 
-class NativeCameraView : SurfaceView, SurfaceHolder.Callback, Choreographer.FrameCallback, ICameraSizeListener{
+class NativeCameraView : SurfaceView, SurfaceHolder.Callback, Choreographer.FrameCallback,
+    ICameraSizeListener {
 
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
@@ -24,7 +25,7 @@ class NativeCameraView : SurfaceView, SurfaceHolder.Callback, Choreographer.Fram
 
     init {
         holder.addCallback(this)
-        cameraV2 = CameraV2(context as Activity)
+        cameraV2 = CameraV2(context as Activity, this)
         cameraV2?.setCameraSizeListener(this)
     }
 
@@ -85,16 +86,32 @@ class NativeCameraView : SurfaceView, SurfaceHolder.Callback, Choreographer.Fram
         }
     }
 
+    fun cameraFFEncodeStart(width: Int, height: Int) {
+        nativeCameraFFEncodeStart(width, height)
+    }
+
+    fun cameraFFEncodeFrame(data: ByteArray, width: Int, height: Int) {
+        nativeCameraFFEncodeFrame(data, width, height)
+    }
+
+    fun cameraFFEncodeEnd() {
+        nativeCameraFFEncodeEnd()
+    }
+
     private external fun nativeCameraCreated(surface: Surface, nativeCameraView: NativeCameraView)
     private external fun nativeCameraChanged(width: Int, height: Int)
     private external fun nativeCameraDestroyed()
     private external fun nativeCameraDoFrame()
     private external fun nativeCameraSetSize(width: Int, height: Int)
+    private external fun nativeCameraFFEncodeStart(width: Int, height: Int)
+    private external fun nativeCameraFFEncodeFrame(data: ByteArray, width: Int, height: Int)
+    private external fun nativeCameraFFEncodeEnd()
 
     companion object {
         init {
             System.loadLibrary("native-lib")
         }
+
         private const val TAG = "HYPlayer"
     }
 

@@ -22,6 +22,7 @@ import android.view.Surface;
 
 import androidx.annotation.NonNull;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -55,10 +56,12 @@ public class CameraV2 extends BaseCamera {
     private CameraCaptureSession mSession;
 
     private ImageReader mImageReader;
+    private NativeCameraView nativeCameraView;
 
 
-    public CameraV2(Activity activity) {
+    public CameraV2(Activity activity, NativeCameraView nativeCameraView) {
         this.mActivity = activity;
+        this.nativeCameraView = nativeCameraView;
     }
 
     private void setCameraThread() {
@@ -152,9 +155,14 @@ public class CameraV2 extends BaseCamera {
             public void onImageAvailable(ImageReader reader) {
                 Image img = reader.acquireNextImage();
                 Log.d(TAG, "onImageAvailable format: " + img.getFormat() + ", width: " + img.getWidth() + ", height: " + img.getHeight());
+                ByteBuffer buffer = img.getPlanes()[0].getBuffer();
+                byte[] data = new byte[buffer.remaining()];
+                buffer.get(data);
+                nativeCameraView.cameraFFEncodeFrame(data, img.getWidth(), img.getHeight());
                 img.close();
             }
         }, cameraHandler);
+        nativeCameraView.cameraFFEncodeStart(mPreviewSize.getWidth(), mPreviewSize.getHeight());
     }
 
     private final CameraDevice.StateCallback stateCallback = new CameraDevice.StateCallback() {
@@ -216,6 +224,7 @@ public class CameraV2 extends BaseCamera {
     }
 
     public void stopPreview() {
+        nativeCameraView.cameraFFEncodeEnd();
         try {
             mSession.stopRepeating();
         } catch (CameraAccessException e) {

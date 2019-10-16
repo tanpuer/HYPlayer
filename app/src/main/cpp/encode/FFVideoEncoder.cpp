@@ -205,7 +205,7 @@ int FFVideoEncoder::EncoderFrame(AVCodecContext *pCodecCtx, AVFrame *pFrame, AVP
 }
 
 void FFVideoEncoder::EncoderRGBABuffer(unsigned char *buffer, int width, int height) {
-    //ABGR not RGBA!
+    ALOGD("EncoderRGBABuffer")
     libyuv::ABGRToI420(buffer, width * 4, pFrame->data[0], this->width, pFrame->data[1], this->width / 2,
                        pFrame->data[2], this->width / 2,
                        this->width, this->height);
@@ -213,5 +213,7 @@ void FFVideoEncoder::EncoderRGBABuffer(unsigned char *buffer, int width, int hei
     i++;
     //编码数据
     EncoderFrame(pCodecCtx, pFrame, &avPacket);
+    ALOGD("encode frame finish");
     free(buffer);
+    ALOGD("free buffer finish");
 }

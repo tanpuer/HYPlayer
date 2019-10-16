@@ -47,7 +47,7 @@ private:
 
     jclass clazz;
 
-    CameraFFVideoEncoder *cameraFfVideoEncoder;
+//    CameraFFVideoEncoder *cameraFfVideoEncoder;
 
     int width, height;
 

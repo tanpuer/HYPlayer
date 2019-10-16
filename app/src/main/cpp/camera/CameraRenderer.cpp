@@ -11,8 +11,8 @@ CameraRenderer::CameraRenderer(JavaVM *vm, jobject javaCameraView) {
     this->javaCameraView = javaCameraView;
     vm->AttachCurrentThread(&env, nullptr);
 
-    cameraFfVideoEncoder = new CameraFFVideoEncoder();
-    cameraFfVideoEncoder->sendMessage(cameraFfVideoEncoder->kMsgCameraEncodeStart);
+//    cameraFfVideoEncoder = new CameraFFVideoEncoder();
+//    cameraFfVideoEncoder->sendMessage(cameraFfVideoEncoder->kMsgCameraEncodeStart);
 }
 
 CameraRenderer::~CameraRenderer() {
@@ -71,7 +71,7 @@ void CameraRenderer::cameraViewDestroyed() {
     }
     ALOGD("cameraViewDestroyed success");
 
-    cameraFfVideoEncoder->sendMessage(cameraFfVideoEncoder->kMsgCameraEncoderEnd);
+//    cameraFfVideoEncoder->sendMessage(cameraFfVideoEncoder->kMsgCameraEncoderEnd);
 }
 
 void CameraRenderer::cameraViewDoFrame() {

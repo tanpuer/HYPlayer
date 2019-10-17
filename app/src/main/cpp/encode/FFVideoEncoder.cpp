@@ -204,16 +204,30 @@ int FFVideoEncoder::EncoderFrame(AVCodecContext *pCodecCtx, AVFrame *pFrame, AVP
     return 0;
 }
 
-void FFVideoEncoder::EncoderRGBABuffer(unsigned char *buffer, int width, int height) {
-    ALOGD("EncoderRGBABuffer")
-    libyuv::ABGRToI420(buffer, width * 4, pFrame->data[0], this->width, pFrame->data[1], this->width / 2,
-                       pFrame->data[2], this->width / 2,
-                       this->width, this->height);
+void FFVideoEncoder::EncodeYUV420Buffer(unsigned char *buffer, int width, int height) {
+    ALOGD("libyuv start")
+//    libyuv::ABGRToI420(buffer, height * 4, pFrame->data[0], this->width, pFrame->data[1], this->width / 2,
+//                       pFrame->data[2], this->width / 2,
+//                       this->width, this->height);
+
+    uint8_t *i420_y = pFrameBuffer;
+    uint8_t *i420_u = pFrameBuffer + this->width * this->height;
+    uint8_t *i420_v = pFrameBuffer + this->width * this->height * 5 / 4;
+
+    //NV21转I420
+    libyuv::ConvertToI420(buffer, 0 , i420_y, this->width, i420_u, this->width / 2, i420_v,
+                          this->width / 2, 0, 0, width, height, this->height, this->width, libyuv::kRotate90,
+                          libyuv::FOURCC_I420);
+
+    pFrame->data[0] = i420_y;
+    pFrame->data[1] = i420_u;
+    pFrame->data[2] = i420_v;
+
+    ALOGD("libyuv end")
     pFrame->pts = i;
     i++;
     //编码数据
     EncoderFrame(pCodecCtx, pFrame, &avPacket);
-    ALOGD("encode frame finish");
-    free(buffer);
+//    free(buffer);
     ALOGD("free buffer finish");
 }

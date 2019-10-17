@@ -435,6 +435,7 @@ Java_com_cw_hyplayer_camera_NativeCameraView_nativeCameraDoFrame(
 }
 
 CameraFFVideoEncoder *cameraFfVideoEncoder;
+FFVideoEncoder *videoEncoder;
 extern "C" JNIEXPORT void JNICALL
 Java_com_cw_hyplayer_camera_NativeCameraView_nativeCameraFFEncodeStart(
         JNIEnv *env,
@@ -442,8 +443,12 @@ Java_com_cw_hyplayer_camera_NativeCameraView_nativeCameraFFEncodeStart(
         int width,
         int height
 ) {
-    cameraFfVideoEncoder = new CameraFFVideoEncoder();
-    cameraFfVideoEncoder->sendMessage(cameraFfVideoEncoder->kMsgCameraEncodeStart);
+//    cameraFfVideoEncoder = new CameraFFVideoEncoder();
+//    cameraFfVideoEncoder->sendMessage(cameraFfVideoEncoder->kMsgCameraEncodeStart);
+
+    videoEncoder = new FFVideoEncoder();
+    videoEncoder->InitEncoder("sdcard/trailer_test.mp4", 720, 1280);
+    videoEncoder->EncodeStart();
 }
 
 extern "C" JNIEXPORT void JNICALL
@@ -454,14 +459,18 @@ Java_com_cw_hyplayer_camera_NativeCameraView_nativeCameraFFEncodeFrame(
         int width,
         int height
 ) {
-    if (cameraFfVideoEncoder != nullptr) {
-        ALOGD("nativeCameraFFEncodeFrame");
-        jbyte *yuv420Buffer = env->GetByteArrayElements(data, 0);
-        unsigned char *buffer = static_cast<unsigned char *>(malloc((size_t) width * height * 3 / 2));
-        memcpy(yuv420Buffer, yuv420Buffer, (size_t) width * height * 3 / 2);
-        cameraFfVideoEncoder->sendMessage(cameraFfVideoEncoder->kMsgCameraEncoderFrame, width, height, buffer);
-        env->ReleaseByteArrayElements(data, yuv420Buffer, 0);
-    }
+//    if (cameraFfVideoEncoder != nullptr) {
+//        ALOGD("nativeCameraFFEncodeFrame");
+//        jbyte *yuv420Buffer = env->GetByteArrayElements(data, 0);
+//        unsigned char *buffer = static_cast<unsigned char *>(malloc((size_t) width * height * 3 / 2));
+//        memcpy(yuv420Buffer, yuv420Buffer, (size_t) width * height * 3 / 2);
+//        cameraFfVideoEncoder->sendMessage(cameraFfVideoEncoder->kMsgCameraEncoderFrame, width, height, buffer);
+//        env->ReleaseByteArrayElements(data, yuv420Buffer, 0);
+//    }
+
+    jbyte *yuv420Buffer = env->GetByteArrayElements(data, 0);
+    videoEncoder->EncodeYUV420Buffer(reinterpret_cast<unsigned char *>(yuv420Buffer), width, height);
+    env->ReleaseByteArrayElements(data, yuv420Buffer, 0);
 }
 
 extern "C" JNIEXPORT void JNICALL
@@ -469,7 +478,8 @@ Java_com_cw_hyplayer_camera_NativeCameraView_nativeCameraFFEncodeEnd(
         JNIEnv *env,
         jobject instance
 ) {
-    if (cameraFfVideoEncoder != nullptr) {
-        cameraFfVideoEncoder->sendMessage(cameraFfVideoEncoder->kMsgCameraEncoderEnd);
-    }
+//    if (cameraFfVideoEncoder != nullptr) {
+//        cameraFfVideoEncoder->sendMessage(cameraFfVideoEncoder->kMsgCameraEncoderEnd);
+//    }
+    videoEncoder->EncoderEnd();
 }

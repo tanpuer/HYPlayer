@@ -22,7 +22,8 @@ void CameraFFVideoEncoder::handleMessage(Looper::LooperMessage *msg) {
             break;
         }
         case kMsgCameraEncoderFrame: {
-            videoEncoder->EncoderRGBABuffer(reinterpret_cast<unsigned char *>(msg->obj), msg->arg1, msg->arg2);
+            videoEncoder->EncodeYUV420Buffer(reinterpret_cast<unsigned char *>(msg->obj), msg->arg1,
+                                             msg->arg2);
             break;
         }
         case kMsgCameraEncoderEnd: {

@@ -26,7 +26,7 @@ public:
 
     virtual void EncoderNV21Buffer(unsigned char *buffer, int width, int height, long long pts);
 
-    virtual void EncoderRGBABuffer(unsigned char *buffer, int width, int height);
+    virtual void EncodeYUV420Buffer(unsigned char *buffer, int width, int height);
 
     virtual void EncoderEnd();
 
@@ -47,7 +47,7 @@ private:
     AVFrame *pFrame = nullptr;
     SwsContext *swsContext = nullptr;
 
-    const int frame_rate = 60;
+    const int frame_rate = 30;
     const int bit_rate = 2000000;
     const int gop_size = 100;
 

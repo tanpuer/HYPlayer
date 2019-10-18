@@ -5,10 +5,13 @@
 #include "DecodeLooper.h"
 #include "../base/native_log.h"
 #include "FFDecode.h"
+#include "FFVideoDecode.h"
 
-DecodeLooper::DecodeLooper(circle_av_frame_queue *frameQueue, circle_av_packet_queue *packetQueue) {
+DecodeLooper::DecodeLooper(circle_av_frame_queue *frameQueue, circle_av_packet_queue *packetQueue,
+                           bool isAudio) {
     this->frameQueue = frameQueue;
     this->packetQueue = packetQueue;
+    this->isAudio = isAudio;
 }
 
 DecodeLooper::~DecodeLooper() {
@@ -18,7 +21,11 @@ DecodeLooper::~DecodeLooper() {
 void DecodeLooper::handleMessage(Looper::LooperMessage *msg) {
     switch (msg->what) {
         case kMsgDecodeCreated: {
-            decode = new FFDecode();
+            if (isAudio) {
+                decode = new FFDecode();
+            } else {
+                decode = new FFVideoDecode();
+            }
             decode->packetQueue = packetQueue;
             decode->frameQueue = frameQueue;
             decode->init();

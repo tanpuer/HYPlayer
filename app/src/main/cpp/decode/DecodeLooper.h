@@ -10,7 +10,7 @@
 #include "IDecode.h"
 #include "circle_av_frame_queue.h"
 
-class DecodeLooper : public Looper{
+class DecodeLooper : public Looper {
 
 public:
 
@@ -20,7 +20,8 @@ public:
         kMsgDecodeRelease
     };
 
-    DecodeLooper(circle_av_frame_queue *frameQueue, circle_av_packet_queue *packetQueue);
+    DecodeLooper(circle_av_frame_queue *frameQueue, circle_av_packet_queue *packetQueue,
+                 bool isAudio = true);
 
     ~DecodeLooper();
 
@@ -36,6 +37,7 @@ private:
 
     circle_av_packet_queue *packetQueue;
 
+    bool isAudio;
 
 };
 

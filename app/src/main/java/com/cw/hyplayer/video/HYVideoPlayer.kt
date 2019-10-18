@@ -36,8 +36,20 @@ class HYVideoPlayer {
         return nativeCurrentTime()
     }
 
-    fun setSurface(surface: Surface) {
-        nativeSetSurface(surface)
+    fun setSurfaceCreated(surface: Surface) {
+        nativeSurfaceCreated(surface)
+    }
+
+    fun setSurfaceChanged(width: Int, height: Int) {
+        nativeSurfaceChanged(width, height)
+    }
+
+    fun setSurfaceDestroyed() {
+        nativeSurfaceDestroyed()
+    }
+
+    fun doFrame() {
+        nativeDoFrame()
     }
 
     private external fun nativeInit(url: String): Boolean
@@ -54,6 +66,18 @@ class HYVideoPlayer {
 
     private external fun nativeCurrentTime(): Long
 
-    private external fun nativeSetSurface(surface: Surface)
+    private external fun nativeSurfaceCreated(surface: Surface)
+
+    private external fun nativeSurfaceChanged(width: Int, height: Int)
+
+    private external fun nativeSurfaceDestroyed()
+
+    private external fun nativeDoFrame()
+
+    companion object {
+        init {
+            System.loadLibrary("native-lib")
+        }
+    }
 
 }

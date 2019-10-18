@@ -38,7 +38,7 @@ bool FFDemux::init(const char *url) {
         return false;
     }
     totalDuration = ic->duration / AV_TIME_BASE * 1000;
-    re = av_find_best_stream(ic, AVMEDIA_TYPE_AUDIO, -1, -1, nullptr, 0);
+    re = getBestStream(ic);
     if (re < 0) {
         char buf[1024] = {0};
         av_strerror(re, buf, sizeof(buf));
@@ -121,4 +121,8 @@ void FFDemux::release() {
 
 FFDemux::~FFDemux() {
     ALOGD("delete FFDemux");
+}
+
+int FFDemux::getBestStream(AVFormatContext *ic) {
+    return av_find_best_stream(ic, AVMEDIA_TYPE_AUDIO, -1, -1, nullptr, 0);
 }

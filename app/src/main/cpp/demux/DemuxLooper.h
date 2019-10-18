@@ -20,7 +20,7 @@ public:
         kMsgDemuxRelease
     };
 
-    DemuxLooper(circle_av_packet_queue *queue);
+    DemuxLooper(circle_av_packet_queue *queue, bool isAudio = true);
 
     virtual ~DemuxLooper();
 
@@ -35,6 +35,8 @@ public:
 private:
 
     circle_av_packet_queue *queue;
+
+    bool isAudio;
 
 };
 

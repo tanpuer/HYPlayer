@@ -30,6 +30,10 @@ public:
 
     virtual void release();
 
+protected:
+
+    virtual int getBestStream(AVFormatContext *ic);
+
 private:
 
     const char *url;

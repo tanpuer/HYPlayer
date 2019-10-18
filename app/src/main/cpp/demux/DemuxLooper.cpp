@@ -5,9 +5,11 @@
 #include "DemuxLooper.h"
 #include "../base/native_log.h"
 #include "FFDemux.h"
+#include "FFVideoDemux.h"
 
-DemuxLooper::DemuxLooper(circle_av_packet_queue *queue) {
+DemuxLooper::DemuxLooper(circle_av_packet_queue *queue, bool isAudio) {
     this->queue = queue;
+    this->isAudio = isAudio;
 }
 
 DemuxLooper::~DemuxLooper() {
@@ -17,7 +19,7 @@ DemuxLooper::~DemuxLooper() {
 void DemuxLooper::handleMessage(Looper::LooperMessage *msg) {
     switch (msg->what) {
         case kMsgDemuxCreated: {
-            demux = new FFDemux();
+            demux = isAudio ? new FFDemux() : new FFVideoDemux();
             demux->packetQueue = queue;
             demux->init((const char *) msg->obj);
             demux->isDemuxing = true;

@@ -5,6 +5,7 @@
 #include <live/LiveEncoder.h>
 #include <camera/NDKCamera.h>
 #include <camera/CameraLooper.h>
+#include <player/VideoPlayer.h>
 #include "android/native_window_jni.h"
 #include "player/AudioPlayer.h"
 #include "template/TemplateLooper.h"
@@ -71,6 +72,7 @@ extern "C" JNIEXPORT jlong JNICALL Java_com_cw_hyplayer_audio_HYAudioPlayer_nati
     if (audioPlayer != nullptr) {
         return audioPlayer->getTotalDuration();
     }
+    return 0L;
 }
 
 extern "C" JNIEXPORT jlong JNICALL Java_com_cw_hyplayer_audio_HYAudioPlayer_nativeCurrentTime(
@@ -79,30 +81,36 @@ extern "C" JNIEXPORT jlong JNICALL Java_com_cw_hyplayer_audio_HYAudioPlayer_nati
     if (audioPlayer != nullptr) {
         return audioPlayer->getCurrentDuration();
     }
+    return 0L;
 }
 
 //.......................................................
 //VideoPlayer
-
+VideoPlayer *videoPlayer;
 extern "C" JNIEXPORT jboolean JNICALL Java_com_cw_hyplayer_video_HYVideoPlayer_nativeInit(
         JNIEnv *env,
         jobject instance,
         jstring url) {
-
+    const char *mediaUrl = env->GetStringUTFChars(url, nullptr);
+    videoPlayer = new VideoPlayer(mediaUrl);
     return true;
 }
 
 extern "C" JNIEXPORT jboolean JNICALL Java_com_cw_hyplayer_video_HYVideoPlayer_nativeStart(
         JNIEnv *env,
         jobject instance) {
-
+    if (videoPlayer != nullptr) {
+        videoPlayer->start();
+    }
     return true;
 }
 
 extern "C" JNIEXPORT jboolean JNICALL Java_com_cw_hyplayer_video_HYVideoPlayer_nativePause(
         JNIEnv *env,
         jobject instance) {
-
+    if (videoPlayer != nullptr) {
+        videoPlayer->pause();
+    }
     return true;
 }
 
@@ -110,35 +118,72 @@ extern "C" JNIEXPORT jboolean JNICALL Java_com_cw_hyplayer_video_HYVideoPlayer_n
         JNIEnv *env,
         jobject instance,
         jlong pos) {
-
+    if (videoPlayer != nullptr) {
+        videoPlayer->seek(pos);
+    }
     return true;
 }
 
 extern "C" JNIEXPORT void JNICALL Java_com_cw_hyplayer_video_HYVideoPlayer_nativeRelease(
         JNIEnv *env,
         jobject instance) {
-
+    if (videoPlayer != nullptr) {
+        videoPlayer->release();
+    }
 }
 
 extern "C" JNIEXPORT jlong JNICALL Java_com_cw_hyplayer_video_HYVideoPlayer_nativeTotalDuration(
         JNIEnv *env,
         jobject instance) {
-
+    if (videoPlayer != nullptr) {
+        return videoPlayer->getTotalDuration();
+    }
     return 0L;
 }
 
 extern "C" JNIEXPORT jlong JNICALL Java_com_cw_hyplayer_video_HYVideoPlayer_nativeCurrentTime(
         JNIEnv *env,
         jobject instance) {
-
+    if (videoPlayer != nullptr) {
+        return videoPlayer->getCurrentDuration();
+    }
     return 0L;
 }
 
-extern "C" JNIEXPORT void JNICALL Java_com_cw_hyplayer_video_HYVideoPlayer_nativeSetSurface(
+extern "C" JNIEXPORT void JNICALL Java_com_cw_hyplayer_video_HYVideoPlayer_nativeSurfaceCreated(
         JNIEnv *env,
         jobject instance,
         jobject surface) {
+    ANativeWindow *window = ANativeWindow_fromSurface(env, surface);
+    if (videoPlayer != nullptr) {
+        videoPlayer->setNativeWindowCreated(window);
+    }
+}
 
+extern "C" JNIEXPORT void JNICALL Java_com_cw_hyplayer_video_HYVideoPlayer_nativeSurfaceChanged(
+        JNIEnv *env,
+        jobject instance,
+        jint width,
+        jint height) {
+    if (videoPlayer != nullptr) {
+        videoPlayer->setNativeWindowChanged(width, height);
+    }
+}
+
+extern "C" JNIEXPORT void JNICALL Java_com_cw_hyplayer_video_HYVideoPlayer_nativeSurfaceDestroyed(
+        JNIEnv *env,
+        jobject instance) {
+    if (videoPlayer != nullptr) {
+        videoPlayer->setNativeWindowDestroyed();
+    }
+}
+
+extern "C" JNIEXPORT void JNICALL Java_com_cw_hyplayer_video_HYVideoPlayer_nativeDoFrame(
+        JNIEnv *env,
+        jobject instance) {
+    if (videoPlayer != nullptr) {
+        videoPlayer->doFrame();
+    }
 }
 
 //.......................................................
@@ -469,7 +514,8 @@ Java_com_cw_hyplayer_camera_NativeCameraView_nativeCameraFFEncodeFrame(
 //    }
 
     jbyte *yuv420Buffer = env->GetByteArrayElements(data, 0);
-    videoEncoder->EncodeYUV420Buffer(reinterpret_cast<unsigned char *>(yuv420Buffer), width, height);
+    videoEncoder->EncodeYUV420Buffer(reinterpret_cast<unsigned char *>(yuv420Buffer), width,
+                                     height);
     env->ReleaseByteArrayElements(data, yuv420Buffer, 0);
 }
 

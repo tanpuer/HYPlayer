@@ -65,7 +65,7 @@ class LiveActivity : AppCompatActivity(), LifecycleOwner {
     private fun startCamera() {
         // Create configuration object for the viewfinder use case
         val previewConfig = PreviewConfig.Builder().apply {
-            setTargetAspectRatio(Rational(9, 16))
+//            setTargetAspectRatio(Rational(9, 16))
             setTargetResolution(Size(1080, 1920))
         }.build()
 

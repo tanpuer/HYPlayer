@@ -30,7 +30,7 @@ class AudioService : Service() {
     }
 
     fun pause() {
-        audioPlayer?.start()
+        audioPlayer?.pause()
     }
 
     fun seek(pos: Long) {

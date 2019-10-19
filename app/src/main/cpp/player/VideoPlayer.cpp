@@ -7,10 +7,12 @@
 VideoPlayer::VideoPlayer(const char *path) {
     packetQueue = new circle_av_packet_queue();
     frameQueue = new circle_av_frame_queue();
-    demuxLooper = new DemuxLooper(packetQueue);
-    decodeLooper = new DecodeLooper(frameQueue, packetQueue);
+    demuxLooper = new DemuxLooper(packetQueue, false);
+    decodeLooper = new DecodeLooper(frameQueue, packetQueue, false);
     demuxLooper->sendMessage(demuxLooper->kMsgDemuxCreated, (void *) path);
     decodeLooper->sendMessage(decodeLooper->kMsgDecodeCreated);
+    glVideoLooper = new GLVideoLooper(frameQueue);
+    glVideoLooper->sendMessage(glVideoLooper->kMsgSurfaceCreated);
 }
 
 VideoPlayer::~VideoPlayer() {
@@ -18,9 +20,9 @@ VideoPlayer::~VideoPlayer() {
 }
 
 void VideoPlayer::start() {
-//    if (slPlayerLooper != nullptr) {
-//        slPlayerLooper->sendMessage(slPlayerLooper->kMsgSLPlayerStart);
-//    }
+    if (glVideoLooper != nullptr) {
+//        glVideoLooper->sendMessage(glVideoLooper->kMsgSLPlayerStart);
+    }
 }
 
 void VideoPlayer::pause() {
@@ -71,17 +73,26 @@ long VideoPlayer::getCurrentDuration() {
 }
 
 void VideoPlayer::setNativeWindowCreated(ANativeWindow *nativeWindow) {
-
+    if (glVideoLooper != nullptr) {
+        glVideoLooper->sendMessage(glVideoLooper->kMsgSurfaceCreated, nativeWindow);
+    }
 }
 
 void VideoPlayer::setNativeWindowDestroyed() {
-
+    if (glVideoLooper != nullptr) {
+        glVideoLooper->sendMessage(glVideoLooper->kMsgSurfaceDestroyed);
+        glVideoLooper->quit();
+    }
 }
 
 void VideoPlayer::setNativeWindowChanged(int width, int height) {
-
+    if (glVideoLooper != nullptr) {
+        glVideoLooper->sendMessage(glVideoLooper->kMsgSurfaceChanged, width, height);
+    }
 }
 
 void VideoPlayer::doFrame() {
-
+    if (glVideoLooper != nullptr) {
+        glVideoLooper->sendMessage(glVideoLooper->kMsgSurfaceDoFrame);
+    }
 }

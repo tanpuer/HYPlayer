@@ -10,6 +10,7 @@
 #include <demux/DemuxLooper.h>
 #include <decode/DecodeLooper.h>
 #include <android/native_window.h>
+#include <video/GLVideoLooper.h>
 
 class VideoPlayer {
 
@@ -47,7 +48,7 @@ private:
     circle_av_frame_queue *frameQueue;
     DemuxLooper *demuxLooper;
     DecodeLooper *decodeLooper;
-
+    GLVideoLooper *glVideoLooper;
 };
 
 

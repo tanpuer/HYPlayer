@@ -54,6 +54,7 @@ find_library(android-lib android)
 
 aux_source_directory(src/main/cpp                                                srcs)
 aux_source_directory(src/main/cpp/audio                                         srcs)
+aux_source_directory(src/main/cpp/video                                         srcs)
 aux_source_directory(src/main/cpp/base                                         srcs)
 aux_source_directory(src/main/cpp/camera                                         srcs)
 aux_source_directory(src/main/cpp/decode                                         srcs)
@@ -163,6 +164,7 @@ include_directories(
 
         src/main/cpp
         src/main/cpp/audio
+        src/main/cpp/video
         src/main/cpp/base
         src/main/cpp/camera
         src/main/cpp/decode

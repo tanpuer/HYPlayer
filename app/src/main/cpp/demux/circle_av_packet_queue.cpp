@@ -60,7 +60,7 @@ void circle_av_packet_queue::push(AVPacketData *data) {
     pthread_mutex_lock(&mutex);
     if (pushCursor->next == pullCursor) {
 //        ALOGD("AVPacket packetQueue wait signal %d", currSize);
-        ALOGD("AVPacket is push wait!!!  %d", currSize);
+//        ALOGD("AVPacket is push wait!!!  %d", currSize);
         pthread_cond_wait(&cond, &mutex);
     }
     pushCursor->data = data;
@@ -68,7 +68,7 @@ void circle_av_packet_queue::push(AVPacketData *data) {
     currSize++;
     demuxStarted = true;
     if (currSize > DEFAULT_AV_PACKET_SIZE / 2) {
-        ALOGD("AVPacket packetQueue send signal %d", currSize);
+//        ALOGD("AVPacket packetQueue send signal %d", currSize);
         pthread_cond_signal(&cond);
     }
 //    ALOGD("push AVPacket, current size is %d", currSize);
@@ -76,14 +76,14 @@ void circle_av_packet_queue::push(AVPacketData *data) {
 }
 
 AVPacketData *circle_av_packet_queue::pull() {
-    ALOGD("AVPacket pull data %d", currSize);
+//    ALOGD("AVPacket pull data %d", currSize);
     pthread_mutex_lock(&mutex);
     if (!demuxStarted) {
 //        ALOGD("AVPacket packetQueue wait signal %d", currSize);
         pthread_cond_wait(&cond, &mutex);
     }
     if (currSize < DEFAULT_AV_PACKET_SIZE / 3) {
-        ALOGD("AVPacket packetQueue send signal %d", currSize);
+//        ALOGD("AVPacket packetQueue send signal %d", currSize);
         pthread_cond_signal(&cond);
     }
     if (pullCursor->next != pushCursor) {
@@ -94,7 +94,7 @@ AVPacketData *circle_av_packet_queue::pull() {
         pthread_mutex_unlock(&mutex);
         return data;
     } else {
-        ALOGD("packet queue pull null! , %d", currSize);
+//        ALOGD("packet queue pull null! , %d", currSize);
         pthread_mutex_unlock(&mutex);
         return new AVPacketData();
     }

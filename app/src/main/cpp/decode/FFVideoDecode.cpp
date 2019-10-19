@@ -23,6 +23,7 @@ bool FFVideoDecode::start() {
             parameters = packetData->parameters;
             timeBase = packetData->timeBase;
             codec = avcodec_find_decoder(parameters->codec_id);
+//            codec = avcodec_find_decoder_by_name("h264_mediacodec");
             if (codec == nullptr) {
                 ALOGE("avcodec_find_decoder %d failed", parameters->codec_id);
                 return false;
@@ -38,9 +39,7 @@ bool FFVideoDecode::start() {
                 ALOGE("avcodec open failed !%s", buf);
                 return false;
             }
-            ALOGD("swr_init success!");
         }
-//        ALOGD("pull AVPacket data from packetQueue!");
         AVPacketData *packetData = packetQueue->pull();
         if (packetData == nullptr) {
             continue;
@@ -68,7 +67,7 @@ bool FFVideoDecode::start() {
         if (packetData->packet && packetData->size > 0) {
             re = avcodec_send_packet(codecContext, packetData->packet);
             packetData->clear();
-            if (re != 0) {
+            if (re < 0 && re != AVERROR(EAGAIN) && re != AVERROR_EOF) {
                 ALOGE("avcodec_send_packet error")
                 return false;
             }

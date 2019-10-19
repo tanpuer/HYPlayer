@@ -14,6 +14,10 @@
 #include "encode/NDKCodecEncoder.h"
 #include "encode/FFmpegCodecEncoder.h"
 
+extern "C" {
+#include "libavcodec/jni.h"
+}
+
 JavaVM *javaVM;
 
 //.......................................................
@@ -245,6 +249,7 @@ JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved) {
         return -1;
     }
     javaVM = vm;
+    av_jni_set_java_vm(vm, nullptr);
     //ffmpeg mediacodec
     return JNI_VERSION_1_6;
 }

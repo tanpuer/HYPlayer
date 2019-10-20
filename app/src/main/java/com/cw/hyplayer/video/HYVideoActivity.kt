@@ -30,23 +30,10 @@ class HYVideoActivity : AppCompatActivity(), IVideoViewCallback {
         video_view.videoViewCallback = this
 
         create_soft_decoder.setOnClickListener {
-            val mediaSource = MediaSource("/sdcard/trailer.mp4")
-            videoPlayer = HYVideoPlayer(mediaSource)
-            surface?.let {
-                videoPlayer?.setSurfaceCreated(surface!!)
-                if (surfaceWidth > 0 && surfaceHeight > 0) {
-                    videoPlayer?.setSurfaceChanged(surfaceWidth, surfaceHeight)
-                }
-            }
+            initPlayer(false)
         }
         create_hw_decoder.setOnClickListener {
-            val mediaSource = MediaSource("/sdcard/trailer.mp4")
-            mediaSource.usingMediaCodec = true
-            videoPlayer = HYVideoPlayer(mediaSource)
-            surface?.let {
-                videoPlayer?.setSurfaceCreated(surface!!)
-                videoPlayer?.setSurfaceChanged(surfaceWidth, surfaceHeight)
-            }
+            initPlayer(true)
         }
         start.setOnClickListener {
             videoPlayer?.start()
@@ -110,5 +97,17 @@ class HYVideoActivity : AppCompatActivity(), IVideoViewCallback {
 
     override fun surfaceDoFrame() {
         videoPlayer?.doFrame()
+    }
+
+    private fun initPlayer(usingMediaCodec: Boolean) {
+        val mediaSource = MediaSource("/sdcard/trailer.mp4")
+        mediaSource.usingMediaCodec = usingMediaCodec
+        videoPlayer = HYVideoPlayer(mediaSource)
+        surface?.let {
+            videoPlayer?.setSurfaceCreated(surface!!)
+            if (surfaceWidth > 0 && surfaceHeight > 0) {
+                videoPlayer?.setSurfaceChanged(surfaceWidth, surfaceHeight)
+            }
+        }
     }
 }

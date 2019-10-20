@@ -94,7 +94,6 @@ void GLVideoPlayer::surfaceDoFrame() {
             startTime = data->pts;
         }
 
-        index++;
         currentPos = data->pts;
         glClearColor(0.0, 0.0, 0.0, 1.0);
         glClear(GL_COLOR_BUFFER_BIT);
@@ -102,6 +101,7 @@ void GLVideoPlayer::surfaceDoFrame() {
         initFilter(avFrame);
         filter->drawFrame(avFrame);
         windowSurface->swapBuffer();
+        index++;
     }
 }
 
@@ -153,6 +153,7 @@ void GLVideoPlayer::seek() {
     pause();
     currentPos = 0;
     startTime = -1;
+    index = 0;
     AVFrameData *data = frameQueue->pull();
     while (!data->seekOver) {
         data->clear();

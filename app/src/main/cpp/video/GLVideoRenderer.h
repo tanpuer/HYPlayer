@@ -34,6 +34,8 @@ public:
 
     void pause();
 
+    void seek();
+
     long getCurrentPos();
 
 private:

@@ -32,9 +32,9 @@ void VideoPlayer::pause() {
 }
 
 void VideoPlayer::seek(long pos) {
-//    if (slPlayerLooper != nullptr) {
-//        slPlayerLooper->sendMessage(slPlayerLooper->kMsgSLPlayerSeek);
-//    }
+    if (glVideoLooper != nullptr) {
+        glVideoLooper->sendMessage(glVideoLooper->kMsgSurfaceSeek);
+    }
     if (demuxLooper != nullptr) {
         demuxLooper->demux->isDemuxing = false;
         demuxLooper->sendMessage(demuxLooper->kMsgDemuxSeek, reinterpret_cast<void *>(pos));

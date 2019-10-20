@@ -58,6 +58,12 @@ void GLVideoLooper::handleMessage(Looper::LooperMessage *msg) {
             }
             break;
         }
+        case kMsgSurfaceSeek: {
+            if (renderer != nullptr && !destroyed) {
+                renderer->seek();
+            }
+            break;
+        }
         default:
             break;
     }

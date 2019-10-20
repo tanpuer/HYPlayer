@@ -1,12 +1,16 @@
 package com.cw.hyplayer.video
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
 import android.view.Surface
 import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
 import com.cw.hyplayer.R
 import com.cw.hyplayer.audio.MediaSource
 import kotlinx.android.synthetic.main.activity_video.*
+import java.util.*
 
 class HYVideoActivity : AppCompatActivity(), IVideoViewCallback {
 
@@ -14,6 +18,10 @@ class HYVideoActivity : AppCompatActivity(), IVideoViewCallback {
     private var surface: Surface? = null
     private var surfaceWidth = 0
     private var surfaceHeight = 0
+    private var settable = true
+
+    private lateinit var timer: Timer
+    private lateinit var handler: Handler
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,14 +62,33 @@ class HYVideoActivity : AppCompatActivity(), IVideoViewCallback {
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {
-
+                settable = false
             }
 
             override fun onStopTrackingTouch(seekBar: SeekBar?) {
-
+                if (seekBar == null || videoPlayer == null) {
+                    return
+                }
+                val pos = videoPlayer!!.totalDuration() * seekBar.progress / seekBar.max
+                Log.d("seek ", "$pos")
+                videoPlayer?.seek(pos)
+                settable = true
             }
 
         })
+
+        handler = Handler(Looper.getMainLooper())
+        timer = Timer()
+        timer.scheduleAtFixedRate(object : TimerTask() {
+            override fun run() {
+                handler.post {
+                    if (videoPlayer != null && settable && videoPlayer!!.totalDuration() > 0 && videoPlayer!!.currentTime() > 0) {
+                        seek_bar.progress =
+                            (videoPlayer!!.currentTime() * 100 / videoPlayer!!.totalDuration()).toInt()
+                    }
+                }
+            }
+        }, 0, 500)
     }
 
     override fun surfaceCreated(surface: Surface) {

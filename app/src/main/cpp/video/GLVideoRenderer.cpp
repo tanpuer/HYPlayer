@@ -135,3 +135,15 @@ void GLVideoRenderer::pause() {
 long GLVideoRenderer::getCurrentPos() {
     return currentPos;
 }
+
+void GLVideoRenderer::seek() {
+    currentPos = 0;
+    pause();
+    AVFrameData *data = frameQueue->pull();
+    while (!data->seekOver) {
+        data->clear();
+        data = frameQueue->pull();
+    }
+    data->clear();
+    start();
+}

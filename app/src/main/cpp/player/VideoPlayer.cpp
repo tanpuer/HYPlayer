@@ -66,9 +66,9 @@ long VideoPlayer::getTotalDuration() {
 
 //thread unsafe
 long VideoPlayer::getCurrentDuration() {
-//    if (slPlayerLooper != nullptr) {
-//        return slPlayerLooper->getCurrentPos();
-//    }
+    if (glVideoLooper != nullptr) {
+        return glVideoLooper->getCurrentPos();
+    }
     return 0;
 }
 

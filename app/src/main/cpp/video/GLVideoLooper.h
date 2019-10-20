@@ -30,6 +30,8 @@ public:
 
     virtual void handleMessage(LooperMessage *msg) override;
 
+    long getCurrentPos();
+
 private:
     GLVideoRenderer *renderer;
 

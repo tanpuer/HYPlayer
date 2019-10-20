@@ -34,6 +34,8 @@ public:
 
     void pause();
 
+    long getCurrentPos();
+
 private:
 
     circle_av_frame_queue *frameQueue;
@@ -49,6 +51,8 @@ private:
     int screen_width, screen_height;
 
     bool started = false;
+
+    long currentPos = 0L;
 };
 
 #endif //FFMPEG_PLAYER_GL_RENDERER_H

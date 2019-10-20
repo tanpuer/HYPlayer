@@ -63,3 +63,10 @@ void GLVideoLooper::handleMessage(Looper::LooperMessage *msg) {
     }
 }
 
+long GLVideoLooper::getCurrentPos() {
+    if (renderer != nullptr) {
+        return renderer->getCurrentPos();
+    }
+    return 0;
+}
+

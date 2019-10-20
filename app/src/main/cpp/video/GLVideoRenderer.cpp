@@ -82,6 +82,7 @@ void GLVideoRenderer::surfaceDoFrame() {
 
     AVFrameData *data = frameQueue->pull();
     if (data != nullptr && data->frame != nullptr) {
+        currentPos = data->pts;
         glClearColor(0.0, 0.0, 0.0, 1.0);
         glClear(GL_COLOR_BUFFER_BIT);
         AVFrame *avFrame = data->frame;
@@ -129,4 +130,8 @@ void GLVideoRenderer::start() {
 
 void GLVideoRenderer::pause() {
     started = false;
+}
+
+long GLVideoRenderer::getCurrentPos() {
+    return currentPos;
 }

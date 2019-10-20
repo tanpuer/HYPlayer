@@ -54,7 +54,12 @@ private:
 
     bool started = false;
 
-    long currentPos = 0L;
+    long currentPos = 0;
+
+    int64_t startTime = -1LL;
+
+    int64_t index = 0;
+
 };
 
 #endif //FFMPEG_PLAYER_GL_RENDERER_H

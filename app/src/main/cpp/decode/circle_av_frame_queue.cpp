@@ -85,3 +85,10 @@ AVFrameData *circle_av_frame_queue::pull() {
         return new AVFrameData();
     }
 }
+
+int64_t circle_av_frame_queue::pullHeadFramePts() {
+    if (pullCursor != nullptr && pullCursor->data != nullptr) {
+        return pullCursor->data->pts;
+    }
+    return -1;
+}

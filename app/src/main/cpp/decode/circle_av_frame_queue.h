@@ -26,6 +26,8 @@ public:
 
     AVFrameData *pull();
 
+    int64_t pullHeadFramePts();
+
 private:
     pthread_mutex_t mutex;
     pthread_cond_t cond;

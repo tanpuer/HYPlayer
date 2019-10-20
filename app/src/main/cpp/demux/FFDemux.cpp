@@ -47,6 +47,7 @@ bool FFDemux::init(const char *url) {
     }
     audioStreamIndex = re;
     timeBase = r2d(ic->streams[audioStreamIndex]->time_base);
+    ALOGD("FFDemux init finish");
     return true;
 }
 

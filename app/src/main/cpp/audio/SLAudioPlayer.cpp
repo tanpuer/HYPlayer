@@ -124,7 +124,7 @@ void SLAudioPlayer::call(void *bufq) {
         return;
     }
     AVFrameData *frameData = frameQueue->pull();
-    ALOGD("pull AVFrame from FrameQueue!");
+//    ALOGD("pull AVFrame from FrameQueue!");
     if (frameData == nullptr) {
         return;
     }

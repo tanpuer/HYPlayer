@@ -42,19 +42,17 @@ void GLVideoPlayer::surfaceCreated(ANativeWindow *nativeWindow) {
     glDisable(GL_CULL_FACE);
     glEnable(GL_BLEND);
 //    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-//    filter = new base_filter();
-//    filter->init_program();
 }
 
 void GLVideoPlayer::surfaceChanged(int width, int height) {
-    ALOGD("VideoRenderer changed");
+    ALOGD("VideoRenderer changed started");
     windowSurface->makeCurrent();
     glViewport(0, 0, width, height);
     windowSurface->swapBuffer();
 
     screen_width = width;
     screen_height = height;
+    ALOGD("VideoRenderer changed finished");
 }
 
 void GLVideoPlayer::surfaceDestroyed() {
@@ -80,8 +78,23 @@ void GLVideoPlayer::surfaceDoFrame() {
         return;
     }
 
+    if (startTime > 0) {
+        int64_t pts = frameQueue->pullHeadFramePts();
+        int64_t currentTime = startTime + index * 16667 / 1000;
+//        ALOGD("current Time is %lld %lld", currentTime, pts);
+        if (pts > currentTime) {
+            index++;
+            return;
+        }
+    }
+
     AVFrameData *data = frameQueue->pull();
     if (data != nullptr && data->frame != nullptr) {
+        if (startTime < 0) {
+            startTime = data->pts;
+        }
+
+        index++;
         currentPos = data->pts;
         glClearColor(0.0, 0.0, 0.0, 1.0);
         glClear(GL_COLOR_BUFFER_BIT);
@@ -137,8 +150,9 @@ long GLVideoPlayer::getCurrentPos() {
 }
 
 void GLVideoPlayer::seek() {
-    currentPos = 0;
     pause();
+    currentPos = 0;
+    startTime = -1;
     AVFrameData *data = frameQueue->pull();
     while (!data->seekOver) {
         data->clear();

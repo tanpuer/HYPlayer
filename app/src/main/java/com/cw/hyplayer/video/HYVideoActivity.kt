@@ -22,7 +22,7 @@ class HYVideoActivity : AppCompatActivity(), IVideoViewCallback {
         video_view.videoViewCallback = this
 
         create_soft_decoder.setOnClickListener {
-            val mediaSource = MediaSource("/sdcard/trailer111.mp4")
+            val mediaSource = MediaSource("/sdcard/trailer.mp4")
             videoPlayer = HYVideoPlayer(mediaSource)
             surface?.let {
                 videoPlayer?.setSurfaceCreated(surface!!)

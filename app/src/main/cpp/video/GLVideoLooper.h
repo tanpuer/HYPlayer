@@ -18,6 +18,9 @@ public:
         kMsgSurfaceCreated,
         kMsgSurfaceChanged,
         kMsgSurfaceDestroyed,
+        kMsgSurfaceStart,
+        kMsgSurfacePause,
+        kMsgSurfaceSeek,
         kMsgSurfaceDoFrame
     };
 

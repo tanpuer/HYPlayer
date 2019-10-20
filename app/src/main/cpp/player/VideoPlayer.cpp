@@ -21,14 +21,14 @@ VideoPlayer::~VideoPlayer() {
 
 void VideoPlayer::start() {
     if (glVideoLooper != nullptr) {
-//        glVideoLooper->sendMessage(glVideoLooper->kMsgSLPlayerStart);
+        glVideoLooper->sendMessage(glVideoLooper->kMsgSurfaceStart);
     }
 }
 
 void VideoPlayer::pause() {
-//    if (slPlayerLooper != nullptr) {
-//        slPlayerLooper->sendMessage(slPlayerLooper->kMsgSLPlayerPause);
-//    }
+    if (glVideoLooper != nullptr) {
+        glVideoLooper->sendMessage(glVideoLooper->kMsgSurfacePause);
+    }
 }
 
 void VideoPlayer::seek(long pos) {

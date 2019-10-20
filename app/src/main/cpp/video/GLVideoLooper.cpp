@@ -3,6 +3,7 @@
 //
 
 #include "GLVideoLooper.h"
+
 extern "C" {
 #include <libavutil/frame.h>
 }
@@ -42,6 +43,18 @@ void GLVideoLooper::handleMessage(Looper::LooperMessage *msg) {
         case kMsgSurfaceDoFrame: {
             if (renderer != nullptr && !destroyed) {
                 renderer->surfaceDoFrame();
+            }
+            break;
+        }
+        case kMsgSurfaceStart: {
+            if (renderer != nullptr && !destroyed) {
+                renderer->start();
+            }
+            break;
+        }
+        case kMsgSurfacePause: {
+            if (renderer != nullptr && !destroyed) {
+                renderer->pause();
             }
             break;
         }

@@ -30,6 +30,10 @@ public:
 
     void surfaceDoFrame();
 
+    void start();
+
+    void pause();
+
 private:
 
     circle_av_frame_queue *frameQueue;
@@ -43,6 +47,8 @@ private:
     void initFilter(AVFrame *avFrame);
 
     int screen_width, screen_height;
+
+    bool started = false;
 };
 
 #endif //FFMPEG_PLAYER_GL_RENDERER_H

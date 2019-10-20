@@ -76,6 +76,9 @@ void GLVideoRenderer::surfaceDestroyed() {
 
 void GLVideoRenderer::surfaceDoFrame() {
 
+    if (!started) {
+        return;
+    }
 
     AVFrameData *data = frameQueue->pull();
     if (data != nullptr && data->frame != nullptr) {
@@ -118,4 +121,12 @@ void GLVideoRenderer::initFilter(AVFrame *avFrame) {
         filter->screen_height = screen_height;
         filter->init_program();
     }
+}
+
+void GLVideoRenderer::start() {
+    started = true;
+}
+
+void GLVideoRenderer::pause() {
+    started = false;
 }

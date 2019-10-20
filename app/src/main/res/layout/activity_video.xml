@@ -5,7 +5,7 @@
     android:layout_height="match_parent">
 
     <com.cw.hyplayer.video.HYVideoView
-        android:id="@+id/video"
+        android:id="@+id/video_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
@@ -15,8 +15,7 @@
         android:layout_height="wrap_content"
         android:text="sf_decoder_create"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_percent="50%" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/create_hw_decoder"
@@ -24,8 +23,7 @@
         android:layout_height="wrap_content"
         android:text="hw_decoder_create"
         app:layout_constraintLeft_toRightOf="@id/create_soft_decoder"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_percent="50%" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/start"
@@ -52,6 +50,7 @@
         app:layout_constraintTop_toBottomOf="@id/create_soft_decoder" />
 
     <SeekBar
+        android:id="@+id/seek_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"

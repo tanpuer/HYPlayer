@@ -21,7 +21,7 @@ public:
     };
 
     DecodeLooper(circle_av_frame_queue *frameQueue, circle_av_packet_queue *packetQueue,
-                 bool isAudio = true);
+                 bool isAudio, bool usingMediaCodec);
 
     ~DecodeLooper();
 
@@ -39,6 +39,7 @@ private:
 
     bool isAudio;
 
+    bool usingMediaCodec;
 };
 
 

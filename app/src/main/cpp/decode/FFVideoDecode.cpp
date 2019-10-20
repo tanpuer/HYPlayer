@@ -5,8 +5,12 @@
 #include <base/native_log.h>
 #include "FFVideoDecode.h"
 
-FFVideoDecode::~FFVideoDecode() {
+FFVideoDecode::FFVideoDecode(bool usingMediaCodec) {
+    this->usingMediaCodec = usingMediaCodec;
+}
 
+FFVideoDecode::~FFVideoDecode() {
+    
 }
 
 bool FFVideoDecode::init() {
@@ -22,8 +26,15 @@ bool FFVideoDecode::start() {
             }
             parameters = packetData->parameters;
             timeBase = packetData->timeBase;
-            codec = avcodec_find_decoder(parameters->codec_id);
-//            codec = avcodec_find_decoder_by_name("h264_mediacodec");
+            if (usingMediaCodec) {
+                codec = avcodec_find_decoder_by_name("h264_mediacodec");
+                if (codec == nullptr) {
+                    ALOGE("h264_mediacodec init error, change to soft decoder");
+                    codec = avcodec_find_decoder(parameters->codec_id);
+                }
+            } else {
+                codec = avcodec_find_decoder(parameters->codec_id);
+            }
             if (codec == nullptr) {
                 ALOGE("avcodec_find_decoder %d failed", parameters->codec_id);
                 return false;
@@ -79,7 +90,9 @@ bool FFVideoDecode::start() {
 //                    ALOGD("avcodec_receive_frame success");
                     auto *frameData = new AVFrameData();
                     frameData->frame = frame;
-                    frameData->size = (frame->linesize[0] + frame->linesize[1] + frame->linesize[2]) * frame->height;;
+                    frameData->size =
+                            (frame->linesize[0] + frame->linesize[1] + frame->linesize[2]) *
+                            frame->height;;
                     frameData->pts = frame->pts * 1000 * timeBase;
                     frameQueue->push(frameData);
                 } else {

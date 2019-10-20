@@ -7,5 +7,6 @@ class MediaSource {
     }
 
     val url: String
+    var usingMediaCodec = false
 
 }

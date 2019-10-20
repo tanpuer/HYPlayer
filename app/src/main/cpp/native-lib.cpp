@@ -94,9 +94,10 @@ VideoPlayer *videoPlayer;
 extern "C" JNIEXPORT jboolean JNICALL Java_com_cw_hyplayer_video_HYVideoPlayer_nativeInit(
         JNIEnv *env,
         jobject instance,
-        jstring url) {
+        jstring url,
+        jboolean usingMediaCodec) {
     const char *mediaUrl = env->GetStringUTFChars(url, nullptr);
-    videoPlayer = new VideoPlayer(mediaUrl);
+    videoPlayer = new VideoPlayer(mediaUrl, usingMediaCodec);
     return true;
 }
 

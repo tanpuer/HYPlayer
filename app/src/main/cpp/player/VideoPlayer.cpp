@@ -4,11 +4,11 @@
 
 #include "VideoPlayer.h"
 
-VideoPlayer::VideoPlayer(const char *path) {
+VideoPlayer::VideoPlayer(const char *path, bool usingMediaCodec) {
     packetQueue = new circle_av_packet_queue();
     frameQueue = new circle_av_frame_queue();
     demuxLooper = new DemuxLooper(packetQueue, false);
-    decodeLooper = new DecodeLooper(frameQueue, packetQueue, false);
+    decodeLooper = new DecodeLooper(frameQueue, packetQueue, false, usingMediaCodec);
     demuxLooper->sendMessage(demuxLooper->kMsgDemuxCreated, (void *) path);
     decodeLooper->sendMessage(decodeLooper->kMsgDecodeCreated);
     glVideoLooper = new GLVideoLooper(frameQueue);

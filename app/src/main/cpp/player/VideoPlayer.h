@@ -16,7 +16,7 @@ class VideoPlayer {
 
 public:
 
-    VideoPlayer(const char* path);
+    VideoPlayer(const char* path, bool usingMediaCodec);
 
     virtual ~VideoPlayer();
 

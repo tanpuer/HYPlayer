@@ -8,10 +8,11 @@
 #include "FFVideoDecode.h"
 
 DecodeLooper::DecodeLooper(circle_av_frame_queue *frameQueue, circle_av_packet_queue *packetQueue,
-                           bool isAudio) {
+                           bool isAudio, bool usingMediaCodec) {
     this->frameQueue = frameQueue;
     this->packetQueue = packetQueue;
     this->isAudio = isAudio;
+    this->usingMediaCodec = usingMediaCodec;
 }
 
 DecodeLooper::~DecodeLooper() {
@@ -24,7 +25,7 @@ void DecodeLooper::handleMessage(Looper::LooperMessage *msg) {
             if (isAudio) {
                 decode = new FFDecode();
             } else {
-                decode = new FFVideoDecode();
+                decode = new FFVideoDecode(usingMediaCodec);
             }
             decode->packetQueue = packetQueue;
             decode->frameQueue = frameQueue;

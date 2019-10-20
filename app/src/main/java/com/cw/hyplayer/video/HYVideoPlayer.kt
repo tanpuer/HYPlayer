@@ -9,7 +9,7 @@ class HYVideoPlayer {
 
     constructor(mediaSource: MediaSource) {
         this.mediaSource = mediaSource
-        nativeInit(mediaSource.url)
+        nativeInit(mediaSource.url, mediaSource.usingMediaCodec)
     }
 
     fun start(): Boolean {
@@ -52,7 +52,7 @@ class HYVideoPlayer {
         nativeDoFrame()
     }
 
-    private external fun nativeInit(url: String): Boolean
+    private external fun nativeInit(url: String, usingMediaCodec: Boolean): Boolean
 
     private external fun nativeStart(): Boolean
 

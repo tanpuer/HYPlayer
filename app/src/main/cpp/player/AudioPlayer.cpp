@@ -9,7 +9,7 @@ AudioPlayer::AudioPlayer(const char *path) {
     packetQueue = new circle_av_packet_queue();
     frameQueue = new circle_av_frame_queue();
     demuxLooper = new DemuxLooper(packetQueue);
-    decodeLooper = new DecodeLooper(frameQueue, packetQueue);
+    decodeLooper = new DecodeLooper(frameQueue, packetQueue, false, false);
     demuxLooper->sendMessage(demuxLooper->kMsgDemuxCreated, (void *) path);
     decodeLooper->sendMessage(decodeLooper->kMsgDecodeCreated);
     slPlayerLooper = new SLPlayerLooper(frameQueue);

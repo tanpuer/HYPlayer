@@ -12,6 +12,8 @@ class FFVideoDecode : public IDecode{
 
 public:
 
+    FFVideoDecode(bool usingMediaCodec);
+
     virtual ~FFVideoDecode();
 
     virtual bool init();
@@ -31,6 +33,8 @@ private:
     AVCodecContext *codecContext;
 
     double timeBase;
+
+    bool usingMediaCodec;
 
 };
 

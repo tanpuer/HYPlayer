@@ -25,19 +25,20 @@ void GLVideoLooper::handleMessage(Looper::LooperMessage *msg) {
             if (glVideoPlayer != nullptr) {
                 glVideoPlayer->surfaceCreated(static_cast<ANativeWindow *>(msg->obj));
             }
+            destroyed = false;
             break;
         }
         case kMsgSurfaceChanged: {
-            if (glVideoPlayer != nullptr) {
+            if (glVideoPlayer != nullptr && !destroyed) {
                 glVideoPlayer->surfaceChanged(msg->arg1, msg->arg2);
             }
             break;
         }
         case kMsgSurfaceDestroyed: {
-            destroyed = true;
-            if (glVideoPlayer != nullptr) {
+            if (glVideoPlayer != nullptr && !destroyed) {
                 glVideoPlayer->surfaceDestroyed();
             }
+            destroyed = true;
             break;
         }
         case kMsgSurfaceDoFrame: {

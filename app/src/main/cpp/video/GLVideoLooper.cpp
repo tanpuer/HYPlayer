@@ -10,57 +10,57 @@ extern "C" {
 
 GLVideoLooper::GLVideoLooper(circle_av_frame_queue *frameQueue) {
     this->frameQueue = frameQueue;
-    renderer = new GLVideoRenderer(frameQueue);
+    glVideoPlayer = new GLVideoPlayer(frameQueue);
     destroyed = false;
 }
 
 GLVideoLooper::~GLVideoLooper() {
-    delete renderer;
-    renderer = nullptr;
+    delete glVideoPlayer;
+    glVideoPlayer = nullptr;
 }
 
 void GLVideoLooper::handleMessage(Looper::LooperMessage *msg) {
     switch (msg->what) {
         case kMsgSurfaceCreated: {
-            if (renderer != nullptr) {
-                renderer->surfaceCreated(static_cast<ANativeWindow *>(msg->obj));
+            if (glVideoPlayer != nullptr) {
+                glVideoPlayer->surfaceCreated(static_cast<ANativeWindow *>(msg->obj));
             }
             break;
         }
         case kMsgSurfaceChanged: {
-            if (renderer != nullptr) {
-                renderer->surfaceChanged(msg->arg1, msg->arg2);
+            if (glVideoPlayer != nullptr) {
+                glVideoPlayer->surfaceChanged(msg->arg1, msg->arg2);
             }
             break;
         }
         case kMsgSurfaceDestroyed: {
             destroyed = true;
-            if (renderer != nullptr) {
-                renderer->surfaceDestroyed();
+            if (glVideoPlayer != nullptr) {
+                glVideoPlayer->surfaceDestroyed();
             }
             break;
         }
         case kMsgSurfaceDoFrame: {
-            if (renderer != nullptr && !destroyed) {
-                renderer->surfaceDoFrame();
+            if (glVideoPlayer != nullptr && !destroyed) {
+                glVideoPlayer->surfaceDoFrame();
             }
             break;
         }
         case kMsgSurfaceStart: {
-            if (renderer != nullptr && !destroyed) {
-                renderer->start();
+            if (glVideoPlayer != nullptr && !destroyed) {
+                glVideoPlayer->start();
             }
             break;
         }
         case kMsgSurfacePause: {
-            if (renderer != nullptr && !destroyed) {
-                renderer->pause();
+            if (glVideoPlayer != nullptr && !destroyed) {
+                glVideoPlayer->pause();
             }
             break;
         }
         case kMsgSurfaceSeek: {
-            if (renderer != nullptr && !destroyed) {
-                renderer->seek();
+            if (glVideoPlayer != nullptr && !destroyed) {
+                glVideoPlayer->seek();
             }
             break;
         }
@@ -70,8 +70,8 @@ void GLVideoLooper::handleMessage(Looper::LooperMessage *msg) {
 }
 
 long GLVideoLooper::getCurrentPos() {
-    if (renderer != nullptr) {
-        return renderer->getCurrentPos();
+    if (glVideoPlayer != nullptr) {
+        return glVideoPlayer->getCurrentPos();
     }
     return 0;
 }

@@ -15,12 +15,12 @@ extern "C" {
 #include <libavutil/frame.h>
 };
 
-class GLVideoRenderer {
+class GLVideoPlayer {
 
 public:
-    GLVideoRenderer(circle_av_frame_queue *frameQueue);
+    GLVideoPlayer(circle_av_frame_queue *frameQueue);
 
-    virtual ~GLVideoRenderer();
+    virtual ~GLVideoPlayer();
 
     void surfaceCreated(ANativeWindow *nativeWindow);
 

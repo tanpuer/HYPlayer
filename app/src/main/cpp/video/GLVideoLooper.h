@@ -7,7 +7,7 @@
 
 
 #include <decode/circle_av_frame_queue.h>
-#include "GLVideoRenderer.h"
+#include "GLVideoPlayer.h"
 #include "../base/Looper.h"
 
 class GLVideoLooper : public Looper {
@@ -33,7 +33,7 @@ public:
     long getCurrentPos();
 
 private:
-    GLVideoRenderer *renderer;
+    GLVideoPlayer *glVideoPlayer;
 
     bool destroyed;
 

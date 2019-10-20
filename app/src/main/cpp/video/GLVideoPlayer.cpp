@@ -2,19 +2,19 @@
 // Created by templechen on 2019-04-28.
 //
 
-#include "GLVideoRenderer.h"
+#include "GLVideoPlayer.h"
 #include "mediacodec_nv12_filter.h"
 #include "mediacodec_nv21_filter.h"
 #include <GLES3/gl3.h>
 #include <base/native_log.h>
 
-GLVideoRenderer::GLVideoRenderer(circle_av_frame_queue *frameQueue) {
+GLVideoPlayer::GLVideoPlayer(circle_av_frame_queue *frameQueue) {
     this->frameQueue = frameQueue;
     eglCore = nullptr;
     windowSurface = nullptr;
 }
 
-GLVideoRenderer::~GLVideoRenderer() {
+GLVideoPlayer::~GLVideoPlayer() {
     if (filter != nullptr) {
         delete filter;
         filter = nullptr;
@@ -31,7 +31,7 @@ GLVideoRenderer::~GLVideoRenderer() {
     }
 }
 
-void GLVideoRenderer::surfaceCreated(ANativeWindow *nativeWindow) {
+void GLVideoPlayer::surfaceCreated(ANativeWindow *nativeWindow) {
     ALOGD("VideoRenderer created");
     eglCore = new egl_core(nullptr, FLAG_TRY_GLES3);
     windowSurface = new window_surface(nativeWindow, eglCore, false);
@@ -47,7 +47,7 @@ void GLVideoRenderer::surfaceCreated(ANativeWindow *nativeWindow) {
 //    filter->init_program();
 }
 
-void GLVideoRenderer::surfaceChanged(int width, int height) {
+void GLVideoPlayer::surfaceChanged(int width, int height) {
     ALOGD("VideoRenderer changed");
     windowSurface->makeCurrent();
     glViewport(0, 0, width, height);
@@ -57,7 +57,7 @@ void GLVideoRenderer::surfaceChanged(int width, int height) {
     screen_height = height;
 }
 
-void GLVideoRenderer::surfaceDestroyed() {
+void GLVideoPlayer::surfaceDestroyed() {
 //    if (filter != nullptr) {
 //        delete filter;
 //        filter = nullptr;
@@ -74,7 +74,7 @@ void GLVideoRenderer::surfaceDestroyed() {
 //    }
 }
 
-void GLVideoRenderer::surfaceDoFrame() {
+void GLVideoPlayer::surfaceDoFrame() {
 
     if (!started) {
         return;
@@ -92,7 +92,7 @@ void GLVideoRenderer::surfaceDoFrame() {
     }
 }
 
-void GLVideoRenderer::initFilter(AVFrame *avFrame) {
+void GLVideoPlayer::initFilter(AVFrame *avFrame) {
     if (filter != nullptr) {
         return;
     }
@@ -124,19 +124,19 @@ void GLVideoRenderer::initFilter(AVFrame *avFrame) {
     }
 }
 
-void GLVideoRenderer::start() {
+void GLVideoPlayer::start() {
     started = true;
 }
 
-void GLVideoRenderer::pause() {
+void GLVideoPlayer::pause() {
     started = false;
 }
 
-long GLVideoRenderer::getCurrentPos() {
+long GLVideoPlayer::getCurrentPos() {
     return currentPos;
 }
 
-void GLVideoRenderer::seek() {
+void GLVideoPlayer::seek() {
     currentPos = 0;
     pause();
     AVFrameData *data = frameQueue->pull();

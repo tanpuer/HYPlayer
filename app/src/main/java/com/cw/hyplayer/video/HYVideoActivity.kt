@@ -34,7 +34,9 @@ class HYVideoActivity : AppCompatActivity(), IVideoViewCallback {
             videoPlayer = HYVideoPlayer(mediaSource)
             surface?.let {
                 videoPlayer?.setSurfaceCreated(surface!!)
-                videoPlayer?.setSurfaceChanged(surfaceWidth, surfaceHeight)
+                if (surfaceWidth > 0 && surfaceHeight > 0) {
+                    videoPlayer?.setSurfaceChanged(surfaceWidth, surfaceHeight)
+                }
             }
         }
         create_hw_decoder.setOnClickListener {
@@ -98,9 +100,11 @@ class HYVideoActivity : AppCompatActivity(), IVideoViewCallback {
     override fun surfaceChanged(width: Int, height: Int) {
         surfaceWidth = width
         surfaceHeight = height
+        videoPlayer?.setSurfaceChanged(surfaceWidth, surfaceHeight)
     }
 
     override fun surfaceDestroyed() {
+        surface = null
         videoPlayer?.setSurfaceDestroyed()
     }
 

@@ -72,3 +72,10 @@ long AudioPlayer::getCurrentDuration() {
     }
     return 0;
 }
+
+void AudioPlayer::setLoop(bool loop) {
+    if (demuxLooper != nullptr) {
+        demuxLooper->demux->isOver = false;
+        demuxLooper->demux->loop = loop;
+    }
+}

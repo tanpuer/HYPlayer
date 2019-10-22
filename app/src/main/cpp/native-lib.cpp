@@ -88,6 +88,15 @@ extern "C" JNIEXPORT jlong JNICALL Java_com_cw_hyplayer_audio_HYAudioPlayer_nati
     return 0L;
 }
 
+extern "C" JNIEXPORT void JNICALL Java_com_cw_hyplayer_audio_HYAudioPlayer_nativeSetLoop(
+        JNIEnv *env,
+        jobject instance,
+        jboolean loop) {
+    if (audioPlayer != nullptr) {
+        audioPlayer->setLoop(loop);
+    }
+}
+
 //.......................................................
 //VideoPlayer
 VideoPlayer *videoPlayer;

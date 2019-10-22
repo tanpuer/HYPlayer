@@ -71,6 +71,10 @@ class AudioService : Service() {
         return 0L
     }
 
+    fun setLoop(loop: Boolean) {
+        audioPlayer?.loop = loop
+    }
+
     inner class AudioBinder : Binder() {
 
         fun callCreate() {
@@ -99,6 +103,10 @@ class AudioService : Service() {
 
         fun callCurrentTime(): Long {
             return currentTime()
+        }
+
+        fun callSetLoop(loop: Boolean) {
+            setLoop(loop)
         }
     }
 

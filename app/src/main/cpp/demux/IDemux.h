@@ -25,6 +25,8 @@ public:
 
     bool isOver = false;
 
+    bool loop = false;
+
     circle_av_packet_queue *packetQueue;
 
     int64_t totalDuration;

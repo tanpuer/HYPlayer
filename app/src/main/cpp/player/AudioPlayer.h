@@ -31,6 +31,8 @@ public:
 
     long getCurrentDuration();
 
+    void setLoop(bool loop);
+
 private:
 
     const char *path;

@@ -2,7 +2,13 @@ package com.cw.hyplayer.audio
 
 class HYAudioPlayer {
 
-    val mediaSource: MediaSource
+    private val mediaSource: MediaSource
+
+    var loop = false
+        set(value) {
+            field = value
+            nativeSetLoop(value)
+        }
 
     constructor(mediaSource: MediaSource) {
         this.mediaSource = mediaSource
@@ -46,6 +52,8 @@ class HYAudioPlayer {
     private external fun nativeTotalDuration(): Long
 
     private external fun nativeCurrentTime(): Long
+
+    private external fun nativeSetLoop(loop: Boolean)
 
     companion object {
         init {

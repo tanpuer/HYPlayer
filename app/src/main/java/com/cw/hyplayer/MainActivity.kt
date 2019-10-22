@@ -9,6 +9,7 @@ import android.content.pm.PackageManager
 import android.os.*
 import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
+import android.widget.Button
 import android.widget.SeekBar
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
@@ -24,6 +25,7 @@ class MainActivity : AppCompatActivity() {
     private var settable = true
     private var audioBinder: AudioService.AudioBinder? = null
     private var audioConn = AudioConn()
+    private var isLoop = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,6 +56,13 @@ class MainActivity : AppCompatActivity() {
         }
         pause.setOnClickListener {
             audioBinder?.callPause()
+        }
+
+        (loop as Button).text = "Loop $isLoop"
+        loop.setOnClickListener {
+            isLoop = !isLoop
+            audioBinder?.callSetLoop(isLoop)
+            (it as Button).text = "Loop $isLoop"
         }
 
         seek_bar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {

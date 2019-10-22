@@ -57,6 +57,9 @@ bool FFDemux::start() {
         int re = av_read_frame(ic, pkt);
         if (re != 0) {
             av_packet_free(&pkt);
+            if (!isOver && loop) {
+                seek(0);
+            }
             break;
         }
         if (pkt->stream_index == audioStreamIndex) {
@@ -97,7 +100,7 @@ bool FFDemux::seek(long pos) {
     avformat_flush(ic);
     int64_t seekPos = ic->streams[audioStreamIndex]->duration * pos / totalDuration;
     ALOGD("demux seek start! %lld, %lld", seekPos, ic->streams[audioStreamIndex]->duration);
-    int re = av_seek_frame(ic, audioStreamIndex, seekPos, AVSEEK_FLAG_FRAME|AVSEEK_FLAG_BACKWARD);
+    int re = av_seek_frame(ic, audioStreamIndex, seekPos, AVSEEK_FLAG_FRAME | AVSEEK_FLAG_BACKWARD);
     if (re < 0) {
         ALOGE("seek error !");
         return false;

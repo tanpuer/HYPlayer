@@ -58,7 +58,7 @@ bool FFDemux::start() {
         if (re != 0) {
             av_packet_free(&pkt);
             if (!isOver && loop) {
-                seek(0);
+                seekToStart();
                 continue;
             }
             break;
@@ -130,4 +130,13 @@ FFDemux::~FFDemux() {
 
 int FFDemux::getBestStream(AVFormatContext *ic) {
     return av_find_best_stream(ic, AVMEDIA_TYPE_AUDIO, -1, -1, nullptr, 0);
+}
+
+void FFDemux::seekToStart() {
+    avformat_flush(ic);
+    ALOGD("demux seek start! %d, %lld", 0, ic->streams[streamIndex]->duration);
+    int re = av_seek_frame(ic, streamIndex, 0, AVSEEK_FLAG_FRAME | AVSEEK_FLAG_BACKWARD);
+    if (re < 0) {
+        ALOGE("seek error !");
+    }
 }

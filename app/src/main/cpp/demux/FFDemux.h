@@ -44,6 +44,8 @@ private:
 
     double timeBase;
 
+    void seekToStart();
+
 };
 
 

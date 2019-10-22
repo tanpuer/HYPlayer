@@ -59,6 +59,7 @@ bool FFDemux::start() {
             av_packet_free(&pkt);
             if (!isOver && loop) {
                 seek(0);
+                continue;
             }
             break;
         }

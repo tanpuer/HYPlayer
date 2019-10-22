@@ -34,7 +34,7 @@ class AudioService : Service() {
 
     fun create() {
         if (audioPlayer == null) {
-            val mediaSource = MediaSource("/sdcard/test.mp3")
+            val mediaSource = MediaSource("/sdcard/test3.mp3")
 //                val mediaSource = MediaSource("/sdcard/trailer111.mp4")
             audioPlayer = HYAudioPlayer(mediaSource)
         }

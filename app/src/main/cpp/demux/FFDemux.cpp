@@ -45,8 +45,8 @@ bool FFDemux::init(const char *url) {
         ALOGD("av_find_best_stream failed %s", buf);
         return false;
     }
-    audioStreamIndex = re;
-    timeBase = r2d(ic->streams[audioStreamIndex]->time_base);
+    streamIndex = re;
+    timeBase = r2d(ic->streams[streamIndex]->time_base);
     ALOGD("FFDemux init finish");
     return true;
 }
@@ -63,12 +63,12 @@ bool FFDemux::start() {
             }
             break;
         }
-        if (pkt->stream_index == audioStreamIndex) {
+        if (pkt->stream_index == streamIndex) {
             AVPacketData *data = new AVPacketData();
             data->packet = pkt;
             data->size = pkt->size;
             data->pts = pkt->pts * 1000 * timeBase;
-            data->parameters = ic->streams[audioStreamIndex]->codecpar;
+            data->parameters = ic->streams[streamIndex]->codecpar;
             data->timeBase = timeBase;
             packetQueue->push(data);
             //network slow test
@@ -99,9 +99,9 @@ bool FFDemux::pause() {
 bool FFDemux::seek(long pos) {
     ALOGD("demux seek start! %ld, %lld", pos, totalDuration);
     avformat_flush(ic);
-    int64_t seekPos = ic->streams[audioStreamIndex]->duration * pos / totalDuration;
-    ALOGD("demux seek start! %lld, %lld", seekPos, ic->streams[audioStreamIndex]->duration);
-    int re = av_seek_frame(ic, audioStreamIndex, seekPos, AVSEEK_FLAG_FRAME | AVSEEK_FLAG_BACKWARD);
+    int64_t seekPos = ic->streams[streamIndex]->duration * pos / totalDuration;
+    ALOGD("demux seek start! %lld, %lld", seekPos, ic->streams[streamIndex]->duration);
+    int re = av_seek_frame(ic, streamIndex, seekPos, AVSEEK_FLAG_FRAME | AVSEEK_FLAG_BACKWARD);
     if (re < 0) {
         ALOGE("seek error !");
         return false;

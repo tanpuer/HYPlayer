@@ -40,7 +40,7 @@ private:
 
     AVFormatContext *ic;
 
-    int audioStreamIndex = -1;
+    int streamIndex = -1;
 
     double timeBase;
 

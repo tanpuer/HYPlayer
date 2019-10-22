@@ -23,8 +23,10 @@ void DecodeLooper::handleMessage(Looper::LooperMessage *msg) {
     switch (msg->what) {
         case kMsgDecodeCreated: {
             if (isAudio) {
+                ALOGD("audio decoder create");
                 decode = new FFDecode();
             } else {
+                ALOGD("video decoder create");
                 decode = new FFVideoDecode(usingMediaCodec);
             }
             decode->packetQueue = packetQueue;

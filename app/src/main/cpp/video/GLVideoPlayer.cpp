@@ -81,7 +81,7 @@ void GLVideoPlayer::surfaceDoFrame() {
     if (startTime > 0) {
         int64_t pts = frameQueue->pullHeadFramePts();
         int64_t currentTime = startTime + index * 16667 / 1000;
-//        ALOGD("current Time is %lld %lld", currentTime, pts);
+        ALOGD("current Time is %lld %lld %d", currentTime, pts, index);
         if (pts > currentTime) {
             index++;
             return;

@@ -20,6 +20,7 @@ bool FFVideoDecode::init() {
 bool FFVideoDecode::start() {
     while (isDecoding) {
         if (parameters == nullptr) {
+            ALOGD("FFVideoDecode init start");
             AVPacketData *packetData = packetQueue->pull();
             if (packetData == nullptr) {
                 continue;
@@ -50,6 +51,7 @@ bool FFVideoDecode::start() {
                 ALOGE("avcodec open failed !%s", buf);
                 return false;
             }
+            ALOGD("FFVideoDecode init finish");
         }
         AVPacketData *packetData = packetQueue->pull();
         if (packetData == nullptr) {

@@ -1,28 +1,29 @@
 package com.cw.hyplayer
 
 import android.Manifest
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.content.ServiceConnection
 import android.content.pm.PackageManager
-import android.os.Build
+import android.os.*
 import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.widget.SeekBar
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.cw.hyplayer.audio.HYAudioPlayer
-import com.cw.hyplayer.audio.MediaSource
+import com.cw.hyplayer.audio.AudioService
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
-    private var audioPlayer: HYAudioPlayer? = null
     private lateinit var timer: Timer
     private lateinit var handler: Handler
     private var settable = true
+    private var audioBinder: AudioService.AudioBinder? = null
+    private var audioConn = AudioConn()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,23 +42,18 @@ class MainActivity : AppCompatActivity() {
         }
 
         create.setOnClickListener {
-            if (audioPlayer == null) {
-                val mediaSource = MediaSource("/sdcard/test.mp3")
-//                val mediaSource = MediaSource("/sdcard/trailer111.mp4")
-                audioPlayer = HYAudioPlayer(mediaSource)
-            }
+            audioBinder?.callCreate()
         }
 
         release.setOnClickListener {
-            audioPlayer?.release()
-            audioPlayer = null
+            audioBinder?.callRelease()
         }
 
         start.setOnClickListener {
-            audioPlayer?.start()
+            audioBinder?.callStart()
         }
         pause.setOnClickListener {
-            audioPlayer?.pause()
+            audioBinder?.callPause()
         }
 
         seek_bar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
@@ -71,12 +67,12 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                if (seekBar == null || audioPlayer == null) {
+                if (seekBar == null || audioBinder == null) {
                     return
                 }
-                val pos = audioPlayer!!.totalDuration() * seekBar.progress / seekBar.max
+                val pos = audioBinder!!.callTotalDuration() * seekBar.progress / seekBar.max
                 Log.d("seek ", "$pos")
-                audioPlayer!!.seek(pos)
+                audioBinder!!.callSeek(pos)
                 settable = true
             }
 
@@ -87,13 +83,18 @@ class MainActivity : AppCompatActivity() {
         timer.scheduleAtFixedRate(object : TimerTask() {
             override fun run() {
                 handler.post {
-                    if (audioPlayer != null && settable && audioPlayer!!.totalDuration() > 0 && audioPlayer!!.currentTime() > 0) {
+                    if (audioBinder != null && settable && audioBinder!!.callTotalDuration() > 0 && audioBinder!!.callCurrentTime() > 0) {
                         seek_bar.progress =
-                            (audioPlayer!!.currentTime() * 100 / audioPlayer!!.totalDuration()).toInt()
+                            (audioBinder!!.callCurrentTime() * 100 / audioBinder!!.callTotalDuration()).toInt()
                     }
                 }
             }
         }, 0, 500)
+
+
+        val intent = Intent(this, AudioService::class.java)
+        startForegroundService(intent)
+        bindService(intent, audioConn, Context.BIND_AUTO_CREATE)
     }
 
     override fun onRequestPermissionsResult(
@@ -111,6 +112,19 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         timer.cancel()
+        unbindService(audioConn)
+    }
+
+    inner class AudioConn : ServiceConnection {
+
+        override fun onServiceDisconnected(name: ComponentName?) {
+            audioBinder = null
+        }
+
+        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+            audioBinder = service as AudioService.AudioBinder?
+        }
+
     }
 
     companion object {

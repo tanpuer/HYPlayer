@@ -93,7 +93,7 @@ class AudioService : Service() {
     }
 
     private fun setDataSource(mediaSource: MediaSource) {
-        audioPlayer?.setDataSource(mediaSource)
+        audioPlayer?.next(mediaSource)
     }
 
     inner class AudioBinder : Binder() {

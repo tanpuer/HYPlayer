@@ -97,7 +97,7 @@ extern "C" JNIEXPORT void JNICALL Java_com_cw_hyplayer_audio_HYAudioPlayer_nativ
     }
 }
 
-extern "C" JNIEXPORT void JNICALL Java_com_cw_hyplayer_audio_HYAudioPlayer_nativeSetDataSource(
+extern "C" JNIEXPORT void JNICALL Java_com_cw_hyplayer_audio_HYAudioPlayer_nativeNext(
         JNIEnv *env,
         jobject instance,
         jstring url) {

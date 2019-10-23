@@ -39,6 +39,10 @@ class HYAudioPlayer {
         return nativeCurrentTime()
     }
 
+    fun setDataSource(mediaSource: MediaSource) {
+        nativeSetDataSource(mediaSource.url)
+    }
+
     private external fun nativeInit(url: String): Boolean
 
     private external fun nativeStart(): Boolean
@@ -54,6 +58,8 @@ class HYAudioPlayer {
     private external fun nativeCurrentTime(): Long
 
     private external fun nativeSetLoop(loop: Boolean)
+
+    private external fun nativeSetDataSource(url: String)
 
     companion object {
         init {

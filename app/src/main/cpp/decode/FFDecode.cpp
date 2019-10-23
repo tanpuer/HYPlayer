@@ -76,6 +76,13 @@ bool FFDecode::start() {
 
             break;
         }
+        if (packetData->reset) {
+            ALOGD("FFDecode receive reset");
+            auto *frameData = new AVFrameData();
+            frameData->reset = true;
+            frameQueue->push(frameData);
+            continue;
+        }
         int re;
         if (packetData->packet && packetData->size > 0) {
             re = avcodec_send_packet(codecContext, packetData->packet);

@@ -19,7 +19,8 @@ public:
         kMsgSLPlayerStart,
         kMsgSLPlayerPause,
         kMsgSLPlayerSeek,
-        kMsgSLPlayerRelease
+        kMsgSLPlayerRelease,
+        kMsgSLPlayerReset
     };
 
     SLPlayerLooper(circle_av_frame_queue *frameQueue);

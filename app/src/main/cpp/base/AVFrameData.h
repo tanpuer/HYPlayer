@@ -28,6 +28,8 @@ public:
 
     bool seekOver;
 
+    bool reset;
+
 };
 
 

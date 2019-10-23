@@ -65,6 +65,10 @@ class MainActivity : AppCompatActivity() {
             (it as Button).text = "Loop $isLoop"
         }
 
+        next.setOnClickListener {
+            audioBinder?.callNext()
+        }
+
         seek_bar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
 
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {

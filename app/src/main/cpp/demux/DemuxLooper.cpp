@@ -19,8 +19,10 @@ DemuxLooper::~DemuxLooper() {
 void DemuxLooper::handleMessage(Looper::LooperMessage *msg) {
     switch (msg->what) {
         case kMsgDemuxCreated: {
-            demux = isAudio ? new FFDemux() : new FFVideoDemux();
-            demux->packetQueue = queue;
+            if (demux == nullptr) {
+                demux = isAudio ? new FFDemux() : new FFVideoDemux();
+                demux->packetQueue = queue;
+            }
             demux->init((const char *) msg->obj);
             demux->isDemuxing = true;
             demux->start();

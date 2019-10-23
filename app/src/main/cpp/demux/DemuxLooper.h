@@ -28,7 +28,7 @@ public:
 
     long getTotalDuration();
 
-    IDemux *demux;
+    IDemux *demux = nullptr;
 
     void pthreadExit() override;
 

@@ -33,6 +33,8 @@ public:
 
     void setLoop(bool loop);
 
+    void setDataSource(const char* path);
+
 private:
 
     const char *path;

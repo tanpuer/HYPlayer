@@ -156,6 +156,17 @@ void SLAudioPlayer::seek() {
     start();
 }
 
+void SLAudioPlayer::reset() {
+    pause();
+    AVFrameData *data = frameQueue->pull();
+    while (!data->reset) {
+        data->clear();
+        data = frameQueue->pull();
+    }
+    data->clear();
+    start();
+}
+
 void SLAudioPlayer::release() {
     ALOGD("SLAudioPlayer release");
     //停止播放

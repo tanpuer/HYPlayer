@@ -79,3 +79,14 @@ void AudioPlayer::setLoop(bool loop) {
         demuxLooper->demux->loop = loop;
     }
 }
+
+void AudioPlayer::setDataSource(const char *path) {
+    if (demuxLooper != nullptr) {
+        demuxLooper->demux->needReset = true;
+        demuxLooper->demux->isDemuxing = false;
+        demuxLooper->sendMessage(demuxLooper->kMsgDemuxCreated, (void *)path);
+    }
+    if (slPlayerLooper != nullptr) {
+        slPlayerLooper->sendMessage(slPlayerLooper->kMsgSLPlayerReset);
+    }
+}

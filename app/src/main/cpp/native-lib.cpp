@@ -97,6 +97,16 @@ extern "C" JNIEXPORT void JNICALL Java_com_cw_hyplayer_audio_HYAudioPlayer_nativ
     }
 }
 
+extern "C" JNIEXPORT void JNICALL Java_com_cw_hyplayer_audio_HYAudioPlayer_nativeSetDataSource(
+        JNIEnv *env,
+        jobject instance,
+        jstring url) {
+    if (audioPlayer != nullptr) {
+        const char *mediaUrl = env->GetStringUTFChars(url, nullptr);
+        audioPlayer->setDataSource(mediaUrl);
+    }
+}
+
 //.......................................................
 //VideoPlayer
 VideoPlayer *videoPlayer;

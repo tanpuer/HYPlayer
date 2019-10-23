@@ -52,10 +52,14 @@ bool FFDemux::init(const char *url) {
 }
 
 bool FFDemux::start() {
+    ALOGD("FFDemux start");
     while (isDemuxing) {
         AVPacket *pkt = av_packet_alloc();
         int re = av_read_frame(ic, pkt);
         if (re != 0) {
+            char buf[1024] = {0};
+            av_strerror(re, buf, sizeof(buf));
+            ALOGD("av_read_frame error %s", buf);
             av_packet_free(&pkt);
             if (!isOver && loop) {
                 seekToStart();
@@ -87,6 +91,17 @@ bool FFDemux::start() {
         data->over = true;
         packetQueue->push(data2);
         isOver = false;
+    }
+    if (needReset) {
+        needReset = false;
+        auto *data = new AVPacketData();
+        data->reset = true;
+        packetQueue->push(data);
+        needReset = false;
+        if (ic) {
+            avformat_close_input(&ic);
+        }
+        ALOGD("FFDemux reset!");
     }
     ALOGD("FFDemux start break!");
     return false;

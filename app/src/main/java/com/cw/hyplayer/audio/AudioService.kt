@@ -14,6 +14,14 @@ class AudioService : Service() {
     companion object {
         const val CHANNEL_ID = "HYAudioPlay"
         const val CHANNEL_NAME = "HYAudioService"
+
+        private val AUDIO_LIST = listOf(
+            "/sdcard/test.mp3",
+            "/sdcard/test1.mp3",
+            "/sdcard/test2.mp3",
+            "/sdcard/test3.mp3"
+        )
+        var currentIndex = 0
     }
 
     var audioPlayer: HYAudioPlayer? = null
@@ -34,7 +42,7 @@ class AudioService : Service() {
 
     fun create() {
         if (audioPlayer == null) {
-            val mediaSource = MediaSource("/sdcard/test3.mp3")
+            val mediaSource = MediaSource("/sdcard/test2.mp3")
 //                val mediaSource = MediaSource("/sdcard/trailer111.mp4")
             audioPlayer = HYAudioPlayer(mediaSource)
         }
@@ -75,6 +83,19 @@ class AudioService : Service() {
         audioPlayer?.loop = loop
     }
 
+    fun next() {
+        if (currentIndex >= AUDIO_LIST.size) {
+            currentIndex = 0
+        }
+        val mediaSource = MediaSource(AUDIO_LIST[currentIndex])
+        setDataSource(mediaSource)
+        currentIndex++
+    }
+
+    private fun setDataSource(mediaSource: MediaSource) {
+        audioPlayer?.setDataSource(mediaSource)
+    }
+
     inner class AudioBinder : Binder() {
 
         fun callCreate() {
@@ -107,6 +128,10 @@ class AudioService : Service() {
 
         fun callSetLoop(loop: Boolean) {
             setLoop(loop)
+        }
+
+        fun callNext() {
+            next()
         }
     }
 

@@ -32,6 +32,8 @@ public:
 
     double timeBase;
 
+    bool reset;
+
 };
 
 

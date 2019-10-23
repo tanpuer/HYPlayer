@@ -20,6 +20,8 @@ public:
 
     virtual void release() = 0;
 
+    virtual void reset() = 0;
+
     long currentPos;
 
 };

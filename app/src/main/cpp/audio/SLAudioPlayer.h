@@ -29,6 +29,8 @@ public:
 
     void call(void *bufq);
 
+    void reset();
+
 private:
 
     unsigned char* buf = 0;

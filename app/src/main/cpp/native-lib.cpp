@@ -110,7 +110,7 @@ extern "C" JNIEXPORT void JNICALL Java_com_cw_hyplayer_audio_HYAudioPlayer_nativ
 //.......................................................
 //VideoPlayer
 VideoPlayer *videoPlayer;
-extern "C" JNIEXPORT jboolean JNICALL Java_com_cw_hyplayer_video_HYVideoPlayer_nativeInit(
+extern "C" JNIEXPORT bool JNICALL Java_com_cw_hyplayer_video_HYVideoPlayer_nativeInit(
         JNIEnv *env,
         jobject instance,
         jstring url,
@@ -120,7 +120,7 @@ extern "C" JNIEXPORT jboolean JNICALL Java_com_cw_hyplayer_video_HYVideoPlayer_n
     return true;
 }
 
-extern "C" JNIEXPORT jboolean JNICALL Java_com_cw_hyplayer_video_HYVideoPlayer_nativeStart(
+extern "C" JNIEXPORT bool JNICALL Java_com_cw_hyplayer_video_HYVideoPlayer_nativeStart(
         JNIEnv *env,
         jobject instance) {
     if (videoPlayer != nullptr) {
@@ -129,7 +129,7 @@ extern "C" JNIEXPORT jboolean JNICALL Java_com_cw_hyplayer_video_HYVideoPlayer_n
     return true;
 }
 
-extern "C" JNIEXPORT jboolean JNICALL Java_com_cw_hyplayer_video_HYVideoPlayer_nativePause(
+extern "C" JNIEXPORT bool JNICALL Java_com_cw_hyplayer_video_HYVideoPlayer_nativePause(
         JNIEnv *env,
         jobject instance) {
     if (videoPlayer != nullptr) {
@@ -138,7 +138,7 @@ extern "C" JNIEXPORT jboolean JNICALL Java_com_cw_hyplayer_video_HYVideoPlayer_n
     return true;
 }
 
-extern "C" JNIEXPORT jboolean JNICALL Java_com_cw_hyplayer_video_HYVideoPlayer_nativeSeek(
+extern "C" JNIEXPORT bool JNICALL Java_com_cw_hyplayer_video_HYVideoPlayer_nativeSeek(
         JNIEnv *env,
         jobject instance,
         jlong pos) {

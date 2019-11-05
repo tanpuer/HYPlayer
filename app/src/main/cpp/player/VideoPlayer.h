@@ -49,6 +49,8 @@ private:
     DemuxLooper *demuxLooper;
     DecodeLooper *decodeLooper;
     GLVideoLooper *glVideoLooper;
+
+    bool enable = false;
 };
 
 

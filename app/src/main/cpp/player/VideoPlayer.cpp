@@ -14,6 +14,7 @@ VideoPlayer::VideoPlayer(const char *path, bool usingMediaCodec) {
     decodeLooper->sendMessage(decodeLooper->kMsgDecodeCreated);
     glVideoLooper = new GLVideoLooper(frameQueue);
     glVideoLooper->sendMessage(glVideoLooper->kMsgSurfaceCreated);
+    enable = true;
 }
 
 VideoPlayer::~VideoPlayer() {
@@ -44,6 +45,7 @@ void VideoPlayer::seek(long pos) {
 
 void VideoPlayer::release() {
     ALOGD("VideoPlayer start release");
+    enable = false;
     if (glVideoLooper != nullptr) {
         glVideoLooper->sendMessage(glVideoLooper->kMsgSurfaceDestroyed);
     }
@@ -60,7 +62,7 @@ void VideoPlayer::release() {
 
 // thread unsafe
 long VideoPlayer::getTotalDuration() {
-    if (demuxLooper != nullptr) {
+    if (enable && demuxLooper != nullptr) {
         return demuxLooper->getTotalDuration();
     }
     return 0;
@@ -68,7 +70,7 @@ long VideoPlayer::getTotalDuration() {
 
 //thread unsafe
 long VideoPlayer::getCurrentDuration() {
-    if (glVideoLooper != nullptr) {
+    if (enable && glVideoLooper != nullptr) {
         return glVideoLooper->getCurrentPos();
     }
     return 0;

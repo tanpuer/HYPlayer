@@ -42,9 +42,9 @@ void VideoPlayer::seek(long pos) {
 }
 
 void VideoPlayer::release() {
-//    if (slPlayerLooper != nullptr) {
-//        slPlayerLooper->sendMessage(slPlayerLooper->kMsgSLPlayerRelease);
-//    }
+    if (glVideoLooper != nullptr) {
+        glVideoLooper->sendMessage(glVideoLooper->kMsgSurfaceDestroyed);
+    }
     if (demuxLooper != nullptr) {
         demuxLooper->demux->isDemuxing = false;
         demuxLooper->demux->isOver = true;

@@ -56,20 +56,20 @@ void GLVideoPlayer::surfaceChanged(int width, int height) {
 }
 
 void GLVideoPlayer::surfaceDestroyed() {
-//    if (filter != nullptr) {
-//        delete filter;
-//        filter = nullptr;
-//    }
-//    if (windowSurface != nullptr) {
-//        windowSurface->release();
-//        delete windowSurface;
-//        windowSurface = nullptr;
-//    }
-//    if (eglCore != nullptr) {
-//        eglCore->release();
-//        delete eglCore;
-//        eglCore = nullptr;
-//    }
+    if (filter != nullptr) {
+        delete filter;
+        filter = nullptr;
+    }
+    if (windowSurface != nullptr) {
+        windowSurface->release(true);
+        delete windowSurface;
+        windowSurface = nullptr;
+    }
+    if (eglCore != nullptr) {
+        eglCore->release();
+        delete eglCore;
+        eglCore = nullptr;
+    }
 }
 
 void GLVideoPlayer::surfaceDoFrame() {
@@ -81,7 +81,7 @@ void GLVideoPlayer::surfaceDoFrame() {
     if (startTime > 0) {
         int64_t pts = frameQueue->pullHeadFramePts();
         int64_t currentTime = startTime + index * 16667 / 1000;
-        ALOGD("current Time is %lld %lld %d", currentTime, pts, index);
+//        ALOGD("current Time is %lld %lld %d", currentTime, pts, index);
         if (pts > currentTime) {
             index++;
             return;
@@ -100,6 +100,7 @@ void GLVideoPlayer::surfaceDoFrame() {
         AVFrame *avFrame = data->frame;
         initFilter(avFrame);
         filter->drawFrame(avFrame);
+        ALOGD("video frame pts is %lld", data->pts);
         windowSurface->swapBuffer();
         index++;
     }

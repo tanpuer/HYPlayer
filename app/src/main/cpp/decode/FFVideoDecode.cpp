@@ -81,7 +81,9 @@ bool FFVideoDecode::start() {
             re = avcodec_send_packet(codecContext, packetData->packet);
             packetData->clear();
             if (re < 0 && re != AVERROR(EAGAIN) && re != AVERROR_EOF) {
-                ALOGE("avcodec_send_packet error")
+                char buf[1024] = {0};
+                av_strerror(re, buf, sizeof(buf) - 1);
+                ALOGE("avcodec_send_packet error !%s", buf);
                 return false;
             }
 //            ALOGD("avcodec_send_packet success")

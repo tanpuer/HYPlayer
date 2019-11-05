@@ -54,7 +54,6 @@ bool FFDemux::init(const char *url) {
 bool FFDemux::start() {
     ALOGD("FFDemux start %d", streamIndex);
     while (isDemuxing) {
-        ALOGD("FFDemux demuxing! %d", ic != nullptr);
         AVPacket *pkt = av_packet_alloc();
         int re = av_read_frame(ic, pkt);
         if (re != 0) {

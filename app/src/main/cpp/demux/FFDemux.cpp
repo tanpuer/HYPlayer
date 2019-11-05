@@ -54,6 +54,7 @@ bool FFDemux::init(const char *url) {
 bool FFDemux::start() {
     ALOGD("FFDemux start %d", streamIndex);
     while (isDemuxing) {
+        ALOGD("FFDemux demuxing! %d", ic != nullptr);
         AVPacket *pkt = av_packet_alloc();
         int re = av_read_frame(ic, pkt);
         if (re != 0) {
@@ -78,11 +79,12 @@ bool FFDemux::start() {
             //network slow test
 //            usleep(100000);
         } else {
-            //video ignore
+            //ignore other streams!
             av_packet_free(&pkt);
         }
     }
     if (isOver) {
+        ALOGD("FFDemux isOver");
         //over
         AVPacketData *data = new AVPacketData();
         data->over = true;
@@ -93,6 +95,7 @@ bool FFDemux::start() {
         isOver = false;
     }
     if (needReset) {
+        ALOGD("FFDemux needReset");
         needReset = false;
         auto *data = new AVPacketData();
         data->reset = true;

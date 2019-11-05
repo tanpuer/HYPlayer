@@ -3,6 +3,7 @@
 //
 
 #include <base/native_log.h>
+#include "assert.h"
 #include "FFVideoDecode.h"
 
 FFVideoDecode::FFVideoDecode(bool usingMediaCodec) {
@@ -53,6 +54,7 @@ bool FFVideoDecode::start() {
             }
             ALOGD("FFVideoDecode init finish");
         }
+        ALOGD("pull AVPacket data from packetQueue!");
         AVPacketData *packetData = packetQueue->pull();
         if (packetData == nullptr) {
             continue;
@@ -78,6 +80,7 @@ bool FFVideoDecode::start() {
         }
         int re;
         if (packetData->packet && packetData->size > 0) {
+            assert(codecContext != nullptr);
             re = avcodec_send_packet(codecContext, packetData->packet);
             packetData->clear();
             if (re < 0 && re != AVERROR(EAGAIN) && re != AVERROR_EOF) {
@@ -119,6 +122,7 @@ void FFVideoDecode::release() {
     if (codecContext) {
         avcodec_close(codecContext);
         avcodec_free_context(&codecContext);
+        ALOGD("FFVideoDecode release success!");
     }
     delete packetQueue;
     ALOGD("delete packetQueue success!");

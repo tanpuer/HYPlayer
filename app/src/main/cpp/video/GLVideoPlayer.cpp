@@ -15,6 +15,7 @@ GLVideoPlayer::GLVideoPlayer(circle_av_frame_queue *frameQueue) {
 }
 
 GLVideoPlayer::~GLVideoPlayer() {
+    ALOGD("GLVideoPlayer destructor");
     if (filter != nullptr) {
         delete filter;
         filter = nullptr;
@@ -56,6 +57,7 @@ void GLVideoPlayer::surfaceChanged(int width, int height) {
 }
 
 void GLVideoPlayer::surfaceDestroyed() {
+    ALOGD("GLVideoPlayer surfaceDestroyed");
     if (filter != nullptr) {
         delete filter;
         filter = nullptr;
@@ -66,14 +68,24 @@ void GLVideoPlayer::surfaceDestroyed() {
         windowSurface = nullptr;
     }
     if (eglCore != nullptr) {
-        eglCore->release();
         delete eglCore;
         eglCore = nullptr;
     }
+
+    ALOGD("delete frameQueue start!")
+    AVFrameData *data = frameQueue->pull();
+    while (!data->over) {
+        data->clear();
+        data = frameQueue->pull();
+    }
+    data->clear();
+
+    delete frameQueue;
+    ALOGD("delete frameQueue success!")
 }
 
 void GLVideoPlayer::surfaceDoFrame() {
-
+//    ALOGD("GLVideoPlayer surfaceDoFrame");
     if (!started) {
         return;
     }

@@ -28,13 +28,13 @@ public:
 
 private:
 
-    AVCodecParameters *parameters;
+    AVCodecParameters *parameters = nullptr;
 
-    AVCodec *codec;
+    AVCodec *codec = nullptr;
 
-    AVCodecContext *codecContext;
+    AVCodecContext *codecContext = nullptr;
 
-    SwrContext *swrContext;
+    SwrContext *swrContext = nullptr;
 
     double timeBase;
 

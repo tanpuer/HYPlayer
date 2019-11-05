@@ -6,10 +6,12 @@ import com.cw.hyplayer.audio.MediaSource
 class HYVideoPlayer {
 
     private val mediaSource: MediaSource
+    private var enable = false
 
     constructor(mediaSource: MediaSource) {
         this.mediaSource = mediaSource
         nativeInit(mediaSource.url, mediaSource.usingMediaCodec)
+        enable = true
     }
 
     fun start(): Boolean {
@@ -25,6 +27,7 @@ class HYVideoPlayer {
     }
 
     fun release() {
+        enable = false
         nativeRelease()
     }
 
@@ -49,7 +52,9 @@ class HYVideoPlayer {
     }
 
     fun doFrame() {
-        nativeDoFrame()
+        if (enable) {
+            nativeDoFrame()
+        }
     }
 
     private external fun nativeInit(url: String, usingMediaCodec: Boolean): Boolean

@@ -33,6 +33,7 @@ void DecodeLooper::handleMessage(Looper::LooperMessage *msg) {
             decode->frameQueue = frameQueue;
             decode->init();
             decode->isDecoding = true;
+            ALOGD("video decoder prepare to start");
             decode->start();
             break;
         }

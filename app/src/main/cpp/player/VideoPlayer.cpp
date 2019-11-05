@@ -2,6 +2,7 @@
 // Created by templechen on 2019-10-18.
 //
 
+#include <base/native_log.h>
 #include "VideoPlayer.h"
 
 VideoPlayer::VideoPlayer(const char *path, bool usingMediaCodec) {
@@ -42,6 +43,7 @@ void VideoPlayer::seek(long pos) {
 }
 
 void VideoPlayer::release() {
+    ALOGD("VideoPlayer start release");
     if (glVideoLooper != nullptr) {
         glVideoLooper->sendMessage(glVideoLooper->kMsgSurfaceDestroyed);
     }

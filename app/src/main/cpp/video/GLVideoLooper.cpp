@@ -37,6 +37,7 @@ void GLVideoLooper::handleMessage(Looper::LooperMessage *msg) {
         case kMsgSurfaceDestroyed: {
             if (glVideoPlayer != nullptr && !destroyed) {
                 glVideoPlayer->surfaceDestroyed();
+                quit();
             }
             destroyed = true;
             break;

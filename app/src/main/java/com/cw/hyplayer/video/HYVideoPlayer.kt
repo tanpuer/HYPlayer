@@ -5,7 +5,7 @@ import com.cw.hyplayer.audio.MediaSource
 
 class HYVideoPlayer {
 
-    val mediaSource: MediaSource
+    private val mediaSource: MediaSource
 
     constructor(mediaSource: MediaSource) {
         this.mediaSource = mediaSource

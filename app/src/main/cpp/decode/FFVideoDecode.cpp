@@ -100,8 +100,6 @@ bool FFVideoDecode::start() {
                             frame->height;
                     frameData->pts = frame->pts * 1000 * timeBase;
                     frameQueue->push(frameData);
-//                    ALOGD("111111 pls check22 %lld %lld", frame->pts, frameData->pts);
-
                 } else {
                     av_frame_free(&frame);
                     break;

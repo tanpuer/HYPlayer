@@ -90,10 +90,10 @@ void GLVideoPlayer::surfaceDoFrame() {
         return;
     }
 
-    if (startTime > 0) {
+    if (startTime >= 0) {
         int64_t pts = frameQueue->pullHeadFramePts();
         int64_t currentTime = startTime + index * 16667 / 1000;
-//        ALOGD("current Time is %lld %lld %d", currentTime, pts, index);
+        ALOGD("current Time is %lld %lld %d", currentTime, pts, index);
         if (pts > currentTime) {
             index++;
             return;
@@ -105,7 +105,6 @@ void GLVideoPlayer::surfaceDoFrame() {
         if (startTime < 0) {
             startTime = data->pts;
         }
-
         currentPos = data->pts;
         glClearColor(0.0, 0.0, 0.0, 1.0);
         glClear(GL_COLOR_BUFFER_BIT);

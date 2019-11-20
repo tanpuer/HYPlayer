@@ -28,6 +28,8 @@ public:
 
     AVPacketData* pull();
 
+    AVPacketData* pop();
+
 private:
 
     pthread_mutex_t mutex;

@@ -99,3 +99,21 @@ AVPacketData *circle_av_packet_queue::pull() {
         return new AVPacketData();
     }
 }
+
+AVPacketData *circle_av_packet_queue::pop() {
+    pthread_mutex_lock(&mutex);
+    if (!demuxStarted) {
+        pthread_cond_wait(&cond, &mutex);
+    }
+    if (currSize < DEFAULT_AV_PACKET_SIZE / 3) {
+        pthread_cond_signal(&cond);
+    }
+    if (pullCursor->next != pushCursor) {
+        AVPacketData *data = pullCursor->data;
+        pthread_mutex_unlock(&mutex);
+        return data;
+    } else {
+        pthread_mutex_unlock(&mutex);
+        return new AVPacketData();
+    }
+}

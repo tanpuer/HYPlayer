@@ -22,7 +22,7 @@ bool FFVideoDecode::start() {
     while (isDecoding) {
         if (parameters == nullptr) {
             ALOGD("FFVideoDecode init start");
-            AVPacketData *packetData = packetQueue->pull();
+            AVPacketData *packetData = packetQueue->pop();
             if (packetData == nullptr) {
                 continue;
             }
@@ -56,18 +56,14 @@ bool FFVideoDecode::start() {
         }
         ALOGD("pull AVPacket data from packetQueue!");
 
-        AVPacketData *packetData = nullptr;
-        if (this->packetData != nullptr) {
-            packetData = this->packetData;
-        } else {
-            packetData = packetQueue->pull();
-        }
+        AVPacketData *packetData = packetQueue->pop();
         if (packetData == nullptr) {
             continue;
         }
         if (packetData->seekOver) {
             avcodec_flush_buffers(codecContext);
             ALOGD("FFDecode receive seek over signal");
+            packetQueue->pull()->clear();
             auto *frameData = new AVFrameData();
             frameData->seekOver = true;
             frameQueue->push(frameData);
@@ -75,14 +71,13 @@ bool FFVideoDecode::start() {
         }
         if (packetData->over) {
             ALOGD("AVPacket is over!");
-            packetData->clear();
+            packetQueue->pull()->clear();
             auto *frameData = new AVFrameData();
             frameData->over = true;
             frameQueue->push(frameData);
             auto *frameData2 = new AVFrameData();
             frameData->over = true;
             frameQueue->push(frameData2);
-
             break;
         }
         int re;
@@ -90,11 +85,9 @@ bool FFVideoDecode::start() {
             assert(codecContext != nullptr);
             re = avcodec_send_packet(codecContext, packetData->packet);
             if (re == 0) {
-                packetData->clear();
-                this->packetData = nullptr;
+                packetQueue->pull()->clear();
             } else if (re == AVERROR((EAGAIN))) {
                 //???
-                this->packetData = packetData;
             }else if (re < 0 && re != AVERROR_EOF) {
                 char buf[1024] = {0};
                 av_strerror(re, buf, sizeof(buf) - 1);
@@ -109,9 +102,11 @@ bool FFVideoDecode::start() {
                     frameData->frame = frame;
                     frameData->size =
                             (frame->linesize[0] + frame->linesize[1] + frame->linesize[2]) *
-                            frame->height;;
+                            frame->height;
                     frameData->pts = frame->pts * 1000 * timeBase;
                     frameQueue->push(frameData);
+//                    ALOGD("111111 pls check22 %lld %lld", frame->pts, frameData->pts);
+
                 } else {
                     av_frame_free(&frame);
                     break;

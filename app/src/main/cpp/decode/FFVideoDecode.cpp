@@ -66,6 +66,7 @@ bool FFVideoDecode::start() {
             continue;
         }
         if (packetData->seekOver) {
+            avcodec_flush_buffers(codecContext);
             ALOGD("FFDecode receive seek over signal");
             auto *frameData = new AVFrameData();
             frameData->seekOver = true;

@@ -7,7 +7,6 @@
 
 
 #include "base_filter.h"
-#define GET_STR(x) #x
 
 class mediacodec_nv12_filter : public base_filter{
 

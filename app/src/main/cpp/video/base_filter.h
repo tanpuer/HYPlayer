@@ -30,6 +30,8 @@ static GLfloat videoTexture[] = {
         1.0f, 0.0f
 };
 
+#define GET_STR(x) #x
+
 class base_filter {
 
 public:

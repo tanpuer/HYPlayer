@@ -120,24 +120,44 @@ void base_filter::initVertexShader() {
     };
 }
 
+static const char *fragYUV420P = GET_STR(
+        precision mediump float;    //精度
+        varying vec2 vTextureCoord;     //顶点着色器传递的坐标
+        uniform sampler2D uTextureY; //输入的材质（不透明灰度，单像素）
+        uniform sampler2D uTextureU;
+        uniform sampler2D uTextureV;
+        void main(){
+            vec3 yuv;
+            vec3 rgb;
+            yuv.r = texture2D(uTextureY,vTextureCoord).r;
+            yuv.g = texture2D(uTextureU,vTextureCoord).r - 0.5;
+            yuv.b = texture2D(uTextureV,vTextureCoord).r - 0.5;
+            rgb = mat3(1.0,     1.0,    1.0,
+                      0.0,-0.39465,2.03211,
+                      1.13983,-0.58060,0.0)*yuv;
+            gl_FragColor = vec4(rgb,1.0);
+        }
+);
+
 void base_filter::initFragmentShader() {
-    fragment_shader_string= {
-        "precision highp float;\n"
-        "uniform sampler2D uTextureY;\n"
-        "uniform sampler2D uTextureU;\n"
-        "uniform sampler2D uTextureV;\n"
-        "varying vec2 vTextureCoord;\n"
-        "void main()\n"
-        "{\n"
-        "float y = texture2D(uTextureY, vTextureCoord).r;\n"
-        "float u = texture2D(uTextureU, vTextureCoord).r - 0.5;\n"
-        "float v = texture2D(uTextureV, vTextureCoord).r - 0.5;\n"
-        "float r = y + 1.402 * v;\n"
-        "float g = y - 0.344 * u - 0.714 * v;\n"
-        "float b = y + 1.772 * u;\n"
-        "gl_FragColor = vec4(r,g,b,1.0);\n"
-        "}\n"
-    };
+//    fragment_shader_string= {
+//        "precision highp float;\n"
+//        "uniform sampler2D uTextureY;\n"
+//        "uniform sampler2D uTextureU;\n"
+//        "uniform sampler2D uTextureV;\n"
+//        "varying vec2 vTextureCoord;\n"
+//        "void main()\n"
+//        "{\n"
+//        "float y = texture2D(uTextureY, vTextureCoord).r;\n"
+//        "float u = texture2D(uTextureU, vTextureCoord).r - 0.5;\n"
+//        "float v = texture2D(uTextureV, vTextureCoord).r - 0.5;\n"
+//        "float r = y + 1.402 * v;\n"
+//        "float g = y - 0.344 * u - 0.714 * v;\n"
+//        "float b = y + 1.772 * u;\n"
+//        "gl_FragColor = vec4(r,g,b,1.0);\n"
+//        "}\n"
+//    };
+    fragment_shader_string = fragYUV420P;
 }
 
 void base_filter::createTextures() {

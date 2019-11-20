@@ -36,6 +36,8 @@ private:
 
     bool usingMediaCodec;
 
+    AVPacketData *packetData = nullptr;
+
 };
 
 

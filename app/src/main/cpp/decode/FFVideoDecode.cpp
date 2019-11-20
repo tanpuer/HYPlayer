@@ -55,7 +55,13 @@ bool FFVideoDecode::start() {
             ALOGD("FFVideoDecode init finish");
         }
         ALOGD("pull AVPacket data from packetQueue!");
-        AVPacketData *packetData = packetQueue->pull();
+
+        AVPacketData *packetData = nullptr;
+        if (this->packetData != nullptr) {
+            packetData = this->packetData;
+        } else {
+            packetData = packetQueue->pull();
+        }
         if (packetData == nullptr) {
             continue;
         }
@@ -82,19 +88,22 @@ bool FFVideoDecode::start() {
         if (packetData->packet && packetData->size > 0) {
             assert(codecContext != nullptr);
             re = avcodec_send_packet(codecContext, packetData->packet);
-            packetData->clear();
-            if (re < 0 && re != AVERROR(EAGAIN) && re != AVERROR_EOF) {
+            if (re == 0) {
+                packetData->clear();
+                this->packetData = nullptr;
+            } else if (re == AVERROR((EAGAIN))) {
+                //???
+                this->packetData = packetData;
+            }else if (re < 0 && re != AVERROR_EOF) {
                 char buf[1024] = {0};
                 av_strerror(re, buf, sizeof(buf) - 1);
                 ALOGE("avcodec_send_packet error !%s", buf);
                 return false;
             }
-//            ALOGD("avcodec_send_packet success")
             while (isDecoding) {
                 AVFrame *frame = av_frame_alloc();
                 re = avcodec_receive_frame(codecContext, frame);
                 if (re == 0) {
-//                    ALOGD("avcodec_receive_frame success");
                     auto *frameData = new AVFrameData();
                     frameData->frame = frame;
                     frameData->size =
@@ -103,7 +112,6 @@ bool FFVideoDecode::start() {
                     frameData->pts = frame->pts * 1000 * timeBase;
                     frameQueue->push(frameData);
                 } else {
-//                    ALOGD("avcodec_receive_frame fail");
                     av_frame_free(&frame);
                     break;
                 }

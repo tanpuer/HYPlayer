@@ -37,14 +37,15 @@ void mediacodec_nv12_filter::drawTextures(AVFrame *avFrame) {
     uTextureYLocation = glGetUniformLocation(program, uTextureY);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, yTexture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, avFrame->width, avFrame->height, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE,
+    //pay attention to linsize and width, maybe they are not the same
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, avFrame->linesize[0], avFrame->height, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE,
                  avFrame->data[0]);
     glUniform1i(uTextureYLocation, 0);
 
     uTextureUVLocation = glGetUniformLocation(program, uTextureUV);
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, uvTexture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE_ALPHA, avFrame->width / 2, avFrame->height / 2, 0, GL_LUMINANCE_ALPHA,
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE_ALPHA, avFrame->linesize[1] / 2, avFrame->height / 2, 0, GL_LUMINANCE_ALPHA,
                  GL_UNSIGNED_BYTE,
                  avFrame->data[1]);
     glUniform1i(uTextureUVLocation, 1);

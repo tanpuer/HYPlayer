@@ -167,17 +167,19 @@ void base_filter::createTextures() {
 }
 
 void base_filter::drawTextures(AVFrame *avFrame) {
+    //pay attention to linsize and width, maybe they are not the same
+
     uTextureYLocation = glGetUniformLocation(program, uTextureY);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, yTexture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, avFrame->width, avFrame->height, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE,
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, avFrame->linesize[0], avFrame->height, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE,
                  avFrame->data[0]);
     glUniform1i(uTextureYLocation, 0);
 
     uTextureULocation = glGetUniformLocation(program, uTextureU);
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, uTexture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, avFrame->width / 2, avFrame->height / 2, 0, GL_LUMINANCE,
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, avFrame->linesize[1], avFrame->height / 2, 0, GL_LUMINANCE,
                  GL_UNSIGNED_BYTE,
                  avFrame->data[1]);
     glUniform1i(uTextureULocation, 1);
@@ -185,7 +187,7 @@ void base_filter::drawTextures(AVFrame *avFrame) {
     uTextureVLocation = glGetUniformLocation(program, uTextureV);
     glActiveTexture(GL_TEXTURE2);
     glBindTexture(GL_TEXTURE_2D, vTexture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, avFrame->width / 2, avFrame->height / 2, 0, GL_LUMINANCE,
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, avFrame->linesize[2], avFrame->height / 2, 0, GL_LUMINANCE,
                  GL_UNSIGNED_BYTE,
                  avFrame->data[2]);
     glUniform1i(uTextureVLocation, 2);

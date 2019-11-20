@@ -20,12 +20,32 @@ bool FFVideoDecode::init() {
 
 bool FFVideoDecode::start() {
     while (isDecoding) {
+        AVPacketData *packetData = packetQueue->pop();
+        if (packetData == nullptr) {
+            continue;
+        }
+        if (packetData->seekOver) {
+            avcodec_flush_buffers(codecContext);
+            ALOGD("FFDecode receive seek over signal");
+            packetQueue->pull()->clear();
+            auto *frameData = new AVFrameData();
+            frameData->seekOver = true;
+            frameQueue->push(frameData);
+            continue;
+        }
+        if (packetData->over) {
+            ALOGD("AVPacket is over!");
+            packetQueue->pull()->clear();
+            auto *frameData = new AVFrameData();
+            frameData->over = true;
+            frameQueue->push(frameData);
+            auto *frameData2 = new AVFrameData();
+            frameData->over = true;
+            frameQueue->push(frameData2);
+            break;
+        }
         if (parameters == nullptr) {
             ALOGD("FFVideoDecode init start");
-            AVPacketData *packetData = packetQueue->pop();
-            if (packetData == nullptr) {
-                continue;
-            }
             parameters = packetData->parameters;
             timeBase = packetData->timeBase;
             if (usingMediaCodec) {
@@ -55,31 +75,6 @@ bool FFVideoDecode::start() {
             ALOGD("FFVideoDecode init finish");
         }
         ALOGD("pull AVPacket data from packetQueue!");
-
-        AVPacketData *packetData = packetQueue->pop();
-        if (packetData == nullptr) {
-            continue;
-        }
-        if (packetData->seekOver) {
-            avcodec_flush_buffers(codecContext);
-            ALOGD("FFDecode receive seek over signal");
-            packetQueue->pull()->clear();
-            auto *frameData = new AVFrameData();
-            frameData->seekOver = true;
-            frameQueue->push(frameData);
-            continue;
-        }
-        if (packetData->over) {
-            ALOGD("AVPacket is over!");
-            packetQueue->pull()->clear();
-            auto *frameData = new AVFrameData();
-            frameData->over = true;
-            frameQueue->push(frameData);
-            auto *frameData2 = new AVFrameData();
-            frameData->over = true;
-            frameQueue->push(frameData2);
-            break;
-        }
         int re;
         if (packetData->packet && packetData->size > 0) {
             assert(codecContext != nullptr);

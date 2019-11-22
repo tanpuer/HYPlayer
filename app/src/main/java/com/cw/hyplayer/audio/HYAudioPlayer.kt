@@ -43,6 +43,13 @@ class HYAudioPlayer {
         nativeNext(mediaSource.url)
     }
 
+    /**
+     * volume 0-100
+     */
+    fun setVolume(volume: Int) {
+        nativeSetVolume(volume)
+    }
+
     private external fun nativeInit(url: String): Boolean
 
     private external fun nativeStart(): Boolean
@@ -60,6 +67,8 @@ class HYAudioPlayer {
     private external fun nativeSetLoop(loop: Boolean)
 
     private external fun nativeNext(url: String)
+
+    private external fun nativeSetVolume(volume: Int)
 
     companion object {
         init {

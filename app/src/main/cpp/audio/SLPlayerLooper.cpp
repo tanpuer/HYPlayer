@@ -41,6 +41,10 @@ void SLPlayerLooper::handleMessage(Looper::LooperMessage *msg) {
             slAudioPlayer->reset();
             break;
         }
+        case kMsgSlPlayerSetVolume: {
+            slAudioPlayer->setVolume(msg->arg1 / 100.0f);
+            break;
+        }
         default: {
             ALOGE("unknown msg in SLPlayerLooper!")
             break;

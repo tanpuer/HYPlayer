@@ -22,6 +22,8 @@ public:
 
     virtual void reset() = 0;
 
+    virtual void setVolume(float volume) = 0;
+
     long currentPos;
 
 };

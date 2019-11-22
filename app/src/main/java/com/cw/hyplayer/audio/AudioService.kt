@@ -92,6 +92,10 @@ class AudioService : Service() {
         currentIndex++
     }
 
+    fun setVolume(volume: Int) {
+        audioPlayer?.setVolume(volume)
+    }
+
     private fun setDataSource(mediaSource: MediaSource) {
         audioPlayer?.next(mediaSource)
     }
@@ -132,6 +136,10 @@ class AudioService : Service() {
 
         fun callNext() {
             next()
+        }
+
+        fun callSetVolume(volume: Int) {
+            setVolume(volume)
         }
     }
 

@@ -107,6 +107,15 @@ extern "C" JNIEXPORT void JNICALL Java_com_cw_hyplayer_audio_HYAudioPlayer_nativ
     }
 }
 
+extern "C" JNIEXPORT void JNICALL Java_com_cw_hyplayer_audio_HYAudioPlayer_nativeSetVolume(
+        JNIEnv *env,
+        jobject instance,
+        jint volume) {
+    if (audioPlayer != nullptr) {
+        audioPlayer->setVolume(volume);
+    }
+}
+
 //.......................................................
 //VideoPlayer
 VideoPlayer *videoPlayer;

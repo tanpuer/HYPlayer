@@ -13,6 +13,7 @@ static SLObjectItf mix = NULL;
 static SLObjectItf player = NULL;
 static SLPlayItf iplayer = NULL;
 static SLAndroidSimpleBufferQueueItf pcmQue = NULL;
+static SLVolumeItf volumeItf = NULL;
 
 static SLEngineItf CreateSL() {
     SLresult re;
@@ -73,7 +74,7 @@ SLAudioPlayer::SLAudioPlayer(circle_av_frame_queue *frameQueue) {
     };
     SLDataSource ds = {&que, &pcm};
     //4 创建播放器
-    const SLInterfaceID ids[] = {SL_IID_BUFFERQUEUE};
+    const SLInterfaceID ids[] = {SL_IID_BUFFERQUEUE, SL_IID_VOLUME, SL_IID_PLAY};
     const SLboolean req[] = {SL_BOOLEAN_TRUE};
     re = (*eng)->CreateAudioPlayer(eng, &player, &ds, &audioSink,
                                    sizeof(ids) / sizeof(SLInterfaceID), ids, req);
@@ -93,6 +94,11 @@ SLAudioPlayer::SLAudioPlayer(circle_av_frame_queue *frameQueue) {
     re = (*player)->GetInterface(player, SL_IID_BUFFERQUEUE, &pcmQue);
     if (re != SL_RESULT_SUCCESS) {
         ALOGE("GetInterface SL_IID_BUFFERQUEUE failed!");
+        return;
+    }
+    re = (*player)->GetInterface(player, SL_IID_VOLUME, &volumeItf);
+    if (re != SL_RESULT_SUCCESS) {
+        ALOGE("GetInterface SL_IID_VOLUME failed!");
         return;
     }
 
@@ -208,4 +214,32 @@ void SLAudioPlayer::release() {
 
     delete this;
 
+}
+
+void SLAudioPlayer::setVolume(float volume) {
+    if (volumeItf != nullptr) {
+        SLmillibel level = getAmplificationLevel(volume);
+        SLresult result = (*volumeItf)->SetVolumeLevel(volumeItf, level);
+        if (result != SL_RESULT_SUCCESS) {
+            ALOGE("SLAudioPlayer setVolume failed!");
+        }
+    }
+}
+
+/**
+ * 计算SL的音量
+ * @param volumeLevel
+ * @return
+ */
+SLmillibel SLAudioPlayer::getAmplificationLevel(float volumeLevel) {
+    if (volumeLevel < 0.00000001) {
+        return SL_MILLIBEL_MIN;
+    }
+    SLmillibel mb = lroundf(2000.f * log10f(volumeLevel));
+    if (mb < SL_MILLIBEL_MIN) {
+        mb = SL_MILLIBEL_MIN;
+    } else if (mb > 0) {
+        mb = 0;
+    }
+    return mb;
 }

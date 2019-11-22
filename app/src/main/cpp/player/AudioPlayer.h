@@ -35,6 +35,8 @@ public:
 
     void setDataSource(const char* path);
 
+    void setVolume(int volume);
+
 private:
 
     const char *path;

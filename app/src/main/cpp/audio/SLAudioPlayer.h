@@ -6,6 +6,7 @@
 #define HYPLAYER_SLAUDIOPLAYER_H
 
 
+#include <SLES/OpenSLES.h>
 #include "../decode/circle_av_frame_queue.h"
 #include "IAudioPlayer.h"
 
@@ -31,11 +32,15 @@ public:
 
     void reset();
 
+    void setVolume(float volume);
+
 private:
 
     unsigned char* buf = 0;
 
     circle_av_frame_queue *frameQueue;
+
+    SLmillibel getAmplificationLevel(float volumeLevel);
 };
 
 

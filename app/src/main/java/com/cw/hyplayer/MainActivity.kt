@@ -91,6 +91,23 @@ class MainActivity : AppCompatActivity() {
 
         })
 
+        volume_seek_bar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {
+
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                seekBar?.let {
+                    audioBinder!!.callSetVolume(it.progress)
+                }
+            }
+        })
+
         handler = Handler(Looper.getMainLooper())
         timer = Timer()
         timer.scheduleAtFixedRate(object : TimerTask() {

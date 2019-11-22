@@ -90,3 +90,9 @@ void AudioPlayer::setDataSource(const char *path) {
         slPlayerLooper->sendMessage(slPlayerLooper->kMsgSLPlayerReset);
     }
 }
+
+void AudioPlayer::setVolume(int volume) {
+    if (slPlayerLooper != nullptr) {
+        slPlayerLooper->sendMessage(slPlayerLooper->kMsgSlPlayerSetVolume, volume, 0);
+    }
+}

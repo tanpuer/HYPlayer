@@ -91,6 +91,7 @@ class MainActivity : AppCompatActivity() {
 
         })
 
+        volume_seek_bar.progress = 100
         volume_seek_bar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
 
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {

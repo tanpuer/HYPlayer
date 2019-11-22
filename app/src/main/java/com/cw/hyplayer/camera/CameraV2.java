@@ -15,6 +15,7 @@ import android.media.Image;
 import android.media.ImageReader;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.os.Looper;
 import android.util.Log;
 import android.util.Size;
 import android.util.SparseIntArray;
@@ -58,6 +59,7 @@ public class CameraV2 extends BaseCamera {
     private ImageReader mImageReader;
     private NativeCameraView nativeCameraView;
 
+    private boolean isPreview = false;
 
     public CameraV2(Activity activity, NativeCameraView nativeCameraView) {
         this.mActivity = activity;
@@ -153,13 +155,19 @@ public class CameraV2 extends BaseCamera {
         mImageReader.setOnImageAvailableListener(new ImageReader.OnImageAvailableListener() {
             @Override
             public void onImageAvailable(ImageReader reader) {
-                Image img = reader.acquireNextImage();
-                Log.d(TAG, "onImageAvailable format: " + img.getFormat() + ", width: " + img.getWidth() + ", height: " + img.getHeight());
-                ByteBuffer buffer = img.getPlanes()[0].getBuffer();
-                byte[] data = new byte[buffer.remaining()];
-                buffer.get(data);
-                nativeCameraView.cameraFFEncodeFrame(data, img.getWidth(), img.getHeight());
-                img.close();
+                if (isPreview) {
+                    Image img = reader.acquireNextImage();
+                    Log.d(TAG, "onImageAvailable format: " + img.getFormat() + ", width: " + img.getWidth() + ", height: " + img.getHeight());
+                    if (mImageReader.getSurface() == null) {
+                        img.close();
+                        return;
+                    }
+                    ByteBuffer buffer = img.getPlanes()[0].getBuffer();
+                    byte[] data = new byte[buffer.remaining()];
+                    buffer.get(data);
+                    nativeCameraView.cameraFFEncodeFrame(data, img.getWidth(), img.getHeight());
+                    img.close();
+                }
             }
         }, cameraHandler);
         nativeCameraView.cameraFFEncodeStart(mPreviewSize.getWidth(), mPreviewSize.getHeight());
@@ -221,9 +229,11 @@ public class CameraV2 extends BaseCamera {
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
+        isPreview = true;
     }
 
     public void stopPreview() {
+        isPreview = false;
         nativeCameraView.cameraFFEncodeEnd();
         try {
             mSession.stopRepeating();

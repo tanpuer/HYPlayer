@@ -6,13 +6,12 @@ import android.graphics.SurfaceTexture
 import android.os.Environment
 import android.util.AttributeSet
 import android.util.Log
-import android.view.Choreographer
 import android.view.Surface
 import android.view.SurfaceHolder
 import android.view.SurfaceView
 import java.io.File
 
-class NativeCameraView : SurfaceView, SurfaceHolder.Callback, Choreographer.FrameCallback,
+class NativeCameraView : SurfaceView, SurfaceHolder.Callback,
     ICameraSizeListener {
 
     constructor(context: Context?) : super(context)
@@ -37,7 +36,6 @@ class NativeCameraView : SurfaceView, SurfaceHolder.Callback, Choreographer.Fram
         initVideoFile()
         active = true
         nativeCameraCreated(holder!!.surface, this)
-        Choreographer.getInstance().postFrameCallback(this)
     }
 
     override fun surfaceChanged(holder: SurfaceHolder?, format: Int, width: Int, height: Int) {
@@ -49,15 +47,7 @@ class NativeCameraView : SurfaceView, SurfaceHolder.Callback, Choreographer.Fram
         cameraV2?.stopPreview()
         cameraV2?.releaseCamera()
         nativeCameraDestroyed()
-        Choreographer.getInstance().removeFrameCallback(this)
         surfaceTexture?.release()
-    }
-
-    override fun doFrame(frameTimeNanos: Long) {
-        if (active) {
-            nativeCameraDoFrame()
-        }
-        Choreographer.getInstance().postFrameCallback(this)
     }
 
     override fun onCameraSizeChanged(width: Int, height: Int) {
@@ -70,6 +60,11 @@ class NativeCameraView : SurfaceView, SurfaceHolder.Callback, Choreographer.Fram
         surfaceTexture = SurfaceTexture(oesTextureId)
         cameraV2?.setSurfaceTexture(surfaceTexture)
         cameraV2?.openCamera(1080, 1920, 1)
+        surfaceTexture?.setOnFrameAvailableListener {
+            if (active) {
+                nativeCameraDoFrame()
+            }
+        }
     }
 
     fun update() {

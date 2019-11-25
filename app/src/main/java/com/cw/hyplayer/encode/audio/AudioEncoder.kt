@@ -10,12 +10,17 @@ class AudioEncoder(path: String) {
         nativeStartAudioEncoder()
     }
 
+    fun pause() {
+        nativePauseAudioEncoder()
+    }
+
     fun release() {
         nativeReleaseAudioEncoder()
     }
 
     private external fun nativeInitAudioEncoder(path: String)
     private external fun nativeStartAudioEncoder()
+    private external fun nativePauseAudioEncoder()
     private external fun nativeReleaseAudioEncoder()
 
     companion object {

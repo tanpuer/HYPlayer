@@ -6,6 +6,7 @@
 #include <camera/NDKCamera.h>
 #include <camera/CameraLooper.h>
 #include <player/VideoPlayer.h>
+#include <audio/SLRecoderLooper.h>
 #include "android/native_window_jni.h"
 #include "player/AudioPlayer.h"
 #include "template/TemplateLooper.h"
@@ -565,13 +566,16 @@ Java_com_cw_hyplayer_camera_NativeCameraView_nativeCameraFFEncodeEnd(
 }
 
 //......................................................
+SLRecoderLooper *recoderLooper = nullptr;
 extern "C" JNIEXPORT void JNICALL
 Java_com_cw_hyplayer_encode_audio_AudioEncoder_nativeInitAudioEncoder(
         JNIEnv *env,
         jobject instance,
         jstring path
 ) {
-
+    recoderLooper = new SLRecoderLooper();
+    const char *audioPath = env->GetStringUTFChars(path, nullptr);
+    recoderLooper->sendMessage(recoderLooper->kMsgSLRecoderCreated, (void *) audioPath);
 }
 
 extern "C" JNIEXPORT void JNICALL
@@ -579,7 +583,19 @@ Java_com_cw_hyplayer_encode_audio_AudioEncoder_nativeStartAudioEncoder(
         JNIEnv *env,
         jobject instance
 ) {
+    if (recoderLooper != nullptr) {
+        recoderLooper->sendMessage(recoderLooper->kMsgSLRecoderStart);
+    }
+}
 
+extern "C" JNIEXPORT void JNICALL
+Java_com_cw_hyplayer_encode_audio_AudioEncoder_nativePauseAudioEncoder(
+        JNIEnv *env,
+        jobject instance
+) {
+    if (recoderLooper != nullptr) {
+        recoderLooper->sendMessage(recoderLooper->kMsgSLRecoderPause);
+    }
 }
 
 extern "C" JNIEXPORT void JNICALL
@@ -587,5 +603,8 @@ Java_com_cw_hyplayer_encode_audio_AudioEncoder_nativeReleaseAudioEncoder(
         JNIEnv *env,
         jobject instance
 ) {
-
+    if (recoderLooper != nullptr) {
+        recoderLooper->sendMessage(recoderLooper->kMsgSLRecoderRelease);
+        recoderLooper->quit();
+    }
 }

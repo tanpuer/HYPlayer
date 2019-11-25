@@ -38,6 +38,9 @@ class AudioEncoderActivity : AppCompatActivity() {
         start.setOnClickListener {
             audioEncoder?.start()
         }
+        pause.setOnClickListener {
+            audioEncoder?.pause()
+        }
         release.setOnClickListener {
             audioEncoder?.release()
         }

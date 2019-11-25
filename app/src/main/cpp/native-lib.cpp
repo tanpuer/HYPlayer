@@ -563,3 +563,29 @@ Java_com_cw_hyplayer_camera_NativeCameraView_nativeCameraFFEncodeEnd(
 //    }
     videoEncoder->EncoderEnd();
 }
+
+//......................................................
+extern "C" JNIEXPORT void JNICALL
+Java_com_cw_hyplayer_encode_audio_AudioEncoder_nativeInitAudioEncoder(
+        JNIEnv *env,
+        jobject instance,
+        jstring path
+) {
+
+}
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_cw_hyplayer_encode_audio_AudioEncoder_nativeStartAudioEncoder(
+        JNIEnv *env,
+        jobject instance
+) {
+
+}
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_cw_hyplayer_encode_audio_AudioEncoder_nativeReleaseAudioEncoder(
+        JNIEnv *env,
+        jobject instance
+) {
+
+}

@@ -130,9 +130,16 @@ void SLAudioRecoder::release() {
     recoder = nullptr;
     iRecoder = nullptr;
     pcmQue = nullptr;
-    delete[] mBuffers;
 
-    delete this;
+    if (mBuffers[0]) {
+        delete[] mBuffers[0];
+        mBuffers[0] = nullptr;
+    }
+
+    if (mBuffers[1]) {
+        delete[] mBuffers[1];
+        mBuffers[1] = nullptr;
+    }
 }
 
 void SLAudioRecoder::call(void *bufq) {

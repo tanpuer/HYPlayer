@@ -605,6 +605,6 @@ Java_com_cw_hyplayer_encode_audio_AudioEncoder_nativeReleaseAudioEncoder(
 ) {
     if (recoderLooper != nullptr) {
         recoderLooper->sendMessage(recoderLooper->kMsgSLRecoderRelease);
-        recoderLooper->quit();
+        recoderLooper = nullptr;
     }
 }

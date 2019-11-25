@@ -26,6 +26,7 @@ void SLRecoderLooper::handleMessage(Looper::LooperMessage *msg) {
         case kMsgSLRecoderRelease: {
             if (audioRecoder != nullptr) {
                 audioRecoder->release();
+                quit();
                 delete audioRecoder;
             }
             break;
@@ -39,4 +40,8 @@ void SLRecoderLooper::handleMessage(Looper::LooperMessage *msg) {
 
 void SLRecoderLooper::pthreadExit() {
     Looper::pthreadExit();
+    ALOGD("delete audioRecoder");
+    delete audioRecoder;
+    audioRecoder = nullptr;
+    delete this;
 }

@@ -69,6 +69,7 @@ ObjViewerFilter::ObjViewerFilter() {
 
     // Bind attribute locations
     // this needs to be done prior to linking
+    // 将通用顶点索引与命名属性变量相关联
     glBindAttribLocation(program, ATTRIB_VERTEX, "myVertex");
     glBindAttribLocation(program, ATTRIB_NORMAL, "myNormal");
     glBindAttribLocation(program, ATTRIB_UV, "myUV");
@@ -98,6 +99,7 @@ ObjViewerFilter::ObjViewerFilter() {
     }
 
     // Get uniform locations
+    // 返回统一变量的位置
     shaderProgram = new SHADER_PARAMS();
     shaderProgram->projectionMatrix = glGetUniformLocation(program, "uPMatrix");
     shaderProgram->viewMatrix = glGetUniformLocation(program, "uMVMatrix");

@@ -6,6 +6,8 @@
 #define HYPLAYER_SLAUDIORECODER_H
 
 
+#include <encode/FFAudioEncoder.h>
+
 class SLAudioRecoder {
 
 public:
@@ -29,6 +31,8 @@ private:
     int mIndex = 0;
 
     const short BUFFER_SIZE = 2048;
+
+    FFAudioEncoder *audioEncoder;
 };
 
 

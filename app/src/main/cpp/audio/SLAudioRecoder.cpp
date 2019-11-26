@@ -93,6 +93,8 @@ SLAudioRecoder::SLAudioRecoder(const char *path) {
     mBuffers[0] = new short[BUFFER_SIZE];
     mBuffers[1] = new short[BUFFER_SIZE];
     ALOGD("CreateAudioRecorder success");
+
+    audioEncoder = new FFAudioEncoder(path);
 }
 
 void SLAudioRecoder::start() {
@@ -140,10 +142,13 @@ void SLAudioRecoder::release() {
         delete[] mBuffers[1];
         mBuffers[1] = nullptr;
     }
+
+    audioEncoder->encodeEnd();
 }
 
 void SLAudioRecoder::call(void *bufq) {
     ALOGD("recoder frame call");
+    audioEncoder->encoderBuffer(mBuffers[mIndex], BUFFER_SIZE);
     mIndex = 1 - mIndex;
     (*pcmQue)->Enqueue(pcmQue, mBuffers[mIndex], BUFFER_SIZE * sizeof(short));
 }

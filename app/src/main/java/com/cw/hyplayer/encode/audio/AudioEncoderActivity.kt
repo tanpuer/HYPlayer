@@ -59,12 +59,12 @@ class AudioEncoderActivity : AppCompatActivity() {
     }
 
     private fun initAudioEncoder() {
-        val file = File("sdcard/trailer_test.mp3")
+        val file = File("sdcard/trailer_test.aac")
         if (file.exists()) {
             file.delete()
             file.createNewFile()
         }
-        audioEncoder = AudioEncoder("sdcard/trailer_test.mp3")
+        audioEncoder = AudioEncoder("sdcard/trailer_test.aac")
     }
 
     companion object {

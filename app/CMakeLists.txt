@@ -69,6 +69,7 @@ aux_source_directory(src/main/cpp/flutter/paint                                 
 aux_source_directory(src/main/cpp/flutter/widget                                    srcs)
 aux_source_directory(src/main/cpp/live                                      srcs)
 aux_source_directory(src/main/cpp/skia                                         srcs)
+aux_source_directory(src/main/cpp/obj                                         srcs)
 
 
 # Creates and names a library, sets it as either STATIC
@@ -178,6 +179,7 @@ include_directories(
         src/main/cpp/flutter/paint
         src/main/cpp/flutter/widget
         src/main/cpp/live
+        src/main/cpp/obj
 )
 
 find_library(z-lib z)

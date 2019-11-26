@@ -7,6 +7,7 @@
 #include <camera/CameraLooper.h>
 #include <player/VideoPlayer.h>
 #include <audio/SLRecoderLooper.h>
+#include <obj/ObjViewerLooper.h>
 #include "android/native_window_jni.h"
 #include "player/AudioPlayer.h"
 #include "template/TemplateLooper.h"
@@ -606,5 +607,48 @@ Java_com_cw_hyplayer_encode_audio_AudioEncoder_nativeReleaseAudioEncoder(
     if (recoderLooper != nullptr) {
         recoderLooper->sendMessage(recoderLooper->kMsgSLRecoderRelease);
         recoderLooper = nullptr;
+    }
+}
+
+//......................................................
+ObjViewerLooper *objViewerLooper = nullptr;
+extern "C" JNIEXPORT void JNICALL
+Java_com_cw_hyplayer_viewer_NativeObjView_nativeObjViewCreated(
+        JNIEnv *env,
+        jobject instance,
+        jobject surface
+) {
+    objViewerLooper = new ObjViewerLooper(ANativeWindow_fromSurface(env, surface));
+    objViewerLooper->sendMessage(objViewerLooper->kMsgObjViewerCreated);
+}
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_cw_hyplayer_viewer_NativeObjView_nativeObjViewChanged(
+        JNIEnv *env,
+        jobject instance,
+        jint width, jint height
+) {
+    if (objViewerLooper != nullptr) {
+        objViewerLooper->sendMessage(objViewerLooper->kMsgObjViewerChanged, width, height);
+    }
+}
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_cw_hyplayer_viewer_NativeObjView_nativeObjViewDestroyed(
+        JNIEnv *env,
+        jobject instance
+) {
+    if (objViewerLooper != nullptr) {
+        objViewerLooper->sendMessage(objViewerLooper->kMsgObjViewerDestroyed);
+    }
+}
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_cw_hyplayer_viewer_NativeObjView_nativeObjViewDoFrame(
+        JNIEnv *env,
+        jobject instance
+) {
+    if (objViewerLooper != nullptr) {
+        objViewerLooper->sendMessage(objViewerLooper->kMsgObJViewerDoFrame);
     }
 }

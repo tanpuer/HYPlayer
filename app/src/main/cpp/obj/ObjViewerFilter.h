@@ -24,20 +24,20 @@ enum SHADER_ATTRIBUTES {
 };
 
 struct SHADER_PARAMS {
-    GLuint program_;
-    GLuint light0_;
-    GLuint material_diffuse_;
-    GLuint material_ambient_;
-    GLuint material_specular_;
+    GLuint program;
+    GLuint light0;
+    GLuint materialDiffuse;
+    GLuint materialAmbient;
+    GLuint materialSpecular;
 
-    GLuint matrix_projection_;
-    GLuint matrix_view_;
+    GLuint projectionMatrix;
+    GLuint viewMatrix;
 };
 
 struct TEAPOT_MATERIALS {
-    float diffuse_color[3];
-    float specular_color[4];
-    float ambient_color[3];
+    float diffuseColor[3];
+    float specularColor[4];
+    float ambientColor[3];
 };
 
 class ObjViewerFilter {
@@ -58,15 +58,15 @@ private:
     GLuint fragmentShader;
     GLuint program;
 
-    int32_t num_indices_;
-    int32_t num_vertices_;
-    GLuint ibo_;
-    GLuint vbo_;
+    int32_t numIndices;
+    int32_t numVertices;
+    GLuint ibo;
+    GLuint vbo;
 
-    ndk_helper::Mat4 mat_projection_;
-    ndk_helper::Mat4 mat_view_;
-    ndk_helper::Mat4 mat_model_;
-    SHADER_PARAMS *shader_param_;
+    ndk_helper::Mat4 projectionMatrix;
+    ndk_helper::Mat4 viewMatrix;
+    ndk_helper::Mat4 modelMatrix;
+    SHADER_PARAMS *shaderProgram;
 
     void updateViewport();
 

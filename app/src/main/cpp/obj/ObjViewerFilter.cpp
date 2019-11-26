@@ -98,32 +98,32 @@ ObjViewerFilter::ObjViewerFilter() {
     }
 
     // Get uniform locations
-    shader_param_ = new SHADER_PARAMS();
-    shader_param_->matrix_projection_ = glGetUniformLocation(program, "uPMatrix");
-    shader_param_->matrix_view_ = glGetUniformLocation(program, "uMVMatrix");
+    shaderProgram = new SHADER_PARAMS();
+    shaderProgram->projectionMatrix = glGetUniformLocation(program, "uPMatrix");
+    shaderProgram->viewMatrix = glGetUniformLocation(program, "uMVMatrix");
 
-    shader_param_->light0_ = glGetUniformLocation(program, "vLight0");
-    shader_param_->material_diffuse_ = glGetUniformLocation(program, "vMaterialDiffuse");
-    shader_param_->material_ambient_ = glGetUniformLocation(program, "vMaterialAmbient");
-    shader_param_->material_specular_ =
+    shaderProgram->light0 = glGetUniformLocation(program, "vLight0");
+    shaderProgram->materialDiffuse = glGetUniformLocation(program, "vMaterialDiffuse");
+    shaderProgram->materialAmbient = glGetUniformLocation(program, "vMaterialAmbient");
+    shaderProgram->materialSpecular =
             glGetUniformLocation(program, "vMaterialSpecular");
 
-    shader_param_->program_ = program;
+    shaderProgram->program = program;
 
     // Create Index buffer
-    num_indices_ = sizeof(teapotIndices) / sizeof(teapotIndices[0]);
-    glGenBuffers(1, &ibo_);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo_);
+    numIndices = sizeof(teapotIndices) / sizeof(teapotIndices[0]);
+    glGenBuffers(1, &ibo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(teapotIndices), teapotIndices,
                  GL_STATIC_DRAW);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
     // Create VBO
-    num_vertices_ = sizeof(teapotPositions) / sizeof(teapotPositions[0]) / 3;
+    numVertices = sizeof(teapotPositions) / sizeof(teapotPositions[0]) / 3;
     int32_t stride = sizeof(TEAPOT_VERTEX);
     int32_t index = 0;
-    TEAPOT_VERTEX* p = new TEAPOT_VERTEX[num_vertices_];
-    for (int32_t i = 0; i < num_vertices_; ++i) {
+    TEAPOT_VERTEX* p = new TEAPOT_VERTEX[numVertices];
+    for (int32_t i = 0; i < numVertices; ++i) {
         p[i].pos[0] = teapotPositions[index];
         p[i].pos[1] = teapotPositions[index + 1];
         p[i].pos[2] = teapotPositions[index + 2];
@@ -133,17 +133,17 @@ ObjViewerFilter::ObjViewerFilter() {
         p[i].normal[2] = teapotNormals[index + 2];
         index += 3;
     }
-    glGenBuffers(1, &vbo_);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo_);
-    glBufferData(GL_ARRAY_BUFFER, stride * num_vertices_, p, GL_STATIC_DRAW);
+    glGenBuffers(1, &vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER, stride * numVertices, p, GL_STATIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     delete[] p;
 
-    mat_model_ = ndk_helper::Mat4::Translation(0, 0, -15.f);
+    modelMatrix = ndk_helper::Mat4::Translation(0, 0, -15.f);
 
     ndk_helper::Mat4 mat = ndk_helper::Mat4::RotationX(M_PI / 3);
-    mat_model_ = mat * mat_model_;
+    modelMatrix = mat * modelMatrix;
 }
 
 void ObjViewerFilter::updateViewport() {
@@ -156,46 +156,46 @@ void ObjViewerFilter::updateViewport() {
     if (viewport[2] < viewport[3]) {
         float aspect =
                 static_cast<float>(viewport[2]) / static_cast<float>(viewport[3]);
-        mat_projection_ =
+        projectionMatrix =
                 ndk_helper::Mat4::Perspective(aspect, 1.0f, CAM_NEAR, CAM_FAR);
     } else {
         float aspect =
                 static_cast<float>(viewport[3]) / static_cast<float>(viewport[2]);
-        mat_projection_ =
+        projectionMatrix =
                 ndk_helper::Mat4::Perspective(1.0f, aspect, CAM_NEAR, CAM_FAR);
     }
 }
 
 void ObjViewerFilter::release() {
-    if (vbo_) {
-        glDeleteBuffers(1, &vbo_);
-        vbo_ = 0;
+    if (vbo) {
+        glDeleteBuffers(1, &vbo);
+        vbo = 0;
     }
 
-    if (ibo_) {
-        glDeleteBuffers(1, &ibo_);
-        ibo_ = 0;
+    if (ibo) {
+        glDeleteBuffers(1, &ibo);
+        ibo = 0;
     }
 
-    if (shader_param_->program_) {
-        glDeleteProgram(shader_param_->program_);
-        shader_param_->program_ = 0;
+    if (shaderProgram->program) {
+        glDeleteProgram(shaderProgram->program);
+        shaderProgram->program = 0;
     }
 }
 
 void ObjViewerFilter::doFrame() {
-    mat_view_ = ndk_helper::Mat4::LookAt(ndk_helper::Vec3(CAM_X, CAM_Y, CAM_Z),
+    viewMatrix = ndk_helper::Mat4::LookAt(ndk_helper::Vec3(CAM_X, CAM_Y, CAM_Z),
                                          ndk_helper::Vec3(0.f, 0.f, 0.f),
                                          ndk_helper::Vec3(0.f, 1.f, 0.f));
-    mat_view_ = mat_view_ * mat_model_;
+    viewMatrix = viewMatrix * modelMatrix;
 
 
     //
     // Feed Projection and Model View matrices to the shaders
-    ndk_helper::Mat4 mat_vp = mat_projection_ * mat_view_;
+    ndk_helper::Mat4 mat_vp = projectionMatrix * viewMatrix;
 
     // Bind the VBO
-    glBindBuffer(GL_ARRAY_BUFFER, vbo_);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
 
     int32_t iStride = sizeof(TEAPOT_VERTEX);
     // Pass the vertex data
@@ -208,32 +208,32 @@ void ObjViewerFilter::doFrame() {
     glEnableVertexAttribArray(ATTRIB_NORMAL);
 
     // Bind the IB
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo_);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
 
-    glUseProgram(shader_param_->program_);
+    glUseProgram(shaderProgram->program);
 
     TEAPOT_MATERIALS material = {
             {1.0f, 0.0f, 0.0f}, {1.0f, 1.0f, 1.0f, 10.f}, {0.1f, 0.1f, 0.1f}, };
 
     // Update uniforms
-    glUniform4f(shader_param_->material_diffuse_, material.diffuse_color[0],
-                material.diffuse_color[1], material.diffuse_color[2], 1.f);
+    glUniform4f(shaderProgram->materialDiffuse, material.diffuseColor[0],
+                material.diffuseColor[1], material.diffuseColor[2], 1.f);
 
-    glUniform4f(shader_param_->material_specular_, material.specular_color[0],
-                material.specular_color[1], material.specular_color[2],
-                material.specular_color[3]);
+    glUniform4f(shaderProgram->materialSpecular, material.specularColor[0],
+                material.specularColor[1], material.specularColor[2],
+                material.specularColor[3]);
     //
     // using glUniform3fv here was troublesome
     //
-    glUniform3f(shader_param_->material_ambient_, material.ambient_color[0],
-                material.ambient_color[1], material.ambient_color[2]);
+    glUniform3f(shaderProgram->materialAmbient, material.ambientColor[0],
+                material.ambientColor[1], material.ambientColor[2]);
 
-    glUniformMatrix4fv(shader_param_->matrix_projection_, 1, GL_FALSE,
+    glUniformMatrix4fv(shaderProgram->projectionMatrix, 1, GL_FALSE,
                        mat_vp.Ptr());
-    glUniformMatrix4fv(shader_param_->matrix_view_, 1, GL_FALSE, mat_view_.Ptr());
-    glUniform3f(shader_param_->light0_, 100.f, -200.f, -600.f);
+    glUniformMatrix4fv(shaderProgram->viewMatrix, 1, GL_FALSE, viewMatrix.Ptr());
+    glUniform3f(shaderProgram->light0, 100.f, -200.f, -600.f);
 
-    glDrawElements(GL_TRIANGLES, num_indices_, GL_UNSIGNED_SHORT,
+    glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_SHORT,
                    BUFFER_OFFSET(0));
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);

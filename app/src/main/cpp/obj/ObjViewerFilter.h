@@ -69,6 +69,10 @@ private:
     SHADER_PARAMS *shader_param_;
 
     void updateViewport();
+
+    float CAM_X = 0.f;
+    float CAM_Y = 0.f;
+    float CAM_Z = 700.f;
 };
 
 

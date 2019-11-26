@@ -7,88 +7,47 @@
 #include "teapot.inl"
 
 static const char *VERTEX_SHADER = GET_STR(
-
-#define USE_PHONG (1)
-
         attribute highp vec3    myVertex;
         attribute highp vec3    myNormal;
         attribute mediump vec2  myUV;
         attribute mediump vec4  myBone;
-
         varying mediump vec2    texCoord;
         varying lowp    vec4    colorDiffuse;
-
-#if USE_PHONG
         varying mediump vec3 position;
         varying mediump vec3 normal;
-#else
-        varying lowp    vec4    colorSpecular;
-#endif
-
         uniform highp mat4      uMVMatrix;
         uniform highp mat4      uPMatrix;
-
         uniform highp vec3      vLight0;
-
         uniform lowp vec4       vMaterialDiffuse;
         uniform lowp vec3       vMaterialAmbient;
         uniform lowp vec4       vMaterialSpecular;
-
         void main(void) {
-        highp vec4 p = vec4(myVertex,1);
-        gl_Position = uPMatrix * p;
-
-        texCoord = myUV;
-
-        highp vec3 worldNormal = vec3(mat3(uMVMatrix[0].xyz, uMVMatrix[1].xyz, uMVMatrix[2].xyz) * myNormal);
-        highp vec3 ecPosition = p.xyz;
-
-        colorDiffuse = dot( worldNormal, normalize(-vLight0+ecPosition) ) * vMaterialDiffuse  + vec4( vMaterialAmbient, 1 );
-
-#if USE_PHONG
-        normal = worldNormal;
-        position = ecPosition;
-#else
-        highp vec3 halfVector = normalize(ecPosition - vLight0);
-
-        highp float NdotH = max(-dot(worldNormal, halfVector), 0.0);
-        float fPower = vMaterialSpecular.w;
-        highp float specular = min( pow(NdotH, fPower), 1.0);
-        colorSpecular = vec4( vMaterialSpecular.xyz * specular, 1 );
-#endif
+            highp vec4 p = vec4(myVertex,1);
+            gl_Position = uPMatrix * p;
+            texCoord = myUV;
+            highp vec3 worldNormal = vec3(mat3(uMVMatrix[0].xyz, uMVMatrix[1].xyz, uMVMatrix[2].xyz) * myNormal);
+            highp vec3 ecPosition = p.xyz;
+            colorDiffuse = dot( worldNormal, normalize(-vLight0+ecPosition) ) * vMaterialDiffuse  + vec4( vMaterialAmbient, 1 );
+            normal = worldNormal;
+            position = ecPosition;
        }
 );
 
 static const char *FRAGMEMT_SHADER = GET_STR(
-#define USE_PHONG (1)
-
-        uniform lowp vec3       vMaterialAmbient;
-        uniform lowp vec4       vMaterialSpecular;
-
+        uniform lowp vec3 vMaterialAmbient;
+        uniform lowp vec4 vMaterialSpecular;
         varying lowp vec4 colorDiffuse;
-
-#if USE_PHONG
-        uniform highp vec3      vLight0;
+        uniform highp vec3 vLight0;
         varying mediump vec3 position;
         varying mediump vec3 normal;
-#else
-        varying lowp vec4 colorSpecular;
-#endif
-
-        void main()
-{
-#if USE_PHONG
-        mediump vec3 halfVector = normalize(-vLight0 + position);
-        mediump float NdotH = max(dot(normalize(normal), halfVector), 0.0);
-        mediump float fPower = vMaterialSpecular.w;
-        mediump float specular = pow(NdotH, fPower);
-
-        lowp vec4 colorSpecular = vec4( vMaterialSpecular.xyz * specular, 1 );
-        gl_FragColor = colorDiffuse + colorSpecular;
-#else
-        gl_FragColor = colorDiffuse + colorSpecular;
-#endif
-    }
+        void main() {
+            mediump vec3 halfVector = normalize(-vLight0 + position);
+            mediump float NdotH = max(dot(normalize(normal), halfVector), 0.0);
+            mediump float fPower = vMaterialSpecular.w;
+            mediump float specular = pow(NdotH, fPower);
+            lowp vec4 colorSpecular = vec4( vMaterialSpecular.xyz * specular, 1 );
+            gl_FragColor = colorDiffuse + colorSpecular;
+        }
 );
 
 ObjViewerFilter::ObjViewerFilter() {
@@ -96,13 +55,47 @@ ObjViewerFilter::ObjViewerFilter() {
 
     vertexShader = loadShader(GL_VERTEX_SHADER, VERTEX_SHADER);
     fragmentShader = loadShader(GL_FRAGMENT_SHADER, FRAGMEMT_SHADER);
-    program = createShaderProgram(vertexShader, fragmentShader);
+
+    GLuint program;
+    GLint linked;
+    program = glCreateProgram();
+    if (program == 0) {
+        glDeleteShader(vertexShader);
+        glDeleteShader(fragmentShader);
+        return ;
+    }
+    glAttachShader(program, vertexShader);
+    glAttachShader(program, fragmentShader);
 
     // Bind attribute locations
     // this needs to be done prior to linking
     glBindAttribLocation(program, ATTRIB_VERTEX, "myVertex");
     glBindAttribLocation(program, ATTRIB_NORMAL, "myNormal");
     glBindAttribLocation(program, ATTRIB_UV, "myUV");
+
+    // 链接program程序
+    glLinkProgram(program);
+    // 检查链接状态
+    glGetProgramiv(program, GL_LINK_STATUS, &linked);
+    if (!linked) {
+        GLint infoLen = 0;
+        // 检查日志信息长度
+        glGetProgramiv(program, GL_INFO_LOG_LENGTH, &infoLen);
+        if (infoLen > 1) {
+            // 分配一个足以存储日志信息的字符串
+            char *infoLog = (char *) malloc(sizeof(char) * infoLen);
+            // 检索日志信息
+            glGetProgramInfoLog(program, infoLen, NULL, infoLog);
+            ALOGE("Error linking program:\n%s\n", infoLog);
+            // 使用完成后需要释放字符串分配的内存
+            free(infoLog);
+        }
+        // 删除着色器释放内存
+        glDeleteShader(vertexShader);
+        glDeleteShader(fragmentShader);
+        glDeleteProgram(program);
+        return ;
+    }
 
     // Get uniform locations
     shader_param_ = new SHADER_PARAMS();
@@ -147,7 +140,6 @@ ObjViewerFilter::ObjViewerFilter() {
 
     delete[] p;
 
-    updateViewport();
     mat_model_ = ndk_helper::Mat4::Translation(0, 0, -15.f);
 
     ndk_helper::Mat4 mat = ndk_helper::Mat4::RotationX(M_PI / 3);
@@ -175,14 +167,23 @@ void ObjViewerFilter::updateViewport() {
 }
 
 void ObjViewerFilter::release() {
+    if (vbo_) {
+        glDeleteBuffers(1, &vbo_);
+        vbo_ = 0;
+    }
 
+    if (ibo_) {
+        glDeleteBuffers(1, &ibo_);
+        ibo_ = 0;
+    }
+
+    if (shader_param_->program_) {
+        glDeleteProgram(shader_param_->program_);
+        shader_param_->program_ = 0;
+    }
 }
 
 void ObjViewerFilter::doFrame() {
-    const float CAM_X = 0.f;
-    const float CAM_Y = 0.f;
-    const float CAM_Z = 700.f;
-
     mat_view_ = ndk_helper::Mat4::LookAt(ndk_helper::Vec3(CAM_X, CAM_Y, CAM_Z),
                                          ndk_helper::Vec3(0.f, 0.f, 0.f),
                                          ndk_helper::Vec3(0.f, 1.f, 0.f));
@@ -212,7 +213,7 @@ void ObjViewerFilter::doFrame() {
     glUseProgram(shader_param_->program_);
 
     TEAPOT_MATERIALS material = {
-            {1.0f, 0.5f, 0.5f}, {1.0f, 1.0f, 1.0f, 10.f}, {0.1f, 0.1f, 0.1f}, };
+            {1.0f, 0.0f, 0.0f}, {1.0f, 1.0f, 1.0f, 10.f}, {0.1f, 0.1f, 0.1f}, };
 
     // Update uniforms
     glUniform4f(shader_param_->material_diffuse_, material.diffuse_color[0],
@@ -240,5 +241,5 @@ void ObjViewerFilter::doFrame() {
 }
 
 void ObjViewerFilter::setNativeWindowSize(int width, int height) {
-
+    updateViewport();
 }

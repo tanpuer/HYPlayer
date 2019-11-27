@@ -62,6 +62,14 @@ void ObjViewer2DTextureFilter::initShaders() {
 
 void ObjViewer2DTextureFilter::release() {
     ObjViewerFilter::release();
+    if(texVBO != GL_INVALID_VALUE) {
+        glDeleteBuffers(1, &texVBO);
+        texVBO = GL_INVALID_VALUE;
+    }
+    if(texture2D) {
+        delete texture2D;
+        texture2D = nullptr;
+    }
 }
 
 void ObjViewer2DTextureFilter::init() {

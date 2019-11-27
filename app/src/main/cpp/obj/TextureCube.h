@@ -8,6 +8,12 @@
 
 class TextureCube {
 
+public:
+
+    TextureCube();
+
+
+
 };
 
 

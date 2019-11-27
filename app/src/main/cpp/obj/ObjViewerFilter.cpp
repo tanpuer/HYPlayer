@@ -121,7 +121,7 @@ void ObjViewerFilter::doFrame() {
     glUseProgram(shaderProgram->program);
 
     TEAPOT_MATERIALS material = {
-            {1.0f, 0.0f, 0.0f}, {1.0f, 1.0f, 1.0f, 10.f}, {0.1f, 0.1f, 0.1f}, };
+            {1.0f, 0.5f, 0.5f}, {1.0f, 1.0f, 1.0f, 10.f}, {0.1f, 0.1f, 0.1f}, };
 
     // Update uniforms
     glUniform4f(shaderProgram->materialDiffuse, material.diffuseColor[0],

@@ -34,3 +34,15 @@ void Texture2D::bindTexture() {
     glBindTexture(GL_TEXTURE_2D, texId);
     glActiveTexture(GL_TEXTURE0);
 }
+
+Texture2D::~Texture2D() {
+    if (texId != GL_INVALID_VALUE) {
+        glDeleteTextures(1, &texId);
+        texId = GL_INVALID_VALUE;
+    }
+    if (imageCreator != nullptr) {
+        imageCreator->releaseFrame();
+        delete imageCreator;
+        imageCreator = nullptr;
+    }
+}

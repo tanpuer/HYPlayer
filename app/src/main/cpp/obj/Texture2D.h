@@ -15,6 +15,8 @@ public:
 
     Texture2D(const char* path);
 
+    ~Texture2D();
+
     void create();
 
     void bindTexture();

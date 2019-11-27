@@ -51,101 +51,7 @@ static const char *FRAGMEMT_SHADER = GET_STR(
 );
 
 ObjViewerFilter::ObjViewerFilter() {
-    glFrontFace(GL_CCW);
 
-    vertexShader = loadShader(GL_VERTEX_SHADER, VERTEX_SHADER);
-    fragmentShader = loadShader(GL_FRAGMENT_SHADER, FRAGMEMT_SHADER);
-
-    GLuint program;
-    GLint linked;
-    program = glCreateProgram();
-    if (program == 0) {
-        glDeleteShader(vertexShader);
-        glDeleteShader(fragmentShader);
-        return ;
-    }
-    glAttachShader(program, vertexShader);
-    glAttachShader(program, fragmentShader);
-
-    // Bind attribute locations
-    // this needs to be done prior to linking
-    // 将通用顶点索引与命名属性变量相关联
-    glBindAttribLocation(program, ATTRIB_VERTEX, "myVertex");
-    glBindAttribLocation(program, ATTRIB_NORMAL, "myNormal");
-    glBindAttribLocation(program, ATTRIB_UV, "myUV");
-
-    // 链接program程序
-    glLinkProgram(program);
-    // 检查链接状态
-    glGetProgramiv(program, GL_LINK_STATUS, &linked);
-    if (!linked) {
-        GLint infoLen = 0;
-        // 检查日志信息长度
-        glGetProgramiv(program, GL_INFO_LOG_LENGTH, &infoLen);
-        if (infoLen > 1) {
-            // 分配一个足以存储日志信息的字符串
-            char *infoLog = (char *) malloc(sizeof(char) * infoLen);
-            // 检索日志信息
-            glGetProgramInfoLog(program, infoLen, NULL, infoLog);
-            ALOGE("Error linking program:\n%s\n", infoLog);
-            // 使用完成后需要释放字符串分配的内存
-            free(infoLog);
-        }
-        // 删除着色器释放内存
-        glDeleteShader(vertexShader);
-        glDeleteShader(fragmentShader);
-        glDeleteProgram(program);
-        return ;
-    }
-
-    // Get uniform locations
-    // 返回统一变量的位置
-    shaderProgram = new SHADER_PARAMS();
-    shaderProgram->projectionMatrix = glGetUniformLocation(program, "uPMatrix");
-    shaderProgram->viewMatrix = glGetUniformLocation(program, "uMVMatrix");
-
-    shaderProgram->light0 = glGetUniformLocation(program, "vLight0");
-    shaderProgram->materialDiffuse = glGetUniformLocation(program, "vMaterialDiffuse");
-    shaderProgram->materialAmbient = glGetUniformLocation(program, "vMaterialAmbient");
-    shaderProgram->materialSpecular =
-            glGetUniformLocation(program, "vMaterialSpecular");
-
-    shaderProgram->program = program;
-
-    // Create Index buffer
-    numIndices = sizeof(teapotIndices) / sizeof(teapotIndices[0]);
-    glGenBuffers(1, &ibo);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(teapotIndices), teapotIndices,
-                 GL_STATIC_DRAW);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
-    // Create VBO
-    numVertices = sizeof(teapotPositions) / sizeof(teapotPositions[0]) / 3;
-    int32_t stride = sizeof(TEAPOT_VERTEX);
-    int32_t index = 0;
-    TEAPOT_VERTEX* p = new TEAPOT_VERTEX[numVertices];
-    for (int32_t i = 0; i < numVertices; ++i) {
-        p[i].pos[0] = teapotPositions[index];
-        p[i].pos[1] = teapotPositions[index + 1];
-        p[i].pos[2] = teapotPositions[index + 2];
-
-        p[i].normal[0] = teapotNormals[index];
-        p[i].normal[1] = teapotNormals[index + 1];
-        p[i].normal[2] = teapotNormals[index + 2];
-        index += 3;
-    }
-    glGenBuffers(1, &vbo);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, stride * numVertices, p, GL_STATIC_DRAW);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-    delete[] p;
-
-    modelMatrix = ndk_helper::Mat4::Translation(0, 0, -15.f);
-
-    ndk_helper::Mat4 mat = ndk_helper::Mat4::RotationX(M_PI / 3);
-    modelMatrix = mat * modelMatrix;
 }
 
 void ObjViewerFilter::updateViewport() {
@@ -244,4 +150,106 @@ void ObjViewerFilter::doFrame() {
 
 void ObjViewerFilter::setNativeWindowSize(int width, int height) {
     updateViewport();
+}
+
+void ObjViewerFilter::initShaders() {
+    vertexShader = loadShader(GL_VERTEX_SHADER, VERTEX_SHADER);
+    fragmentShader = loadShader(GL_FRAGMENT_SHADER, FRAGMEMT_SHADER);
+}
+
+void ObjViewerFilter::init() {
+    glFrontFace(GL_CCW);
+
+    initShaders();
+
+    GLuint program;
+    GLint linked;
+    program = glCreateProgram();
+    if (program == 0) {
+        glDeleteShader(vertexShader);
+        glDeleteShader(fragmentShader);
+        return ;
+    }
+    glAttachShader(program, vertexShader);
+    glAttachShader(program, fragmentShader);
+
+    // Bind attribute locations
+    // this needs to be done prior to linking
+    // 将通用顶点索引与命名属性变量相关联
+    glBindAttribLocation(program, ATTRIB_VERTEX, "myVertex");
+    glBindAttribLocation(program, ATTRIB_NORMAL, "myNormal");
+    glBindAttribLocation(program, ATTRIB_UV, "myUV");
+
+    // 链接program程序
+    glLinkProgram(program);
+    // 检查链接状态
+    glGetProgramiv(program, GL_LINK_STATUS, &linked);
+    if (!linked) {
+        GLint infoLen = 0;
+        // 检查日志信息长度
+        glGetProgramiv(program, GL_INFO_LOG_LENGTH, &infoLen);
+        if (infoLen > 1) {
+            // 分配一个足以存储日志信息的字符串
+            char *infoLog = (char *) malloc(sizeof(char) * infoLen);
+            // 检索日志信息
+            glGetProgramInfoLog(program, infoLen, NULL, infoLog);
+            ALOGE("Error linking program:\n%s\n", infoLog);
+            // 使用完成后需要释放字符串分配的内存
+            free(infoLog);
+        }
+        // 删除着色器释放内存
+        glDeleteShader(vertexShader);
+        glDeleteShader(fragmentShader);
+        glDeleteProgram(program);
+        return ;
+    }
+
+    // Get uniform locations
+    // 返回统一变量的位置
+    shaderProgram = new SHADER_PARAMS();
+    shaderProgram->projectionMatrix = glGetUniformLocation(program, "uPMatrix");
+    shaderProgram->viewMatrix = glGetUniformLocation(program, "uMVMatrix");
+
+    shaderProgram->light0 = glGetUniformLocation(program, "vLight0");
+    shaderProgram->materialDiffuse = glGetUniformLocation(program, "vMaterialDiffuse");
+    shaderProgram->materialAmbient = glGetUniformLocation(program, "vMaterialAmbient");
+    shaderProgram->materialSpecular =
+            glGetUniformLocation(program, "vMaterialSpecular");
+
+    shaderProgram->program = program;
+
+    // Create Index buffer
+    numIndices = sizeof(teapotIndices) / sizeof(teapotIndices[0]);
+    glGenBuffers(1, &ibo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(teapotIndices), teapotIndices,
+                 GL_STATIC_DRAW);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+    // Create VBO
+    numVertices = sizeof(teapotPositions) / sizeof(teapotPositions[0]) / 3;
+    int32_t stride = sizeof(TEAPOT_VERTEX);
+    int32_t index = 0;
+    TEAPOT_VERTEX* p = new TEAPOT_VERTEX[numVertices];
+    for (int32_t i = 0; i < numVertices; ++i) {
+        p[i].pos[0] = teapotPositions[index];
+        p[i].pos[1] = teapotPositions[index + 1];
+        p[i].pos[2] = teapotPositions[index + 2];
+
+        p[i].normal[0] = teapotNormals[index];
+        p[i].normal[1] = teapotNormals[index + 1];
+        p[i].normal[2] = teapotNormals[index + 2];
+        index += 3;
+    }
+    glGenBuffers(1, &vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER, stride * numVertices, p, GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    delete[] p;
+
+    modelMatrix = ndk_helper::Mat4::Translation(0, 0, -15.f);
+
+    ndk_helper::Mat4 mat = ndk_helper::Mat4::RotationX(M_PI / 3);
+    modelMatrix = mat * modelMatrix;
 }

@@ -42,6 +42,7 @@ void ObjViewerRenderer::objViewerCreated(ANativeWindow *nativeWindow) {
     glDepthFunc(GL_LEQUAL);
 
     baseFilter = new ObjViewerFilter();
+    baseFilter->init();
 }
 
 void ObjViewerRenderer::objViewerChanged(int width, int height) {

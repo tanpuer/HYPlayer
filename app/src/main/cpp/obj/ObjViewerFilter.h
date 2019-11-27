@@ -46,13 +46,17 @@ public:
 
     ObjViewerFilter();
 
-    void release();
+    virtual void init();
+
+    virtual void release();
 
     void doFrame();
 
     void setNativeWindowSize(int width, int height);
 
-private:
+protected:
+
+    virtual void initShaders();
 
     GLuint vertexShader;
     GLuint fragmentShader;

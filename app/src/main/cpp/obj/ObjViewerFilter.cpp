@@ -253,3 +253,7 @@ void ObjViewerFilter::init() {
     ndk_helper::Mat4 mat = ndk_helper::Mat4::RotationX(M_PI / 3);
     modelMatrix = mat * modelMatrix;
 }
+
+float *ObjViewerFilter::getTextureCoords() {
+    return teapotTexCoords;
+}

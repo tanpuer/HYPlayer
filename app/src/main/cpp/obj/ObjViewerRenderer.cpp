@@ -5,6 +5,7 @@
 #include <base/native_log.h>
 #include <GLES3/gl3.h>
 #include "ObjViewerRenderer.h"
+#include "ObjViewer2DTextureFilter.h"
 
 ObjViewerRenderer::ObjViewerRenderer() {
 
@@ -41,7 +42,8 @@ void ObjViewerRenderer::objViewerCreated(ANativeWindow *nativeWindow) {
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
 
-    baseFilter = new ObjViewerFilter();
+//    baseFilter = new ObjViewerFilter();
+    baseFilter = new ObjViewer2DTextureFilter();
     baseFilter->init();
 }
 

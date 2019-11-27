@@ -58,6 +58,8 @@ protected:
 
     virtual void initShaders();
 
+    float* getTextureCoords();
+
     GLuint vertexShader;
     GLuint fragmentShader;
     GLuint program;

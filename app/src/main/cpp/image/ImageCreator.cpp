@@ -61,14 +61,14 @@ AVFrame *ImageCreator::readFrame(int index) {
 
     pFrameYUV = av_frame_alloc();
     out_buffer = (unsigned char *) av_malloc(
-            av_image_get_buffer_size(AV_PIX_FMT_YUV420P, codecContext->width, codecContext->height,
+            av_image_get_buffer_size(format, codecContext->width, codecContext->height,
                                      1));
     av_image_fill_arrays(pFrameYUV->data, pFrameYUV->linesize, out_buffer,
-                         AV_PIX_FMT_YUV420P, codecContext->width, codecContext->height, 1);
+                         format, codecContext->width, codecContext->height, 1);
     img_convert_ctx = sws_getContext(codecContext->width, codecContext->height,
                                      codecContext->pix_fmt,
                                      codecContext->width, codecContext->height,
-                                     AV_PIX_FMT_YUV420P, SWS_BICUBIC, NULL, NULL, NULL);
+                                     format, SWS_BICUBIC, NULL, NULL, NULL);
 
     int height = sws_scale(img_convert_ctx, (const unsigned char *const *) frame->data,
                            frame->linesize, 0, codecContext->height,
@@ -99,8 +99,9 @@ void ImageCreator::releaseFrame() {
     ALOGD("ImageCreator release");
 }
 
-ImageCreator::ImageCreator(const char *path) {
+ImageCreator::ImageCreator(const char *path, AVPixelFormat format) {
     this->path = path;
+    this->format = format;
 }
 
 ImageCreator::~ImageCreator() {

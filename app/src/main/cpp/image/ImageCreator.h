@@ -20,7 +20,7 @@ class ImageCreator : public IAVFrameCreator{
 
 public:
 
-    ImageCreator(const char *path);
+    ImageCreator(const char *path, AVPixelFormat format = AV_PIX_FMT_YUV420P);
 
     ~ImageCreator();
 
@@ -38,6 +38,8 @@ private:
     SwsContext *img_convert_ctx = nullptr;
     unsigned char *out_buffer = nullptr;
     const char *path;
+
+    AVPixelFormat format;
 };
 
 

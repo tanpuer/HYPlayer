@@ -1,0 +1,14 @@
+//
+// Created by templechen on 2019-11-27.
+//
+
+#ifndef HYPLAYER_OBJVIEWERCUBETEXTUREFILTER_H
+#define HYPLAYER_OBJVIEWERCUBETEXTUREFILTER_H
+
+
+class ObjViewerCubeTextureFilter {
+
+};
+
+
+#endif //HYPLAYER_OBJVIEWERCUBETEXTUREFILTER_H

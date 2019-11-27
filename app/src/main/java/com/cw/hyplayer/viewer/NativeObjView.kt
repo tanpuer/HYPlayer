@@ -25,6 +25,9 @@ class NativeObjView : SurfaceView, SurfaceHolder.Callback, Choreographer.FrameCa
     private var mMoveDetector: MoveGestureDetector? = null
     private var mShoveDetector: ShoveGestureDetector? = null
 
+    private val screenWidth = resources.displayMetrics.widthPixels
+    private val screenHeight = resources.displayMetrics.heightPixels
+
     init {
         holder.addCallback(this)
         mScaleDetector = ScaleGestureDetector(context.applicationContext, ScaleListener(this))
@@ -68,7 +71,7 @@ class NativeObjView : SurfaceView, SurfaceHolder.Callback, Choreographer.FrameCa
         ScaleGestureDetector.SimpleOnScaleGestureListener() {
         override fun onScale(detector: ScaleGestureDetector): Boolean {
             Log.d(TAG, "scale ${detector.scaleFactor}")
-            return true
+            return false
         }
     }
 
@@ -76,14 +79,14 @@ class NativeObjView : SurfaceView, SurfaceHolder.Callback, Choreographer.FrameCa
         RotateGestureDetector.SimpleOnRotateGestureListener() {
         override fun onRotate(detector: RotateGestureDetector): Boolean {
             Log.d(TAG, "rotate ${detector.rotationDegreesDelta}")
-            return true
+            return false
         }
     }
 
     private inner class MoveListener(val gestureSurfaceView: NativeObjView) :
         MoveGestureDetector.SimpleOnMoveGestureListener() {
         override fun onMove(detector: MoveGestureDetector): Boolean {
-            Log.d(TAG, "move ${detector.focusDelta}")
+            Log.d(TAG, "move ${detector.focusDelta.x} ${detector.focusDelta.y}")
             return true
         }
     }
@@ -92,7 +95,7 @@ class NativeObjView : SurfaceView, SurfaceHolder.Callback, Choreographer.FrameCa
         ShoveGestureDetector.SimpleOnShoveGestureListener() {
         override fun onShove(detector: ShoveGestureDetector): Boolean {
             Log.d(TAG, "shove ${detector.shovePixelsDelta}")
-            return true
+            return false
         }
     }
 

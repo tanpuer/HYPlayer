@@ -91,7 +91,7 @@ void ObjViewer2DTextureFilter::init() {
     glEnableVertexAttribArray(ATTRIB_UV);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-    texture2D = new Texture2D("sdcard/android_pie.bmp");
+    texture2D = new Texture2D("sdcard/front.tga");
     texture2D->create();
     GLint sampler = glGetUniformLocation(shaderProgram->program,
                                          "samplerObj");

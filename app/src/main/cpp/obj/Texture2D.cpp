@@ -3,6 +3,7 @@
 //
 
 #include <assert.h>
+#include <base/native_log.h>
 #include "Texture2D.h"
 
 Texture2D::Texture2D(const char *path) {
@@ -13,6 +14,7 @@ void Texture2D::create() {
     glGenTextures(1, &texId);
     assert(texId != GL_INVALID_VALUE);
     glBindTexture(GL_TEXTURE_2D, texId);
+    glActiveTexture(GL_TEXTURE0);
 
     imageCreator = new ImageCreator(path, AV_PIX_FMT_RGBA);
     AVFrame *frame = imageCreator->readFrame(0);

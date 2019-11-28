@@ -70,15 +70,15 @@ class NativeObjView : SurfaceView, SurfaceHolder.Callback, Choreographer.FrameCa
     private inner class ScaleListener(val gestureSurfaceView: NativeObjView) :
         ScaleGestureDetector.SimpleOnScaleGestureListener() {
         override fun onScale(detector: ScaleGestureDetector): Boolean {
-            Log.d(TAG, "scale ${detector.scaleFactor}")
-            return false
+//            Log.d(TAG, "scale ${detector.scaleFactor}")
+            return true
         }
     }
 
     private inner class RotateListener(val gestureSurfaceView: NativeObjView) :
         RotateGestureDetector.SimpleOnRotateGestureListener() {
         override fun onRotate(detector: RotateGestureDetector): Boolean {
-            Log.d(TAG, "rotate ${detector.rotationDegreesDelta}")
+//            Log.d(TAG, "rotate ${detector.rotationDegreesDelta}")
             return false
         }
     }
@@ -86,15 +86,15 @@ class NativeObjView : SurfaceView, SurfaceHolder.Callback, Choreographer.FrameCa
     private inner class MoveListener(val gestureSurfaceView: NativeObjView) :
         MoveGestureDetector.SimpleOnMoveGestureListener() {
         override fun onMove(detector: MoveGestureDetector): Boolean {
-            Log.d(TAG, "move ${detector.focusDelta.x} ${detector.focusDelta.y}")
-            return true
+//            Log.d(TAG, "move ${detector.focusDelta.x} ${detector.focusDelta.y}")
+            return false
         }
     }
 
     private inner class ShoveListener(val gestureSurfaceView: NativeObjView) :
         ShoveGestureDetector.SimpleOnShoveGestureListener() {
         override fun onShove(detector: ShoveGestureDetector): Boolean {
-            Log.d(TAG, "shove ${detector.shovePixelsDelta}")
+//            Log.d(TAG, "shove ${detector.shovePixelsDelta}")
             return false
         }
     }

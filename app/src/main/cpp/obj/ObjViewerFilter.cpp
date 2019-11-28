@@ -5,8 +5,6 @@
 #include <base/gl_utils.h>
 #include "ObjViewerFilter.h"
 #include "teapot.inl"
-#include "tiny_obj_loader.h"
-#include "timerutil.h"
 
 static const char *VERTEX_SHADER = GET_STR(
         attribute highp vec3 myVertex;
@@ -49,18 +47,7 @@ static const char *FRAGMEMT_SHADER = GET_STR(
 );
 
 ObjViewerFilter::ObjViewerFilter() {
-    //todo
-    std::vector<tinyobj::shape_t> shapes;
-    std::vector<tinyobj::material_t> materials;
-    timerutil t;
-    t.start();
-    std::string warn;
-    std::string err;
-    bool ret = tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, "sdcard/usemtl-issue-68.obj",
-                                NULL, true);
-    t.end();
-    ALOGD("Parsing time: %lu [msecs]\n", t.msec());
-//    ALOGD("%d %d %d %d %d", attrib.vertices.size(), attrib.normals.size(), attrib.texcoords, shapes.size(), materials.size());
+
 }
 
 void ObjViewerFilter::updateViewport() {

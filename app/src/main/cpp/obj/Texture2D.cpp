@@ -7,6 +7,7 @@
 #include "Texture2D.h"
 //#define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
+#include "timerutil.h"
 
 Texture2D::Texture2D(const char *path) {
     this->path = path;
@@ -19,10 +20,14 @@ void Texture2D::create() {
     glActiveTexture(GL_TEXTURE0);
 
 //     tga/bmp files are saved as vertical mirror images ( at least more than half ).
+    timerutil t;
+    t.start();
     stbi_set_flip_vertically_on_load(1);
     int w, h, comp;
     unsigned char* image =
             stbi_load(path, &w, &h, &comp, STBI_default);
+    t.end();
+    ALOGD("Parsing time: %lu [msecs]\n", t.msec());
     glTexImage2D(
             GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE,
             image

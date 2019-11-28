@@ -6,6 +6,8 @@
 #define HYPLAYER_TIMERUTIL_H
 
 
+#include <sys/time.h>
+
 class timerutil {
 public:
 #ifdef _WIN32

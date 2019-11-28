@@ -8,6 +8,7 @@
 #include <GLES3/gl3.h>
 #include <base/matrix_util.h>
 #include "vecmath.h"
+#include "tiny_obj_loader.h"
 
 #define GET_STR(x) #x
 #define BUFFER_OFFSET(i) ((char*)NULL + (i))
@@ -79,6 +80,8 @@ protected:
     float CAM_X = 0.f;
     float CAM_Y = 0.f;
     float CAM_Z = 700.f;
+
+    tinyobj::attrib_t attrib;
 };
 
 

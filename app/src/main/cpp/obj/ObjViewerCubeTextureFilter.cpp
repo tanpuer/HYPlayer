@@ -5,6 +5,8 @@
 #include <base/gl_utils.h>
 #include <image/ImageCreator.h>
 #include "ObjViewerCubeTextureFilter.h"
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
 
 static const char *VERTEX_SHADER = GET_STR(
         attribute highp vec3 myVertex;
@@ -74,17 +76,16 @@ void ObjViewerCubeTextureFilter::init() {
     assert(texId != GL_INVALID_VALUE);
 
     for(GLuint i = 0; i < 6; i++) {
-        auto *creator = new ImageCreator(files[i], AV_PIX_FMT_RGBA);
-        AVFrame *frame = creator->readFrame(0);
-        ALOGD("%d %d %d", frame->format, frame->width, frame->height);
-        assert(frame != nullptr && frame->width > 0 && frame->height > 0);
+        stbi_set_flip_vertically_on_load(1);
+        int w, h, comp;
+        unsigned char* image =
+                stbi_load(files[i], &w, &h, &comp, STBI_default);
         glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
                      0, GL_RGBA,
-                     frame->width, frame->height,
+                     w, h,
                      0, GL_RGBA,
-                     GL_UNSIGNED_BYTE, frame->data[0]);
-        creator->releaseFrame();
-        delete creator;
+                     GL_UNSIGNED_BYTE, image);
+        stbi_image_free(image);
     }
 
     glTexParameterf(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);

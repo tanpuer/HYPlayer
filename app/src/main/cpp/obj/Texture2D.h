@@ -7,7 +7,6 @@
 
 
 #include <GLES2/gl2.h>
-#include <image/ImageCreator.h>
 
 class Texture2D {
 
@@ -27,7 +26,6 @@ private:
 
     GLuint texId = GL_INVALID_VALUE;
 
-    ImageCreator *imageCreator;
 };
 
 

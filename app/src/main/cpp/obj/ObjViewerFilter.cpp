@@ -3,8 +3,10 @@
 //
 
 #include <base/gl_utils.h>
+#include <iostream>
 #include "ObjViewerFilter.h"
 #include "teapot.inl"
+#include "timerutil.h"
 
 static const char *VERTEX_SHADER = GET_STR(
         attribute highp vec3 myVertex;
@@ -47,7 +49,7 @@ static const char *FRAGMEMT_SHADER = GET_STR(
 );
 
 ObjViewerFilter::ObjViewerFilter() {
-
+    loadObj();
 }
 
 void ObjViewerFilter::updateViewport() {
@@ -224,6 +226,8 @@ void ObjViewerFilter::init() {
 
     // Create VBO
     numVertices = sizeof(teapotPositions) / sizeof(teapotPositions[0]) / 3;
+    ALOGD("numIndices size %d, numVertices size %d", numIndices, numVertices);
+
     int32_t stride = sizeof(TEAPOT_VERTEX);
     int32_t index = 0;
     TEAPOT_VERTEX* p = new TEAPOT_VERTEX[numVertices];
@@ -252,4 +256,25 @@ void ObjViewerFilter::init() {
 
 float *ObjViewerFilter::getTextureCoords() {
     return teapotTexCoords;
+}
+
+void ObjViewerFilter::loadObj() {
+    timerutil t;
+    t.start();
+    std::string warn;
+    std::string err;
+    bool ret = tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, "/sdcard/usemtl-issue-68.obj",
+                                NULL, true);
+    t.end();
+    if (!warn.empty()) {
+        ALOGD("%s", warn.c_str());
+    }
+    if (!err.empty()) {
+        ALOGD("%s", err.c_str());
+    }
+    if (!ret) {
+        ALOGD("Failed to load/parse .obj!");
+        return;
+    }
+    ALOGD("Parsing obj success, time: %lu [msecs]\n", t.msec());
 }

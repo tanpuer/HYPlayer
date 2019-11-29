@@ -82,6 +82,9 @@ protected:
     float CAM_Z = 700.f;
 
     tinyobj::attrib_t attrib;
+    std::vector<tinyobj::shape_t> shapes;
+    std::vector<tinyobj::material_t> materials;
+    void loadObj();
 };
 
 

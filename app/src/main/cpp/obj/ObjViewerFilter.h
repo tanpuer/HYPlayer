@@ -66,7 +66,7 @@ protected:
     GLuint program;
 
     int32_t numIndices;
-    int32_t numVertices;
+    int32_t numVertices = 0;
     GLuint ibo;
     GLuint vbo;
 
@@ -79,7 +79,7 @@ protected:
 
     float CAM_X = 0.f;
     float CAM_Y = 0.f;
-    float CAM_Z = 700.f;
+    float CAM_Z = 30.f;
 
     tinyobj::attrib_t attrib;
     std::vector<tinyobj::shape_t> shapes;

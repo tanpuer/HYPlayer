@@ -114,7 +114,7 @@ void ObjViewerFilter::doFrame() {
     glEnableVertexAttribArray(ATTRIB_NORMAL);
 
     // Bind the IB
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+//    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
 
     glUseProgram(shaderProgram->program);
 
@@ -141,8 +141,9 @@ void ObjViewerFilter::doFrame() {
     glUniformMatrix4fv(shaderProgram->viewMatrix, 1, GL_FALSE, viewMatrix.Ptr());
     glUniform3f(shaderProgram->light0, 100.f, -200.f, -600.f);
 
-    glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_SHORT,
-                   BUFFER_OFFSET(0));
+//    glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_SHORT,
+//                   BUFFER_OFFSET(0));
+    glDrawArrays(GL_TRIANGLES, 0, numVertices);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -219,30 +220,62 @@ void ObjViewerFilter::init() {
     shaderProgram->program = program;
 
     // Create Index buffer
-    numIndices = sizeof(teapotIndices) / sizeof(teapotIndices[0]);
-    glGenBuffers(1, &ibo);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(teapotIndices), teapotIndices,
-                 GL_STATIC_DRAW);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    numIndices = sizeof(shapes[0].mesh.indices) / sizeof(shapes[0].mesh.indices);
+//    glGenBuffers(1, &ibo);
+//    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+//    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(shapes[0].mesh.indices), shapes[0].mesh.indices[0].vertex_index,
+//                 GL_STATIC_DRAW);
+//    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
     // Create VBO
-    numVertices = sizeof(teapotPositions) / sizeof(teapotPositions[0]) / 3;
-    ALOGD("numIndices size %d, numVertices size %d", numIndices, numVertices);
+//    numVertices = attrib.vertices.size() / 3;
 
+    for (size_t s = 0; s < shapes.size(); s++) {
+        numVertices+=shapes[s].mesh.indices.size();
+    }
+
+//    numVertices = shapes[0].mesh.indices.size();
+
+    int normalSize = attrib.normals.size();
+    ALOGD("numIndices size %d, numVertices size %d, normalSize is %d, textureSize is %d, colorSize is %d", shapes.size(), numVertices, normalSize, attrib.texcoords.size(), attrib.colors.size());
+
+    ALOGD("%d %d %d", shapes.size(), shapes[0].mesh.num_face_vertices.size(), shapes[0].mesh.num_face_vertices[0])
     int32_t stride = sizeof(TEAPOT_VERTEX);
     int32_t index = 0;
     TEAPOT_VERTEX *p = new TEAPOT_VERTEX[numVertices];
-    for (int32_t i = 0; i < numVertices; ++i) {
-        p[i].pos[0] = teapotPositions[index];
-        p[i].pos[1] = teapotPositions[index + 1];
-        p[i].pos[2] = teapotPositions[index + 2];
 
-        p[i].normal[0] = teapotNormals[index];
-        p[i].normal[1] = teapotNormals[index + 1];
-        p[i].normal[2] = teapotNormals[index + 2];
-        index += 3;
+    // Loop over shapes
+    for (size_t s = 0; s < shapes.size(); s++) {
+        // Loop over faces(polygon)
+        size_t index_offset = 0;
+        for (size_t f = 0; f < shapes[s].mesh.num_face_vertices.size(); f++) {
+            int fv = shapes[s].mesh.num_face_vertices[f];
+            // Loop over vertices in the face.
+            for (size_t v = 0; v < fv; v++) {
+                // access to vertex
+                tinyobj::index_t idx = shapes[s].mesh.indices[index_offset + v];
+                p[index].pos[0] = attrib.vertices[3*idx.vertex_index+0];
+                p[index].pos[1] = attrib.vertices[3*idx.vertex_index+1];
+                p[index].pos[2] = attrib.vertices[3*idx.vertex_index+2];
+                p[index].normal[0] = attrib.normals[3*idx.normal_index+0];
+                p[index].normal[1] = attrib.normals[3*idx.normal_index+1];
+                p[index].normal[2] = attrib.normals[3*idx.normal_index+2];
+//                p[index].pos[0] = attrib.texcoords[2*idx.texcoord_index+0];
+//                p[index].pos[1] = attrib.texcoords[2*idx.texcoord_index+1];
+                // Optional: vertex colors
+                // tinyobj::real_t red = attrib.colors[3*idx.vertex_index+0];
+                // tinyobj::real_t green = attrib.colors[3*idx.vertex_index+1];
+                // tinyobj::real_t blue = attrib.colors[3*idx.vertex_index+2];
+
+                index++;
+            }
+            index_offset += fv;
+            // per-face material
+            shapes[s].mesh.material_ids[f];
+        }
     }
+
+
     glGenBuffers(1, &vbo);
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glBufferData(GL_ARRAY_BUFFER, stride * numVertices, p, GL_STATIC_DRAW);
@@ -251,8 +284,7 @@ void ObjViewerFilter::init() {
     delete[] p;
 
     modelMatrix = ndk_helper::Mat4::Translation(0, 0, -15.f);
-
-    ndk_helper::Mat4 mat = ndk_helper::Mat4::RotationX(M_PI / 3);
+    ndk_helper::Mat4 mat = ndk_helper::Mat4::RotationZ(M_PI / 4);
     modelMatrix = mat * modelMatrix;
 }
 
@@ -266,8 +298,9 @@ void ObjViewerFilter::loadObj() {
     std::string warn;
     std::string err;
     bool ret = tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err,
-                                "/sdcard/usemtl-issue-68.obj",
-                                NULL, true);
+//                                "/sdcard/usemtl-issue-68.obj",
+                                "/sdcard/Handgun_obj.obj",
+                                "/sdcard", true);
     t.end();
     if (!warn.empty()) {
         ALOGD("%s", warn.c_str());
@@ -279,7 +312,5 @@ void ObjViewerFilter::loadObj() {
         ALOGD("Failed to load/parse .obj!");
         return;
     }
-    int numVertices = attrib.texcoords.size();
-    int numIndices = shapes[0].mesh.indices.size();
     ALOGD("Parsing obj success, time: %lu [msecs]\n", t.msec());
 }

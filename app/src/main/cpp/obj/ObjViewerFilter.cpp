@@ -91,8 +91,8 @@ void ObjViewerFilter::release() {
 
 void ObjViewerFilter::doFrame() {
     viewMatrix = ndk_helper::Mat4::LookAt(ndk_helper::Vec3(CAM_X, CAM_Y, CAM_Z),
-                                         ndk_helper::Vec3(0.f, 0.f, 0.f),
-                                         ndk_helper::Vec3(0.f, 1.f, 0.f));
+                                          ndk_helper::Vec3(0.f, 0.f, 0.f),
+                                          ndk_helper::Vec3(0.f, 1.f, 0.f));
     viewMatrix = viewMatrix * modelMatrix;
 
 
@@ -119,7 +119,9 @@ void ObjViewerFilter::doFrame() {
     glUseProgram(shaderProgram->program);
 
     TEAPOT_MATERIALS material = {
-            {1.0f, 0.5f, 0.5f}, {1.0f, 1.0f, 1.0f, 10.f}, {0.1f, 0.1f, 0.1f}, };
+            {1.0f, 0.5f, 0.5f},
+            {1.0f, 1.0f, 1.0f, 10.f},
+            {0.1f, 0.1f, 0.1f},};
 
     // Update uniforms
     glUniform4f(shaderProgram->materialDiffuse, material.diffuseColor[0],
@@ -166,7 +168,7 @@ void ObjViewerFilter::init() {
     if (program == 0) {
         glDeleteShader(vertexShader);
         glDeleteShader(fragmentShader);
-        return ;
+        return;
     }
     glAttachShader(program, vertexShader);
     glAttachShader(program, fragmentShader);
@@ -199,7 +201,7 @@ void ObjViewerFilter::init() {
         glDeleteShader(vertexShader);
         glDeleteShader(fragmentShader);
         glDeleteProgram(program);
-        return ;
+        return;
     }
 
     // Get uniform locations
@@ -230,7 +232,7 @@ void ObjViewerFilter::init() {
 
     int32_t stride = sizeof(TEAPOT_VERTEX);
     int32_t index = 0;
-    TEAPOT_VERTEX* p = new TEAPOT_VERTEX[numVertices];
+    TEAPOT_VERTEX *p = new TEAPOT_VERTEX[numVertices];
     for (int32_t i = 0; i < numVertices; ++i) {
         p[i].pos[0] = teapotPositions[index];
         p[i].pos[1] = teapotPositions[index + 1];
@@ -263,7 +265,8 @@ void ObjViewerFilter::loadObj() {
     t.start();
     std::string warn;
     std::string err;
-    bool ret = tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, "/sdcard/usemtl-issue-68.obj",
+    bool ret = tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err,
+                                "/sdcard/usemtl-issue-68.obj",
                                 NULL, true);
     t.end();
     if (!warn.empty()) {
@@ -276,5 +279,7 @@ void ObjViewerFilter::loadObj() {
         ALOGD("Failed to load/parse .obj!");
         return;
     }
+    int numVertices = attrib.texcoords.size();
+    int numIndices = shapes[0].mesh.indices.size();
     ALOGD("Parsing obj success, time: %lu [msecs]\n", t.msec());
 }

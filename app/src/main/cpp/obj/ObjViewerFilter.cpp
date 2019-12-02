@@ -90,6 +90,7 @@ void ObjViewerFilter::release() {
 }
 
 void ObjViewerFilter::doFrame() {
+    ALOGD("doFrame");
     viewMatrix = ndk_helper::Mat4::LookAt(ndk_helper::Vec3(CAM_X, CAM_Y, CAM_Z),
                                           ndk_helper::Vec3(0.f, 0.f, 0.f),
                                           ndk_helper::Vec3(0.f, 1.f, 0.f));
@@ -139,7 +140,8 @@ void ObjViewerFilter::doFrame() {
     glUniformMatrix4fv(shaderProgram->projectionMatrix, 1, GL_FALSE,
                        mat_vp.Ptr());
     glUniformMatrix4fv(shaderProgram->viewMatrix, 1, GL_FALSE, viewMatrix.Ptr());
-    glUniform3f(shaderProgram->light0, 100.f, -200.f, -600.f);
+//    glUniform3f(shaderProgram->light0, 100.f, -200.f, -600.f);
+    glUniform3f(shaderProgram->light0, 100.f, -200.f, -6000.f);
 
 //    glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_SHORT,
 //                   BUFFER_OFFSET(0));
@@ -284,7 +286,7 @@ void ObjViewerFilter::init() {
     delete[] p;
 
     modelMatrix = ndk_helper::Mat4::Translation(0, 0, -15.f);
-    ndk_helper::Mat4 mat = ndk_helper::Mat4::RotationZ(M_PI / 4);
+    ndk_helper::Mat4 mat = ndk_helper::Mat4::RotationY(M_PI / 2);
     modelMatrix = mat * modelMatrix;
 }
 
@@ -299,7 +301,9 @@ void ObjViewerFilter::loadObj() {
     std::string err;
     bool ret = tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err,
 //                                "/sdcard/usemtl-issue-68.obj",
-                                "/sdcard/Handgun_obj.obj",
+//                                "/sdcard/Handgun_obj.obj",
+//                                "/sdcard/issue-138.obj",
+                                "/sdcard/12228_Dog_v1_L2.obj",
                                 "/sdcard", true);
     t.end();
     if (!warn.empty()) {

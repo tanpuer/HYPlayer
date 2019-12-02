@@ -39,6 +39,12 @@ void ObjViewerLooper::handleMessage(Looper::LooperMessage *msg) {
             }
             break;
         }
+        case kMsgObjViewScroll: {
+            if (renderer != nullptr) {
+                renderer->objViewerOnScroll(msg->arg1, msg->arg2);
+            }
+            break;
+        }
         default: {
             ALOGE("unknown type for ObjViewerLooper");
             break;

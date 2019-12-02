@@ -71,7 +71,7 @@ class NativeObjView : SurfaceView, SurfaceHolder.Callback, Choreographer.FrameCa
         ScaleGestureDetector.SimpleOnScaleGestureListener() {
         override fun onScale(detector: ScaleGestureDetector): Boolean {
 //            Log.d(TAG, "scale ${detector.scaleFactor}")
-            return true
+            return false
         }
     }
 
@@ -83,11 +83,19 @@ class NativeObjView : SurfaceView, SurfaceHolder.Callback, Choreographer.FrameCa
         }
     }
 
+    private var objScrollX = 0f
+    private var objScrollY = 0f
+
     private inner class MoveListener(val gestureSurfaceView: NativeObjView) :
         MoveGestureDetector.SimpleOnMoveGestureListener() {
         override fun onMove(detector: MoveGestureDetector): Boolean {
-//            Log.d(TAG, "move ${detector.focusDelta.x} ${detector.focusDelta.y}")
-            return false
+            objScrollX += detector.focusDelta.x
+            objScrollY += detector.focusDelta.y
+            nativeObjScroll(
+                (objScrollX * 100 / screenWidth * 2).toInt(),
+                (objScrollY * 100 / screenWidth * 2).toInt()
+            )
+            return true
         }
     }
 
@@ -103,11 +111,13 @@ class NativeObjView : SurfaceView, SurfaceHolder.Callback, Choreographer.FrameCa
     private external fun nativeObjViewChanged(width: Int, height: Int)
     private external fun nativeObjViewDestroyed()
     private external fun nativeObjViewDoFrame()
+    private external fun nativeObjScroll(objScrollX: Int, objScrollY: Int)
 
     companion object {
         init {
             System.loadLibrary("native-lib")
         }
+
         private const val TAG = "NativeObjView"
     }
 

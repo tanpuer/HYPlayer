@@ -652,3 +652,15 @@ Java_com_cw_hyplayer_viewer_NativeObjView_nativeObjViewDoFrame(
         objViewerLooper->sendMessage(objViewerLooper->kMsgObJViewerDoFrame);
     }
 }
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_cw_hyplayer_viewer_NativeObjView_nativeObjScroll(
+        JNIEnv *env,
+        jobject instance,
+        jint scrollX,
+        jint scrollY
+) {
+    if (objViewerLooper != nullptr) {
+        objViewerLooper->sendMessage(objViewerLooper->kMsgObjViewScroll, scrollX, scrollY);
+    }
+}

@@ -90,12 +90,16 @@ void ObjViewerFilter::release() {
 }
 
 void ObjViewerFilter::doFrame() {
-    ALOGD("doFrame");
     viewMatrix = ndk_helper::Mat4::LookAt(ndk_helper::Vec3(CAM_X, CAM_Y, CAM_Z),
                                           ndk_helper::Vec3(0.f, 0.f, 0.f),
                                           ndk_helper::Vec3(0.f, 1.f, 0.f));
-    viewMatrix = viewMatrix * modelMatrix;
 
+    modelMatrix = ndk_helper::Mat4::Identity();
+    ndk_helper::Mat4 scrollXMat = ndk_helper::Mat4::RotationY(-PI * scrollX / 180);
+    ndk_helper::Mat4 scrollYMat = ndk_helper::Mat4::RotationX(-PI * scrollY / 180);
+    modelMatrix = scrollXMat * scrollYMat * modelMatrix;
+
+    viewMatrix = viewMatrix * modelMatrix;
 
     //
     // Feed Projection and Model View matrices to the shaders
@@ -286,8 +290,8 @@ void ObjViewerFilter::init() {
     delete[] p;
 
     modelMatrix = ndk_helper::Mat4::Translation(0, 0, -15.f);
-    ndk_helper::Mat4 mat = ndk_helper::Mat4::RotationY(M_PI / 2);
-    modelMatrix = mat * modelMatrix;
+//    ndk_helper::Mat4 mat = ndk_helper::Mat4::RotationY(M_PI / 2);
+//    modelMatrix = mat * modelMatrix;
 }
 
 float *ObjViewerFilter::getTextureCoords() {
@@ -317,4 +321,9 @@ void ObjViewerFilter::loadObj() {
         return;
     }
     ALOGD("Parsing obj success, time: %lu [msecs]\n", t.msec());
+}
+
+void ObjViewerFilter::scroll(int scrollX, int scrollY) {
+    this->scrollX = scrollX;
+    this->scrollY = scrollY;
 }

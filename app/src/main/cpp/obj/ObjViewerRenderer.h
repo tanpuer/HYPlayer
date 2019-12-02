@@ -26,6 +26,8 @@ public:
 
     void objViewerDoFrame();
 
+    void objViewerOnScroll(int scrollX, int scrollY);
+
 private:
 
     egl_core *eglCore;

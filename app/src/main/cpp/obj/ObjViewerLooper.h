@@ -18,7 +18,8 @@ public:
         kMsgObjViewerCreated,
         kMsgObjViewerChanged,
         kMsgObjViewerDestroyed,
-        kMsgObJViewerDoFrame
+        kMsgObJViewerDoFrame,
+        kMsgObjViewScroll,
     };
 
     ObjViewerLooper(ANativeWindow *window);

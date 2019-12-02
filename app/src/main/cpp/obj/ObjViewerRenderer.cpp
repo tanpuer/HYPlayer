@@ -83,3 +83,9 @@ void ObjViewerRenderer::objViewerDoFrame() {
 
     windowSurface->swapBuffer();
 }
+
+void ObjViewerRenderer::objViewerOnScroll(int scrollX, int scrollY) {
+    if (baseFilter != nullptr) {
+        baseFilter->scroll(scrollX, scrollY);
+    }
+}

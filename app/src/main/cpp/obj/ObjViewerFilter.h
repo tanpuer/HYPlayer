@@ -55,6 +55,8 @@ public:
 
     void setNativeWindowSize(int width, int height);
 
+    void scroll(int scrollX, int scrollY);
+
 protected:
 
     virtual void initShaders();
@@ -85,6 +87,9 @@ protected:
     std::vector<tinyobj::shape_t> shapes;
     std::vector<tinyobj::material_t> materials;
     void loadObj();
+
+    int scrollX = 0;
+    int scrollY = 0;
 };
 
 

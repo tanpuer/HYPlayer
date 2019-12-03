@@ -30,7 +30,7 @@ public:
 
     void pthreadExit() override;
 
-    void setObjSroll(int scrollX, int scrollY);
+    void setObjScroll(int scrollX, int scrollY);
 
 private:
 

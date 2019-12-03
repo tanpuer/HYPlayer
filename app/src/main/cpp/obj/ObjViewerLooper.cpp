@@ -56,3 +56,7 @@ void ObjViewerLooper::handleMessage(Looper::LooperMessage *msg) {
 void ObjViewerLooper::pthreadExit() {
     Looper::pthreadExit();
 }
+
+void ObjViewerLooper::setObjSroll(int scrollX, int scrollY) {
+    renderer->objViewerOnScroll(scrollX, scrollY);
+}

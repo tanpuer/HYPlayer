@@ -30,6 +30,8 @@ public:
 
     void pthreadExit() override;
 
+    void setObjSroll(int scrollX, int scrollY);
+
 private:
 
     ANativeWindow *window;

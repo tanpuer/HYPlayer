@@ -92,8 +92,8 @@ class NativeObjView : SurfaceView, SurfaceHolder.Callback, Choreographer.FrameCa
             objScrollX += detector.focusDelta.x
             objScrollY += detector.focusDelta.y
             nativeObjScroll(
-                (objScrollX * 100 / screenWidth * 2).toInt(),
-                (objScrollY * 100 / screenWidth * 2).toInt()
+                (objScrollX * 100 / screenWidth * 4).toInt(),
+                (objScrollY * 100 / screenHeight * 4).toInt()
             )
             return true
         }

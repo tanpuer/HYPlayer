@@ -661,6 +661,7 @@ Java_com_cw_hyplayer_viewer_NativeObjView_nativeObjScroll(
         jint scrollY
 ) {
     if (objViewerLooper != nullptr) {
-        objViewerLooper->sendMessage(objViewerLooper->kMsgObjViewScroll, scrollX, scrollY);
+//        objViewerLooper->sendMessage(objViewerLooper->kMsgObjViewScroll, scrollX, scrollY);
+        objViewerLooper->setObjSroll(scrollX, scrollY);
     }
 }

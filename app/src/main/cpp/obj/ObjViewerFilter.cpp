@@ -45,6 +45,7 @@ static const char *FRAGMEMT_SHADER = GET_STR(
             mediump float specular = pow(NdotH, fPower);
             lowp vec4 colorSpecular = vec4( vMaterialSpecular.xyz * specular, 1 );
             gl_FragColor = colorDiffuse + colorSpecular;
+//            gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
         }
 );
 
@@ -309,6 +310,7 @@ void ObjViewerFilter::loadObj() {
 //                                "/sdcard/Handgun_obj.obj",
 //                                "/sdcard/issue-138.obj",
                                 "/sdcard/12228_Dog_v1_L2.obj",
+//                                "/sdcard/batman.obj",
                                 "/sdcard", true);
     t.end();
     if (!warn.empty()) {

@@ -248,6 +248,7 @@ void ObjViewerFilter::init() {
     int32_t index = 0;
     TEAPOT_VERTEX *p = new TEAPOT_VERTEX[numVertices];
 
+    bool hasNormal = attrib.normals.size() > 0;
     // Loop over shapes
     for (size_t s = 0; s < shapes.size(); s++) {
         // Loop over faces(polygon)
@@ -261,9 +262,11 @@ void ObjViewerFilter::init() {
                 p[index].pos[0] = attrib.vertices[3*idx.vertex_index+0];
                 p[index].pos[1] = attrib.vertices[3*idx.vertex_index+1];
                 p[index].pos[2] = attrib.vertices[3*idx.vertex_index+2];
-                p[index].normal[0] = attrib.normals[3*idx.normal_index+0];
-                p[index].normal[1] = attrib.normals[3*idx.normal_index+1];
-                p[index].normal[2] = attrib.normals[3*idx.normal_index+2];
+                if (hasNormal) {
+                    p[index].normal[0] = attrib.normals[3 * idx.normal_index + 0];
+                    p[index].normal[1] = attrib.normals[3 * idx.normal_index + 1];
+                    p[index].normal[2] = attrib.normals[3 * idx.normal_index + 2];
+                }
 //                p[index].pos[0] = attrib.texcoords[2*idx.texcoord_index+0];
 //                p[index].pos[1] = attrib.texcoords[2*idx.texcoord_index+1];
                 // Optional: vertex colors

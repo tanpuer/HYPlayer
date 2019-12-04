@@ -48,6 +48,10 @@ class NativeObjView : SurfaceView, SurfaceHolder.Callback, Choreographer.FrameCa
         nativeObjViewCreated(holder!!.surface)
         active = true
         Choreographer.getInstance().postFrameCallback(this)
+        nativeObjScrollAsync(
+            (objScrollX * 100 / screenWidth * 4).toInt(),
+            (objScrollY * 100 / screenHeight * 4).toInt()
+        )
     }
 
     override fun surfaceChanged(holder: SurfaceHolder?, format: Int, width: Int, height: Int) {
@@ -112,6 +116,7 @@ class NativeObjView : SurfaceView, SurfaceHolder.Callback, Choreographer.FrameCa
     private external fun nativeObjViewDestroyed()
     private external fun nativeObjViewDoFrame()
     private external fun nativeObjScroll(objScrollX: Int, objScrollY: Int)
+    private external fun nativeObjScrollAsync(objScrollX: Int, objScrollY: Int)
 
     companion object {
         init {

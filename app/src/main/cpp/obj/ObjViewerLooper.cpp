@@ -58,5 +58,7 @@ void ObjViewerLooper::pthreadExit() {
 }
 
 void ObjViewerLooper::setObjScroll(int scrollX, int scrollY) {
-    renderer->objViewerOnScroll(scrollX, scrollY);
+    if (renderer != nullptr) {
+        renderer->objViewerOnScroll(scrollX, scrollY);
+    }
 }

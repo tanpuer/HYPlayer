@@ -27,9 +27,11 @@ void Texture2D::create() {
     unsigned char* image =
             stbi_load(path, &w, &h, &comp, STBI_default);
     t.end();
-    ALOGD("Parsing time: %lu [msecs]\n", t.msec());
+    ALOGD("Parsing time: %lu [msecs] %d %d %d\n", t.msec(), w, h, comp);
+
+    //todo need to know image's form rgba/rgb...
     glTexImage2D(
-            GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE,
+            GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE,
             image
     );
     stbi_image_free(image);

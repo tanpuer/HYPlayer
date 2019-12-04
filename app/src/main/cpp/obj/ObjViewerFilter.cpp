@@ -165,8 +165,6 @@ void ObjViewerFilter::initShaders() {
 }
 
 void ObjViewerFilter::init() {
-    glFrontFace(GL_CCW);
-
     initShaders();
 
     GLuint program;

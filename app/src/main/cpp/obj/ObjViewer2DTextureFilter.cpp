@@ -50,8 +50,9 @@ static const char *FRAGMENT_SHADER = GET_STR(
             mediump float specular = pow(NdotH, fPower);
             lowp vec4 colorSpecular = vec4( vMaterialSpecular.xyz * specular, 1 );
             // increase ambient light to brighten the teapot :-)
-            gl_FragColor = diffuseLight * texture2D(samplerObj, texCoord) +
-            2.0f * vec4(vMaterialAmbient.xyz, 1.0f) + colorSpecular;
+//            gl_FragColor = diffuseLight * texture2D(samplerObj, texCoord) +
+//            2.0f * vec4(vMaterialAmbient.xyz, 1.0f) + colorSpecular;
+            gl_FragColor = texture2D(samplerObj, texCoord);
         }
 );
 
@@ -85,10 +86,23 @@ void ObjViewer2DTextureFilter::init() {
     glBindBuffer(GL_ARRAY_BUFFER, texVBO);
 
     std::vector<float> coords;
-    for (int32_t idx = 0; idx < numVertices; idx++) {
-        coords.push_back(getTextureCoords()[3 * idx] / 2);
-        coords.push_back(getTextureCoords()[3* idx + 1] / 2);
+
+    for (size_t s = 0; s < shapes.size(); s++) {
+        // Loop over faces(polygon)
+        size_t index_offset = 0;
+        for (size_t f = 0; f < shapes[s].mesh.num_face_vertices.size(); f++) {
+            int fv = shapes[s].mesh.num_face_vertices[f];
+            // Loop over vertices in the face.
+            for (size_t v = 0; v < fv; v++) {
+                // access to vertex
+                tinyobj::index_t idx = shapes[s].mesh.indices[index_offset + v];
+                coords.push_back(attrib.texcoords[2*idx.texcoord_index+0]);
+                coords.push_back(attrib.texcoords[2*idx.texcoord_index+1]);
+            }
+            index_offset += fv;
+        }
     }
+
     glBufferData(GL_ARRAY_BUFFER,
                  2 * sizeof(float) * numVertices,
                  coords.data(), GL_STATIC_DRAW);
@@ -99,7 +113,7 @@ void ObjViewer2DTextureFilter::init() {
     glEnableVertexAttribArray(ATTRIB_UV);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-    texture2D = new Texture2D("sdcard/front.tga");
+    texture2D = new Texture2D("sdcard/Dog_diffuse.jpg");
     texture2D->create();
     GLint sampler = glGetUniformLocation(shaderProgram->program,
                                          "samplerObj");

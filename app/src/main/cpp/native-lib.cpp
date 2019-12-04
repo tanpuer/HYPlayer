@@ -665,3 +665,15 @@ Java_com_cw_hyplayer_viewer_NativeObjView_nativeObjScroll(
         objViewerLooper->setObjScroll(scrollX, scrollY);
     }
 }
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_cw_hyplayer_viewer_NativeObjView_nativeObjScrollAsync(
+        JNIEnv *env,
+        jobject instance,
+        jint scrollX,
+        jint scrollY
+) {
+    if (objViewerLooper != nullptr) {
+        objViewerLooper->sendMessage(objViewerLooper->kMsgObjViewScroll, scrollX, scrollY);
+    }
+}

@@ -28,10 +28,17 @@ void Texture2D::create() {
             stbi_load(path, &w, &h, &comp, STBI_default);
     t.end();
     ALOGD("Parsing time: %lu [msecs] %d %d %d\n", t.msec(), w, h, comp);
-
-    //todo need to know image's form rgba/rgb...
+    GLint format = 0;
+    if (comp == 3) {
+        format = GL_RGB;
+    } else if (comp == 4) {
+        format = GL_RGBA;
+    } else {
+        //todo
+        ALOGE("unSupport type");
+    }
     glTexImage2D(
-            GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE,
+            GL_TEXTURE_2D, 0, format, w, h, 0, format, GL_UNSIGNED_BYTE,
             image
     );
     stbi_image_free(image);

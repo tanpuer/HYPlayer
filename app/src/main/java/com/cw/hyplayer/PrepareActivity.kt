@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.cw.hyplayer.encode.audio.AudioEncoderActivity
+import com.cw.hyplayer.viewer.ObjViewerActivity
 import kotlinx.android.synthetic.main.activity_prepare.*
 
 class PrepareActivity : AppCompatActivity() {
@@ -18,6 +19,11 @@ class PrepareActivity : AppCompatActivity() {
 
         audio_recoder.setOnClickListener {
             val intent = Intent(this, AudioEncoderActivity::class.java)
+            startActivity(intent)
+        }
+
+        obj_loader.setOnClickListener {
+            val intent = Intent(this, ObjViewerActivity::class.java)
             startActivity(intent)
         }
     }

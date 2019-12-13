@@ -309,8 +309,8 @@ void ObjViewerFilter::loadObj() {
 //                                "/sdcard/usemtl-issue-68.obj",
 //                                "/sdcard/Handgun_obj.obj",
 //                                "/sdcard/issue-138.obj",
-//                                "/sdcard/12228_Dog_v1_L2.obj",
-                                "/sdcard/teapot_n_glass.obj",
+                                "/sdcard/12228_Dog_v1_L2.obj",
+//                                "/sdcard/teapot_n_glass.obj",
 //                                "/sdcard/batman.obj",
                                 "/sdcard", true);
     t.end();

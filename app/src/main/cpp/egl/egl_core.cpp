@@ -88,15 +88,28 @@ EGLConfig egl_core::getConfig(int flags, int version) {
     if (version >=3){
         renderableType |= EGL_OPENGL_ES3_BIT_KHR;
     }
-    int attrib[] = {
-            EGL_RED_SIZE, 8,
-            EGL_GREEN_SIZE, 8,
-            EGL_BLUE_SIZE, 8,
-            EGL_ALPHA_SIZE, 8,
-            EGL_RENDERABLE_TYPE, renderableType,
-            EGL_NONE, 0, // placeholder for recordable [@-3]
-            EGL_NONE
-    };
+//    int attrib[] = {
+//            EGL_RED_SIZE, 8,
+//            EGL_GREEN_SIZE, 8,
+//            EGL_BLUE_SIZE, 8,
+//            EGL_ALPHA_SIZE, 8,
+//            EGL_RENDERABLE_TYPE, renderableType,
+//            EGL_NONE, 0, // placeholder for recordable [@-3]
+//            EGL_NONE
+//    };
+    int attrib[] = {EGL_RENDERABLE_TYPE,
+                              EGL_OPENGL_ES2_BIT,  // Request opengl ES2.0
+                              EGL_SURFACE_TYPE,
+                              EGL_WINDOW_BIT,
+                              EGL_BLUE_SIZE,
+                              8,
+                              EGL_GREEN_SIZE,
+                              8,
+                              EGL_RED_SIZE,
+                              8,
+                              EGL_DEPTH_SIZE,
+                              16,
+                              EGL_NONE};
     int length = sizeof(attrib)/ sizeof(attrib[0]);
     if ((flags & FLAG_RECORDABLE) != 0){
         attrib[length -3] = EGL_RECORDABLE_ANDROID;

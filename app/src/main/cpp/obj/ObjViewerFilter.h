@@ -57,6 +57,8 @@ public:
 
     void scroll(int scrollX, int scrollY);
 
+    void scale(float scale);
+
 protected:
 
     virtual void initShaders();
@@ -90,6 +92,8 @@ protected:
 
     int scrollX = 0;
     int scrollY = 0;
+
+    float scaleIndex = 1.0f;
 };
 
 

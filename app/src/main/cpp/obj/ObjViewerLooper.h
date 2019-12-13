@@ -32,6 +32,8 @@ public:
 
     void setObjScroll(int scrollX, int scrollY);
 
+    void setObjScale(float scale);
+
 private:
 
     ANativeWindow *window;

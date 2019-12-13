@@ -91,7 +91,7 @@ void ObjViewerFilter::release() {
 }
 
 void ObjViewerFilter::doFrame() {
-    viewMatrix = ndk_helper::Mat4::LookAt(ndk_helper::Vec3(CAM_X, CAM_Y, CAM_Z),
+    viewMatrix = ndk_helper::Mat4::LookAt(ndk_helper::Vec3(CAM_X, CAM_Y, CAM_Z / scaleIndex),
                                           ndk_helper::Vec3(0.f, 0.f, 0.f),
                                           ndk_helper::Vec3(0.f, 1.f, 0.f));
 
@@ -330,4 +330,8 @@ void ObjViewerFilter::loadObj() {
 void ObjViewerFilter::scroll(int scrollX, int scrollY) {
     this->scrollX = scrollX;
     this->scrollY = scrollY;
+}
+
+void ObjViewerFilter::scale(float scale) {
+    this->scaleIndex = scale / 1000000;
 }

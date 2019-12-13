@@ -87,3 +87,9 @@ void ObjViewerRenderer::objViewerOnScroll(int scrollX, int scrollY) {
         baseFilter->scroll(scrollX, scrollY);
     }
 }
+
+void ObjViewerRenderer::objViewerOnScale(float scale) {
+    if (baseFilter != nullptr) {
+        baseFilter->scale(scale);
+    }
+}

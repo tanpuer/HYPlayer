@@ -75,14 +75,18 @@ class NativeObjView : SurfaceView, SurfaceHolder.Callback, Choreographer.FrameCa
         ScaleGestureDetector.SimpleOnScaleGestureListener() {
         override fun onScale(detector: ScaleGestureDetector): Boolean {
 //            Log.d(TAG, "scale ${detector.scaleFactor}")
-            return false
+            objScale *= detector.scaleFactor
+            nativeObjScale(objScale)
+            return true
         }
     }
 
+    private var objScale = 1000000f
     private inner class RotateListener(val gestureSurfaceView: NativeObjView) :
         RotateGestureDetector.SimpleOnRotateGestureListener() {
         override fun onRotate(detector: RotateGestureDetector): Boolean {
 //            Log.d(TAG, "rotate ${detector.rotationDegreesDelta}")
+
             return false
         }
     }
@@ -117,6 +121,7 @@ class NativeObjView : SurfaceView, SurfaceHolder.Callback, Choreographer.FrameCa
     private external fun nativeObjViewDoFrame()
     private external fun nativeObjScroll(objScrollX: Int, objScrollY: Int)
     private external fun nativeObjScrollAsync(objScrollX: Int, objScrollY: Int)
+    private external fun nativeObjScale(scale: Float)
 
     companion object {
         init {

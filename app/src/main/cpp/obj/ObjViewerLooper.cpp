@@ -62,3 +62,9 @@ void ObjViewerLooper::setObjScroll(int scrollX, int scrollY) {
         renderer->objViewerOnScroll(scrollX, scrollY);
     }
 }
+
+void ObjViewerLooper::setObjScale(float scale) {
+    if (renderer != nullptr) {
+        renderer->objViewerOnScale(scale);
+    }
+}

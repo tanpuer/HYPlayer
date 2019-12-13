@@ -28,6 +28,8 @@ public:
 
     void objViewerOnScroll(int scrollX, int scrollY);
 
+    void objViewerOnScale(float scale);
+
 private:
 
     egl_core *eglCore;

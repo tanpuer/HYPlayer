@@ -292,12 +292,6 @@ void ObjViewerFilter::init() {
     delete[] p;
 
     modelMatrix = ndk_helper::Mat4::Translation(0, 0, -15.f);
-//    ndk_helper::Mat4 mat = ndk_helper::Mat4::RotationY(M_PI / 2);
-//    modelMatrix = mat * modelMatrix;
-}
-
-float *ObjViewerFilter::getTextureCoords() {
-    return teapotTexCoords;
 }
 
 void ObjViewerFilter::loadObj() {
@@ -309,9 +303,9 @@ void ObjViewerFilter::loadObj() {
 //                                "/sdcard/usemtl-issue-68.obj",
 //                                "/sdcard/Handgun_obj.obj",
 //                                "/sdcard/issue-138.obj",
-                                "/sdcard/12228_Dog_v1_L2.obj",
+//                                "/sdcard/12228_Dog_v1_L2.obj",
 //                                "/sdcard/teapot_n_glass.obj",
-//                                "/sdcard/batman.obj",
+                                "/sdcard/batman.obj",
                                 "/sdcard", true);
     t.end();
     if (!warn.empty()) {

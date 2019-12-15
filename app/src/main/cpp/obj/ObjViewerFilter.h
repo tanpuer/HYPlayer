@@ -63,8 +63,6 @@ protected:
 
     virtual void initShaders();
 
-    float* getTextureCoords();
-
     GLuint vertexShader;
     GLuint fragmentShader;
     GLuint program;
@@ -83,7 +81,7 @@ protected:
 
     float CAM_X = 0.f;
     float CAM_Y = 0.f;
-    float CAM_Z = 700.f;
+    float CAM_Z = 100.f;
 
     tinyobj::attrib_t attrib;
     std::vector<tinyobj::shape_t> shapes;

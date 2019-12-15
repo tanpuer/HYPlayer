@@ -239,8 +239,6 @@ void ObjViewerFilter::init() {
         numVertices+=shapes[s].mesh.indices.size();
     }
 
-//    numVertices = shapes[0].mesh.indices.size();
-
     int normalSize = attrib.normals.size();
     ALOGD("numIndices size %d, numVertices size %d, normalSize is %d, textureSize is %d, colorSize is %d", shapes.size(), numVertices, normalSize, attrib.texcoords.size(), attrib.colors.size());
 
@@ -280,6 +278,7 @@ void ObjViewerFilter::init() {
             index_offset += fv;
             // per-face material
             shapes[s].mesh.material_ids[f];
+//            ALOGD("111111 %d %s", s, materials[f].name.c_str());
         }
     }
 

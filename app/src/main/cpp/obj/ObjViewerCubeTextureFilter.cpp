@@ -69,21 +69,29 @@ ObjViewerCubeTextureFilter::ObjViewerCubeTextureFilter() {
 void ObjViewerCubeTextureFilter::init() {
     ObjViewerFilter::init();
 
-    assert(files.size() == 6);
-
     glGenTextures(1, &texId);
     glBindTexture(GL_TEXTURE_CUBE_MAP, texId);
     assert(texId != GL_INVALID_VALUE);
 
-    for(GLuint i = 0; i < 6; i++) {
+    for(GLuint i = 0; i < files.size(); i++) {
         stbi_set_flip_vertically_on_load(1);
         int w, h, comp;
         unsigned char* image =
                 stbi_load(files[i], &w, &h, &comp, STBI_default);
+        GLint format = 0;
+        if (comp == 3) {
+            format = GL_RGB;
+        } else if (comp == 4) {
+            format = GL_RGBA;
+        } else {
+            //todo
+            ALOGE("unSupport type");
+        }
+
         glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
-                     0, GL_RGBA,
+                     0, format,
                      w, h,
-                     0, GL_RGBA,
+                     0, format,
                      GL_UNSIGNED_BYTE, image);
         stbi_image_free(image);
     }

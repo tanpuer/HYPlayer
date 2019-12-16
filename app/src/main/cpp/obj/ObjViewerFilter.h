@@ -87,6 +87,9 @@ protected:
     std::vector<tinyobj::shape_t> shapes;
     std::vector<tinyobj::material_t> materials;
     void loadObj();
+    std::vector<GLuint> vbos;
+    std::vector<int> vertices;
+    std::vector<int> textures;
 
     int scrollX = 0;
     int scrollY = 0;

@@ -106,22 +106,6 @@ void ObjViewerFilter::doFrame() {
     // Feed Projection and Model View matrices to the shaders
     ndk_helper::Mat4 mat_vp = projectionMatrix * viewMatrix;
 
-    // Bind the VBO
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-
-    int32_t iStride = sizeof(TEAPOT_VERTEX);
-    // Pass the vertex data
-    glVertexAttribPointer(ATTRIB_VERTEX, 3, GL_FLOAT, GL_FALSE, iStride,
-                          BUFFER_OFFSET(0));
-    glEnableVertexAttribArray(ATTRIB_VERTEX);
-
-    glVertexAttribPointer(ATTRIB_NORMAL, 3, GL_FLOAT, GL_FALSE, iStride,
-                          BUFFER_OFFSET(3 * sizeof(GLfloat)));
-    glEnableVertexAttribArray(ATTRIB_NORMAL);
-
-    // Bind the IB
-//    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-
     glUseProgram(shaderProgram->program);
 
     TEAPOT_MATERIALS material = {
@@ -150,10 +134,27 @@ void ObjViewerFilter::doFrame() {
 
 //    glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_SHORT,
 //                   BUFFER_OFFSET(0));
-    glDrawArrays(GL_TRIANGLES, 0, numVertices);
 
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+// Bind the VBO
+    for (int i = 0; i < shapes.size(); ++i) {
+        ALOGD("111111 %d %d", i, vertices[i]);
+        glBindBuffer(GL_ARRAY_BUFFER, vbos[i]);
+
+        int32_t iStride = sizeof(TEAPOT_VERTEX);
+        // Pass the vertex data
+        glVertexAttribPointer(ATTRIB_VERTEX, 3, GL_FLOAT, GL_FALSE, iStride,
+                              BUFFER_OFFSET(0));
+        glEnableVertexAttribArray(ATTRIB_VERTEX);
+
+        glVertexAttribPointer(ATTRIB_NORMAL, 3, GL_FLOAT, GL_FALSE, iStride,
+                              BUFFER_OFFSET(3 * sizeof(GLfloat)));
+        glEnableVertexAttribArray(ATTRIB_NORMAL);
+
+        glDrawArrays(GL_TRIANGLES, 0, vertices[i]);
+
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+    }
+
 }
 
 void ObjViewerFilter::setNativeWindowSize(int width, int height) {
@@ -224,43 +225,86 @@ void ObjViewerFilter::init() {
 
     shaderProgram->program = program;
 
-    // Create Index buffer
-    numIndices = sizeof(shapes[0].mesh.indices) / sizeof(shapes[0].mesh.indices);
-//    glGenBuffers(1, &ibo);
-//    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-//    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(shapes[0].mesh.indices), shapes[0].mesh.indices[0].vertex_index,
-//                 GL_STATIC_DRAW);
-//    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
-    // Create VBO
-//    numVertices = attrib.vertices.size() / 3;
-
-    for (size_t s = 0; s < shapes.size(); s++) {
-        numVertices+=shapes[s].mesh.indices.size();
-    }
-
-    int normalSize = attrib.normals.size();
-    ALOGD("numIndices size %d, numVertices size %d, normalSize is %d, textureSize is %d, colorSize is %d", shapes.size(), numVertices, normalSize, attrib.texcoords.size(), attrib.colors.size());
-
-    ALOGD("%d %d %d", shapes.size(), shapes[0].mesh.num_face_vertices.size(), shapes[0].mesh.num_face_vertices[0])
+    //test
+//    // Create Index buffer
+//    numIndices = sizeof(shapes[0].mesh.indices) / sizeof(shapes[0].mesh.indices);
+//
+//    for (size_t s = 0; s < shapes.size(); s++) {
+//        numVertices+=shapes[s].mesh.indices.size();
+//    }
+//
+//    int normalSize = attrib.normals.size();
+//    ALOGD("numIndices size %d, numVertices size %d, normalSize is %d, textureSize is %d, colorSize is %d", shapes.size(), numVertices, normalSize, attrib.texcoords.size(), attrib.colors.size());
+//
+//    ALOGD("%d %d %d", shapes.size(), shapes[0].mesh.num_face_vertices.size(), shapes[0].mesh.num_face_vertices[0])
+//    int32_t stride = sizeof(TEAPOT_VERTEX);
+//    int32_t index = 0;
+//    TEAPOT_VERTEX *p = new TEAPOT_VERTEX[numVertices];
+//
+//    bool hasNormal = attrib.normals.size() > 0;
+//    // Loop over shapes
+//    for (size_t s = 0; s < shapes.size(); s++) {
+//        // Loop over faces(polygon)
+//        size_t index_offset = 0;
+//        for (size_t f = 0; f < shapes[s].mesh.num_face_vertices.size(); f++) {
+//            int fv = shapes[s].mesh.num_face_vertices[f];
+//            // Loop over vertices in the face.
+//            for (size_t v = 0; v < fv; v++) {
+//                // access to vertex
+//                tinyobj::index_t idx = shapes[s].mesh.indices[index_offset + v];
+//                p[index].pos[0] = attrib.vertices[3*idx.vertex_index+0];
+//                p[index].pos[1] = attrib.vertices[3*idx.vertex_index+1];
+//                p[index].pos[2] = attrib.vertices[3*idx.vertex_index+2];
+//                if (hasNormal) {
+//                    p[index].normal[0] = attrib.normals[3 * idx.normal_index + 0];
+//                    p[index].normal[1] = attrib.normals[3 * idx.normal_index + 1];
+//                    p[index].normal[2] = attrib.normals[3 * idx.normal_index + 2];
+//                }
+////                p[index].pos[0] = attrib.texcoords[2*idx.texcoord_index+0];
+////                p[index].pos[1] = attrib.texcoords[2*idx.texcoord_index+1];
+//                // Optional: vertex colors
+//                // tinyobj::real_t red = attrib.colors[3*idx.vertex_index+0];
+//                // tinyobj::real_t green = attrib.colors[3*idx.vertex_index+1];
+//                // tinyobj::real_t blue = attrib.colors[3*idx.vertex_index+2];
+//
+//                index++;
+//            }
+//            index_offset += fv;
+//            // per-face material
+//            shapes[s].mesh.material_ids[f];
+////            ALOGD("111111 %d %s", s, materials[f].name.c_str());
+//        }
+//    }
+//
+//
+//    glGenBuffers(1, &vbo);
+//    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+//    glBufferData(GL_ARRAY_BUFFER, stride * numVertices, p, GL_STATIC_DRAW);
+//    glBindBuffer(GL_ARRAY_BUFFER, 0);
+//
+//    delete[] p;
+//test over
     int32_t stride = sizeof(TEAPOT_VERTEX);
-    int32_t index = 0;
-    TEAPOT_VERTEX *p = new TEAPOT_VERTEX[numVertices];
-
     bool hasNormal = attrib.normals.size() > 0;
-    // Loop over shapes
-    for (size_t s = 0; s < shapes.size(); s++) {
-        // Loop over faces(polygon)
+    vbos = std::vector<GLuint>(shapes.size());
+    vertices = std::vector<int>(shapes.size());
+    textures = std::vector<int>(shapes.size());
+    for (int i = 0; i < shapes.size(); ++i) {
+        int num = shapes[i].mesh.indices.size();
+        vertices[i] = num;
+        TEAPOT_VERTEX *p = new TEAPOT_VERTEX[num];
+        int32_t index = 0;
+
         size_t index_offset = 0;
-        for (size_t f = 0; f < shapes[s].mesh.num_face_vertices.size(); f++) {
-            int fv = shapes[s].mesh.num_face_vertices[f];
+        for (size_t f = 0; f < shapes[i].mesh.num_face_vertices.size(); f++) {
+            int fv = shapes[i].mesh.num_face_vertices[f];
             // Loop over vertices in the face.
             for (size_t v = 0; v < fv; v++) {
                 // access to vertex
-                tinyobj::index_t idx = shapes[s].mesh.indices[index_offset + v];
-                p[index].pos[0] = attrib.vertices[3*idx.vertex_index+0];
-                p[index].pos[1] = attrib.vertices[3*idx.vertex_index+1];
-                p[index].pos[2] = attrib.vertices[3*idx.vertex_index+2];
+                tinyobj::index_t idx = shapes[i].mesh.indices[index_offset + v];
+                p[index].pos[0] = attrib.vertices[3 * idx.vertex_index + 0];
+                p[index].pos[1] = attrib.vertices[3 * idx.vertex_index + 1];
+                p[index].pos[2] = attrib.vertices[3 * idx.vertex_index + 2];
                 if (hasNormal) {
                     p[index].normal[0] = attrib.normals[3 * idx.normal_index + 0];
                     p[index].normal[1] = attrib.normals[3 * idx.normal_index + 1];
@@ -276,19 +320,15 @@ void ObjViewerFilter::init() {
                 index++;
             }
             index_offset += fv;
-            // per-face material
-            shapes[s].mesh.material_ids[f];
-//            ALOGD("111111 %d %s", s, materials[f].name.c_str());
         }
+
+        glGenBuffers(1, &(vbos[i]));
+        glBindBuffer(GL_ARRAY_BUFFER, vbos[i]);
+        glBufferData(GL_ARRAY_BUFFER, stride * num, p, GL_STATIC_DRAW);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+        delete[] p;
     }
-
-
-    glGenBuffers(1, &vbo);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, stride * numVertices, p, GL_STATIC_DRAW);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-    delete[] p;
 
     modelMatrix = ndk_helper::Mat4::Translation(0, 0, -15.f);
 }

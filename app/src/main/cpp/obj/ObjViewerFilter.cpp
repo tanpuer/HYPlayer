@@ -8,10 +8,36 @@
 #include "teapot.inl"
 #include "timerutil.h"
 
+//static const char *VERTEX_SHADER = GET_STR(
+//        attribute highp vec3 myVertex;
+//        attribute highp vec3 myNormal;
+//        varying lowp vec4 colorDiffuse;
+//        varying mediump vec3 position;
+//        varying mediump vec3 normal;
+//        uniform highp mat4 uMVMatrix;
+//        uniform highp mat4 uPMatrix;
+//        uniform highp vec3 vLight0;
+//        uniform lowp vec4 vMaterialDiffuse;
+//        uniform lowp vec3 vMaterialAmbient;
+//        uniform lowp vec4 vMaterialSpecular;
+//        void main(void) {
+//            highp vec4 p = vec4(myVertex,1);
+//            gl_Position = uPMatrix * p;
+//            highp vec3 worldNormal = vec3(mat3(uMVMatrix[0].xyz, uMVMatrix[1].xyz, uMVMatrix[2].xyz) * myNormal);
+//            highp vec3 ecPosition = p.xyz;
+//            colorDiffuse = dot( worldNormal, normalize(-vLight0+ecPosition) ) * vMaterialDiffuse  + vec4( vMaterialAmbient, 1 );
+//            normal = worldNormal;
+//            position = ecPosition;
+//       }
+//);
+
 static const char *VERTEX_SHADER = GET_STR(
         attribute highp vec3 myVertex;
         attribute highp vec3 myNormal;
-        varying lowp vec4 colorDiffuse;
+        attribute mediump vec2 myUV;
+        attribute mediump vec4 myBone;
+        varying mediump vec2 texCoord;
+        varying lowp vec4 diffuseLight;
         varying mediump vec3 position;
         varying mediump vec3 normal;
         uniform highp mat4 uMVMatrix;
@@ -23,19 +49,40 @@ static const char *VERTEX_SHADER = GET_STR(
         void main(void) {
             highp vec4 p = vec4(myVertex,1);
             gl_Position = uPMatrix * p;
+            texCoord = myUV;
             highp vec3 worldNormal = vec3(mat3(uMVMatrix[0].xyz, uMVMatrix[1].xyz, uMVMatrix[2].xyz) * myNormal);
             highp vec3 ecPosition = p.xyz;
-            colorDiffuse = dot( worldNormal, normalize(-vLight0+ecPosition) ) * vMaterialDiffuse  + vec4( vMaterialAmbient, 1 );
+            diffuseLight = dot( worldNormal, normalize(-vLight0+ecPosition)) * vec4(1.0, 1.0, 1.0, 1.0);
             normal = worldNormal;
             position = ecPosition;
-       }
+        }
 );
+
+//static const char *FRAGMEMT_SHADER = GET_STR(
+//        uniform lowp vec3 vMaterialAmbient;
+//        uniform lowp vec4 vMaterialSpecular;
+//        varying lowp vec4 colorDiffuse;
+//        uniform highp vec3 vLight0;
+//        varying mediump vec3 position;
+//        varying mediump vec3 normal;
+//        void main() {
+//            mediump vec3 halfVector = normalize(-vLight0 + position);
+//            mediump float NdotH = max(dot(normalize(normal), halfVector), 0.0);
+//            mediump float fPower = vMaterialSpecular.w;
+//            mediump float specular = pow(NdotH, fPower);
+//            lowp vec4 colorSpecular = vec4( vMaterialSpecular.xyz * specular, 1 );
+//            gl_FragColor = colorDiffuse + colorSpecular;
+////            gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+//        }
+//);
 
 static const char *FRAGMEMT_SHADER = GET_STR(
         uniform lowp vec3 vMaterialAmbient;
         uniform lowp vec4 vMaterialSpecular;
-        varying lowp vec4 colorDiffuse;
-        uniform highp vec3 vLight0;
+        uniform sampler2D samplerObj;
+        varying mediump vec2 texCoord;
+        varying lowp vec4 diffuseLight;
+        uniform highp vec3   vLight0;
         varying mediump vec3 position;
         varying mediump vec3 normal;
         void main() {
@@ -44,8 +91,10 @@ static const char *FRAGMEMT_SHADER = GET_STR(
             mediump float fPower = vMaterialSpecular.w;
             mediump float specular = pow(NdotH, fPower);
             lowp vec4 colorSpecular = vec4( vMaterialSpecular.xyz * specular, 1 );
-            gl_FragColor = colorDiffuse + colorSpecular;
-//            gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+            // increase ambient light to brighten the teapot :-)
+//            gl_FragColor = diffuseLight * texture2D(samplerObj, texCoord) +
+//            2.0f * vec4(vMaterialAmbient.xyz, 1.0f) + colorSpecular;
+            gl_FragColor = texture2D(samplerObj, texCoord);
         }
 );
 
@@ -132,12 +181,18 @@ void ObjViewerFilter::doFrame() {
 //    glUniform3f(shaderProgram->light0, 100.f, -200.f, -600.f);
     glUniform3f(shaderProgram->light0, 100.f, -200.f, -6000.f);
 
+//    GLint sampler = glGetUniformLocation(shaderProgram->program,
+//                                         "samplerObj");
+//    glUniform1i(sampler, 5);
+
 //    glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_SHORT,
 //                   BUFFER_OFFSET(0));
 
 // Bind the VBO
     for (int i = 0; i < shapes.size(); ++i) {
-        ALOGD("111111 %d %d", i, vertices[i]);
+
+        glBindTexture(GL_TEXTURE_2D, 0);
+
         glBindBuffer(GL_ARRAY_BUFFER, vbos[i]);
 
         int32_t iStride = sizeof(TEAPOT_VERTEX);
@@ -150,9 +205,25 @@ void ObjViewerFilter::doFrame() {
                               BUFFER_OFFSET(3 * sizeof(GLfloat)));
         glEnableVertexAttribArray(ATTRIB_NORMAL);
 
+        glBindBuffer(GL_ARRAY_BUFFER, textures[i]);
+
+        glActiveTexture(GL_TEXTURE0 + i + 1);
+        glBindTexture(GL_TEXTURE_2D, texture2Ds[i]->texId);
+
+        GLint sampler = glGetUniformLocation(shaderProgram->program,
+                                             "samplerObj");
+        glUniform1i(sampler, i);
+
+        glVertexAttribPointer(ATTRIB_UV, 2, GL_FLOAT, GL_FALSE,
+                              2 * sizeof(GLfloat),
+                              BUFFER_OFFSET(0));
+        glEnableVertexAttribArray(ATTRIB_UV);
+
         glDrawArrays(GL_TRIANGLES, 0, vertices[i]);
 
         glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+        glBindTexture(GL_TEXTURE_2D, 0);
     }
 
 }
@@ -288,11 +359,13 @@ void ObjViewerFilter::init() {
     bool hasNormal = attrib.normals.size() > 0;
     vbos = std::vector<GLuint>(shapes.size());
     vertices = std::vector<int>(shapes.size());
-    textures = std::vector<int>(shapes.size());
+    textures = std::vector<GLuint>(shapes.size());
+    texture2Ds = std::vector<Texture2D*>(shapes.size());
     for (int i = 0; i < shapes.size(); ++i) {
         int num = shapes[i].mesh.indices.size();
         vertices[i] = num;
         TEAPOT_VERTEX *p = new TEAPOT_VERTEX[num];
+        std::vector<float> coords;
         int32_t index = 0;
 
         size_t index_offset = 0;
@@ -310,12 +383,9 @@ void ObjViewerFilter::init() {
                     p[index].normal[1] = attrib.normals[3 * idx.normal_index + 1];
                     p[index].normal[2] = attrib.normals[3 * idx.normal_index + 2];
                 }
-//                p[index].pos[0] = attrib.texcoords[2*idx.texcoord_index+0];
-//                p[index].pos[1] = attrib.texcoords[2*idx.texcoord_index+1];
-                // Optional: vertex colors
-                // tinyobj::real_t red = attrib.colors[3*idx.vertex_index+0];
-                // tinyobj::real_t green = attrib.colors[3*idx.vertex_index+1];
-                // tinyobj::real_t blue = attrib.colors[3*idx.vertex_index+2];
+
+                coords.push_back(attrib.texcoords[2*idx.texcoord_index+0]);
+                coords.push_back(attrib.texcoords[2*idx.texcoord_index+1]);
 
                 index++;
             }
@@ -328,6 +398,19 @@ void ObjViewerFilter::init() {
         glBindBuffer(GL_ARRAY_BUFFER, 0);
 
         delete[] p;
+
+        //texture
+        glGenBuffers(1, &(textures[i]));
+        glBindBuffer(GL_ARRAY_BUFFER, textures[i]);
+        glBufferData(GL_ARRAY_BUFFER,
+                     2 * sizeof(float) * num,
+                     coords.data(), GL_STATIC_DRAW);
+        tinyobj::material_t* mp = &materials[i];
+        const char *path = ("sdcard/" + mp->diffuse_texname).c_str();
+        texture2Ds[i] = new Texture2D(path);
+        texture2Ds[i]->create();
+        ALOGD("path is %s %d %d", path, texture2Ds[i]->texId, coords.size());
+
     }
 
     modelMatrix = ndk_helper::Mat4::Translation(0, 0, -15.f);

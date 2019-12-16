@@ -15,9 +15,10 @@ Texture2D::Texture2D(const char *path) {
 
 void Texture2D::create() {
     glGenTextures(1, &texId);
+    ALOGD("111111 create texture id is %d", texId);
     assert(texId != GL_INVALID_VALUE);
     glBindTexture(GL_TEXTURE_2D, texId);
-    glActiveTexture(GL_TEXTURE0);
+    glActiveTexture(GL_TEXTURE0 + texId - 1);
 
 //     tga/bmp files are saved as vertical mirror images ( at least more than half ).
     timerutil t;
@@ -27,7 +28,7 @@ void Texture2D::create() {
     unsigned char* image =
             stbi_load(path, &w, &h, &comp, STBI_default);
     t.end();
-    ALOGD("Parsing time: %lu [msecs] %d %d %d\n", t.msec(), w, h, comp);
+    ALOGD("Parsing time:%s %d %lu [msecs] %d %d %d\n", path, texId, t.msec(), w, h, comp);
     GLint format = 0;
     if (comp == 3) {
         format = GL_RGB;
@@ -51,7 +52,7 @@ void Texture2D::create() {
 
 void Texture2D::bindTexture() {
     glBindTexture(GL_TEXTURE_2D, texId);
-    glActiveTexture(GL_TEXTURE0);
+    glActiveTexture(GL_TEXTURE0 + texId -1);
 }
 
 Texture2D::~Texture2D() {

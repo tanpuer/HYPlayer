@@ -20,11 +20,11 @@ public:
 
     void bindTexture();
 
+    GLuint texId = GL_INVALID_VALUE;
+
 private:
 
     const char* path;
-
-    GLuint texId = GL_INVALID_VALUE;
 
 };
 

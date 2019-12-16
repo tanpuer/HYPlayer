@@ -9,6 +9,7 @@
 #include <base/matrix_util.h>
 #include "vecmath.h"
 #include "tiny_obj_loader.h"
+#include "Texture2D.h"
 
 #define GET_STR(x) #x
 #define BUFFER_OFFSET(i) ((char*)NULL + (i))
@@ -81,7 +82,7 @@ protected:
 
     float CAM_X = 0.f;
     float CAM_Y = 0.f;
-    float CAM_Z = 100.f;
+    float CAM_Z = 70.f;
 
     tinyobj::attrib_t attrib;
     std::vector<tinyobj::shape_t> shapes;
@@ -89,7 +90,8 @@ protected:
     void loadObj();
     std::vector<GLuint> vbos;
     std::vector<int> vertices;
-    std::vector<int> textures;
+    std::vector<GLuint> textures;
+    std::vector<Texture2D*> texture2Ds;
 
     int scrollX = 0;
     int scrollY = 0;

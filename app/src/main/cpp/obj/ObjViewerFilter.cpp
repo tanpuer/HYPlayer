@@ -304,12 +304,9 @@ void ObjViewerFilter::init() {
         glBufferData(GL_ARRAY_BUFFER,
                      2 * sizeof(float) * num,
                      coords.data(), GL_STATIC_DRAW);
-        tinyobj::material_t* mp = &materials[i];
-        const char *path = ("sdcard/" + mp->diffuse_texname).c_str();
-        texture2Ds[i] = new Texture2D(path);
+        tinyobj::material_t *mp = &materials[i];
+        texture2Ds[i] = new Texture2D(("sdcard/" + mp->diffuse_texname).c_str());
         texture2Ds[i]->create();
-        ALOGD("path is %s %d %d", path, texture2Ds[i]->texId, coords.size());
-
     }
 
     modelMatrix = ndk_helper::Mat4::Translation(0, 0, -15.f);

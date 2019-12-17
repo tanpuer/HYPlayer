@@ -8,29 +8,6 @@
 #include "teapot.inl"
 #include "timerutil.h"
 
-//static const char *VERTEX_SHADER = GET_STR(
-//        attribute highp vec3 myVertex;
-//        attribute highp vec3 myNormal;
-//        varying lowp vec4 colorDiffuse;
-//        varying mediump vec3 position;
-//        varying mediump vec3 normal;
-//        uniform highp mat4 uMVMatrix;
-//        uniform highp mat4 uPMatrix;
-//        uniform highp vec3 vLight0;
-//        uniform lowp vec4 vMaterialDiffuse;
-//        uniform lowp vec3 vMaterialAmbient;
-//        uniform lowp vec4 vMaterialSpecular;
-//        void main(void) {
-//            highp vec4 p = vec4(myVertex,1);
-//            gl_Position = uPMatrix * p;
-//            highp vec3 worldNormal = vec3(mat3(uMVMatrix[0].xyz, uMVMatrix[1].xyz, uMVMatrix[2].xyz) * myNormal);
-//            highp vec3 ecPosition = p.xyz;
-//            colorDiffuse = dot( worldNormal, normalize(-vLight0+ecPosition) ) * vMaterialDiffuse  + vec4( vMaterialAmbient, 1 );
-//            normal = worldNormal;
-//            position = ecPosition;
-//       }
-//);
-
 static const char *VERTEX_SHADER = GET_STR(
         attribute highp vec3 myVertex;
         attribute highp vec3 myNormal;
@@ -57,24 +34,6 @@ static const char *VERTEX_SHADER = GET_STR(
             position = ecPosition;
         }
 );
-
-//static const char *FRAGMEMT_SHADER = GET_STR(
-//        uniform lowp vec3 vMaterialAmbient;
-//        uniform lowp vec4 vMaterialSpecular;
-//        varying lowp vec4 colorDiffuse;
-//        uniform highp vec3 vLight0;
-//        varying mediump vec3 position;
-//        varying mediump vec3 normal;
-//        void main() {
-//            mediump vec3 halfVector = normalize(-vLight0 + position);
-//            mediump float NdotH = max(dot(normalize(normal), halfVector), 0.0);
-//            mediump float fPower = vMaterialSpecular.w;
-//            mediump float specular = pow(NdotH, fPower);
-//            lowp vec4 colorSpecular = vec4( vMaterialSpecular.xyz * specular, 1 );
-//            gl_FragColor = colorDiffuse + colorSpecular;
-////            gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
-//        }
-//);
 
 static const char *FRAGMEMT_SHADER = GET_STR(
         uniform lowp vec3 vMaterialAmbient;
@@ -178,12 +137,7 @@ void ObjViewerFilter::doFrame() {
     glUniformMatrix4fv(shaderProgram->projectionMatrix, 1, GL_FALSE,
                        mat_vp.Ptr());
     glUniformMatrix4fv(shaderProgram->viewMatrix, 1, GL_FALSE, viewMatrix.Ptr());
-//    glUniform3f(shaderProgram->light0, 100.f, -200.f, -600.f);
     glUniform3f(shaderProgram->light0, 100.f, -200.f, -6000.f);
-
-//    GLint sampler = glGetUniformLocation(shaderProgram->program,
-//                                         "samplerObj");
-//    glUniform1i(sampler, 5);
 
 //    glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_SHORT,
 //                   BUFFER_OFFSET(0));
@@ -207,12 +161,10 @@ void ObjViewerFilter::doFrame() {
 
         glBindBuffer(GL_ARRAY_BUFFER, textures[i]);
 
-        glActiveTexture(GL_TEXTURE0 + i + 1);
+        glActiveTexture(GL_TEXTURE0 + texture2Ds[i]->texId);
         glBindTexture(GL_TEXTURE_2D, texture2Ds[i]->texId);
 
-        GLint sampler = glGetUniformLocation(shaderProgram->program,
-                                             "samplerObj");
-        glUniform1i(sampler, i);
+        glUniform1i(shaderProgram->samplerObj, i);
 
         glVertexAttribPointer(ATTRIB_UV, 2, GL_FLOAT, GL_FALSE,
                               2 * sizeof(GLfloat),
@@ -293,68 +245,10 @@ void ObjViewerFilter::init() {
     shaderProgram->materialAmbient = glGetUniformLocation(program, "vMaterialAmbient");
     shaderProgram->materialSpecular =
             glGetUniformLocation(program, "vMaterialSpecular");
+    shaderProgram->samplerObj = glGetUniformLocation(program, "samplerObj");
 
     shaderProgram->program = program;
 
-    //test
-//    // Create Index buffer
-//    numIndices = sizeof(shapes[0].mesh.indices) / sizeof(shapes[0].mesh.indices);
-//
-//    for (size_t s = 0; s < shapes.size(); s++) {
-//        numVertices+=shapes[s].mesh.indices.size();
-//    }
-//
-//    int normalSize = attrib.normals.size();
-//    ALOGD("numIndices size %d, numVertices size %d, normalSize is %d, textureSize is %d, colorSize is %d", shapes.size(), numVertices, normalSize, attrib.texcoords.size(), attrib.colors.size());
-//
-//    ALOGD("%d %d %d", shapes.size(), shapes[0].mesh.num_face_vertices.size(), shapes[0].mesh.num_face_vertices[0])
-//    int32_t stride = sizeof(TEAPOT_VERTEX);
-//    int32_t index = 0;
-//    TEAPOT_VERTEX *p = new TEAPOT_VERTEX[numVertices];
-//
-//    bool hasNormal = attrib.normals.size() > 0;
-//    // Loop over shapes
-//    for (size_t s = 0; s < shapes.size(); s++) {
-//        // Loop over faces(polygon)
-//        size_t index_offset = 0;
-//        for (size_t f = 0; f < shapes[s].mesh.num_face_vertices.size(); f++) {
-//            int fv = shapes[s].mesh.num_face_vertices[f];
-//            // Loop over vertices in the face.
-//            for (size_t v = 0; v < fv; v++) {
-//                // access to vertex
-//                tinyobj::index_t idx = shapes[s].mesh.indices[index_offset + v];
-//                p[index].pos[0] = attrib.vertices[3*idx.vertex_index+0];
-//                p[index].pos[1] = attrib.vertices[3*idx.vertex_index+1];
-//                p[index].pos[2] = attrib.vertices[3*idx.vertex_index+2];
-//                if (hasNormal) {
-//                    p[index].normal[0] = attrib.normals[3 * idx.normal_index + 0];
-//                    p[index].normal[1] = attrib.normals[3 * idx.normal_index + 1];
-//                    p[index].normal[2] = attrib.normals[3 * idx.normal_index + 2];
-//                }
-////                p[index].pos[0] = attrib.texcoords[2*idx.texcoord_index+0];
-////                p[index].pos[1] = attrib.texcoords[2*idx.texcoord_index+1];
-//                // Optional: vertex colors
-//                // tinyobj::real_t red = attrib.colors[3*idx.vertex_index+0];
-//                // tinyobj::real_t green = attrib.colors[3*idx.vertex_index+1];
-//                // tinyobj::real_t blue = attrib.colors[3*idx.vertex_index+2];
-//
-//                index++;
-//            }
-//            index_offset += fv;
-//            // per-face material
-//            shapes[s].mesh.material_ids[f];
-////            ALOGD("111111 %d %s", s, materials[f].name.c_str());
-//        }
-//    }
-//
-//
-//    glGenBuffers(1, &vbo);
-//    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-//    glBufferData(GL_ARRAY_BUFFER, stride * numVertices, p, GL_STATIC_DRAW);
-//    glBindBuffer(GL_ARRAY_BUFFER, 0);
-//
-//    delete[] p;
-//test over
     int32_t stride = sizeof(TEAPOT_VERTEX);
     bool hasNormal = attrib.normals.size() > 0;
     vbos = std::vector<GLuint>(shapes.size());

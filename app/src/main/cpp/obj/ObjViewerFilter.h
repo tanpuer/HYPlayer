@@ -34,6 +34,8 @@ struct SHADER_PARAMS {
 
     GLuint projectionMatrix;
     GLuint viewMatrix;
+
+    GLuint samplerObj;
 };
 
 struct TEAPOT_MATERIALS {

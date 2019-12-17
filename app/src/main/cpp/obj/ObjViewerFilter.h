@@ -70,11 +70,6 @@ protected:
     GLuint fragmentShader;
     GLuint program;
 
-    int32_t numIndices;
-    int32_t numVertices = 0;
-    GLuint ibo;
-    GLuint vbo;
-
     ndk_helper::Mat4 projectionMatrix;
     ndk_helper::Mat4 viewMatrix;
     ndk_helper::Mat4 modelMatrix;

@@ -22,10 +22,15 @@ public:
 
     GLuint texId = GL_INVALID_VALUE;
 
+    unsigned char* image;
+
+    GLint format = 0;
+
 private:
 
     const char* path;
 
+    int w, h;
 };
 
 

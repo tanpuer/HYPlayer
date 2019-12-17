@@ -82,20 +82,28 @@ void ObjViewerFilter::updateViewport() {
 }
 
 void ObjViewerFilter::release() {
-    if (vbo) {
-        glDeleteBuffers(1, &vbo);
-        vbo = 0;
-    }
 
-    if (ibo) {
-        glDeleteBuffers(1, &ibo);
-        ibo = 0;
+    if (!vbos.empty()) {
+        for (int i=0; i< vbos.size(); ++i) {
+            glDeleteBuffers(1, &vbos[i]);
+        }
+    }
+    if (!textures.empty()) {
+        for (int i=0; i< textures.size(); ++i) {
+            glDeleteBuffers(1, &textures[i]);
+        }
+    }
+    if (!texture2Ds.empty()) {
+        for (int i=0; i< texture2Ds.size(); ++i) {
+            delete texture2Ds[i];
+        }
     }
 
     if (shaderProgram->program) {
         glDeleteProgram(shaderProgram->program);
         shaderProgram->program = 0;
     }
+
 }
 
 void ObjViewerFilter::doFrame() {
@@ -139,10 +147,6 @@ void ObjViewerFilter::doFrame() {
     glUniformMatrix4fv(shaderProgram->viewMatrix, 1, GL_FALSE, viewMatrix.Ptr());
     glUniform3f(shaderProgram->light0, 100.f, -200.f, -6000.f);
 
-//    glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_SHORT,
-//                   BUFFER_OFFSET(0));
-
-// Bind the VBO
     for (int i = 0; i < shapes.size(); ++i) {
 
         glBindTexture(GL_TEXTURE_2D, 0);
@@ -161,8 +165,7 @@ void ObjViewerFilter::doFrame() {
 
         glBindBuffer(GL_ARRAY_BUFFER, textures[i]);
 
-        glActiveTexture(GL_TEXTURE0 + texture2Ds[i]->texId);
-        glBindTexture(GL_TEXTURE_2D, texture2Ds[i]->texId);
+        texture2Ds[i]->bindTexture();
 
         glUniform1i(shaderProgram->samplerObj, i);
 
@@ -173,8 +176,10 @@ void ObjViewerFilter::doFrame() {
 
         glDrawArrays(GL_TRIANGLES, 0, vertices[i]);
 
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        //    glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_SHORT,
+//                   BUFFER_OFFSET(0));
 
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindTexture(GL_TEXTURE_2D, 0);
     }
 

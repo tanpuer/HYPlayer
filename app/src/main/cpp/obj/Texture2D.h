@@ -31,6 +31,8 @@ private:
     const char* path;
 
     int w, h;
+
+    bool textured = false;
 };
 
 

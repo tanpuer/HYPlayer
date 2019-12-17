@@ -18,6 +18,7 @@ void ObjViewerLooper::handleMessage(Looper::LooperMessage *msg) {
         case kMsgObjViewerCreated: {
             renderer = new ObjViewerRenderer();
             renderer->objViewerCreated(window);
+            destroyed = false;
             break;
         }
         case kMsgObjViewerChanged: {
@@ -34,7 +35,7 @@ void ObjViewerLooper::handleMessage(Looper::LooperMessage *msg) {
             break;
         }
         case kMsgObJViewerDoFrame: {
-            if (renderer != nullptr) {
+            if (!destroyed && renderer != nullptr) {
                 renderer->objViewerDoFrame();
             }
             break;

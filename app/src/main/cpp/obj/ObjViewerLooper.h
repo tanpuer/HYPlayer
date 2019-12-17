@@ -34,6 +34,8 @@ public:
 
     void setObjScale(float scale);
 
+    bool destroyed = false;
+
 private:
 
     ANativeWindow *window;

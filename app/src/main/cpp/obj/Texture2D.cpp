@@ -45,10 +45,13 @@ void Texture2D::create() {
 void Texture2D::bindTexture() {
     glActiveTexture(GL_TEXTURE0 + texId - 1);
     glBindTexture(GL_TEXTURE_2D, texId);
-    glTexImage2D(
-            GL_TEXTURE_2D, 0, format, w, h, 0, format, GL_UNSIGNED_BYTE,
-            image
-    );
+    if (!textured) {
+        glTexImage2D(
+                GL_TEXTURE_2D, 0, format, w, h, 0, format, GL_UNSIGNED_BYTE,
+                image
+        );
+        textured = true;
+    }
 }
 
 Texture2D::~Texture2D() {

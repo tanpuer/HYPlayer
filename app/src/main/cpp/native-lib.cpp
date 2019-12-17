@@ -639,6 +639,7 @@ Java_com_cw_hyplayer_viewer_NativeObjView_nativeObjViewDestroyed(
         jobject instance
 ) {
     if (objViewerLooper != nullptr) {
+        objViewerLooper->destroyed = true;
         objViewerLooper->sendMessage(objViewerLooper->kMsgObjViewerDestroyed);
     }
 }

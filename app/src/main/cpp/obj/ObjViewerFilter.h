@@ -14,7 +14,7 @@
 #define GET_STR(x) #x
 #define BUFFER_OFFSET(i) ((char*)NULL + (i))
 
-struct TEAPOT_VERTEX {
+struct SHADER_VERTEX {
     float pos[3];
     float normal[3];
 };
@@ -38,7 +38,7 @@ struct SHADER_PARAMS {
     GLuint samplerObj;
 };
 
-struct TEAPOT_MATERIALS {
+struct SHADER_MATERIALS {
     float diffuseColor[3];
     float specularColor[4];
     float ambientColor[3];

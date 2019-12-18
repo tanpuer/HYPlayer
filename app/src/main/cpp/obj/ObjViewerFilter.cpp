@@ -124,7 +124,7 @@ void ObjViewerFilter::doFrame() {
 
     glUseProgram(shaderProgram->program);
 
-    TEAPOT_MATERIALS material = {
+    SHADER_MATERIALS material = {
             {1.0f, 0.5f, 0.5f},
             {1.0f, 1.0f, 1.0f, 10.f},
             {0.1f, 0.1f, 0.1f},};
@@ -153,7 +153,7 @@ void ObjViewerFilter::doFrame() {
 
         glBindBuffer(GL_ARRAY_BUFFER, vbos[i]);
 
-        int32_t iStride = sizeof(TEAPOT_VERTEX);
+        int32_t iStride = sizeof(SHADER_VERTEX);
         // Pass the vertex data
         glVertexAttribPointer(ATTRIB_VERTEX, 3, GL_FLOAT, GL_FALSE, iStride,
                               BUFFER_OFFSET(0));
@@ -254,7 +254,7 @@ void ObjViewerFilter::init() {
 
     shaderProgram->program = program;
 
-    int32_t stride = sizeof(TEAPOT_VERTEX);
+    int32_t stride = sizeof(SHADER_VERTEX);
     bool hasNormal = attrib.normals.size() > 0;
     vbos = std::vector<GLuint>(shapes.size());
     vertices = std::vector<int>(shapes.size());
@@ -263,7 +263,7 @@ void ObjViewerFilter::init() {
     for (int i = 0; i < shapes.size(); ++i) {
         int num = shapes[i].mesh.indices.size();
         vertices[i] = num;
-        TEAPOT_VERTEX *p = new TEAPOT_VERTEX[num];
+        SHADER_VERTEX *p = new SHADER_VERTEX[num];
         std::vector<float> coords;
         int32_t index = 0;
 

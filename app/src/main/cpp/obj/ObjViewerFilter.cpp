@@ -50,9 +50,9 @@ static const char *FRAGMEMT_SHADER = GET_STR(
             mediump float specular = pow(NdotH, fPower);
             lowp vec4 colorSpecular = vec4( vMaterialSpecular.xyz * specular, 1 );
             // increase ambient light to brighten the teapot :-)
-//            gl_FragColor = diffuseLight * texture2D(samplerObj, texCoord) +
-//            2.0f * vec4(vMaterialAmbient.xyz, 1.0f) + colorSpecular;
-            gl_FragColor = texture2D(samplerObj, texCoord);
+            gl_FragColor = diffuseLight * texture2D(samplerObj, texCoord) +
+            2.0f * vec4(vMaterialAmbient.xyz, 1.0f) + colorSpecular;
+//            gl_FragColor = texture2D(samplerObj, texCoord);
         }
 );
 
@@ -256,6 +256,7 @@ void ObjViewerFilter::init() {
 
     int32_t stride = sizeof(SHADER_VERTEX);
     bool hasNormal = attrib.normals.size() > 0;
+    bool hasTexture = attrib.texcoords.size() > 0;
     vbos = std::vector<GLuint>(shapes.size());
     vertices = std::vector<int>(shapes.size());
     textures = std::vector<GLuint>(shapes.size());
@@ -282,10 +283,10 @@ void ObjViewerFilter::init() {
                     p[index].normal[1] = attrib.normals[3 * idx.normal_index + 1];
                     p[index].normal[2] = attrib.normals[3 * idx.normal_index + 2];
                 }
-
-                coords.push_back(attrib.texcoords[2*idx.texcoord_index+0]);
-                coords.push_back(attrib.texcoords[2*idx.texcoord_index+1]);
-
+                if (hasTexture) {
+                    coords.push_back(attrib.texcoords[2 * idx.texcoord_index + 0]);
+                    coords.push_back(attrib.texcoords[2 * idx.texcoord_index + 1]);
+                }
                 index++;
             }
             index_offset += fv;

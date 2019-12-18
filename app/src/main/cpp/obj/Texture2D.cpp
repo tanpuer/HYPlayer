@@ -27,13 +27,17 @@ void Texture2D::create() {
     image = stbi_load(path, &w, &h, &comp, STBI_default);
     t.end();
     ALOGD("Parsing time:%s %d %lu [msecs] %d %d %d\n", path, texId, t.msec(), w, h, comp);
-    if (comp == 3) {
+    if (comp == 1) {
+        format = GL_LUMINANCE;
+    } else if (comp == 2) {
+        format = GL_LUMINANCE_ALPHA;
+    } else if (comp == 3) {
         format = GL_RGB;
     } else if (comp == 4) {
         format = GL_RGBA;
     } else {
         //todo
-        ALOGE("unSupport type");
+        ALOGE("unSupport type %d", comp);
     }
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);

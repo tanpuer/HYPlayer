@@ -51,9 +51,9 @@ static const char *FRAGMEMT_SHADER = GET_STR(
             mediump float specular = pow(NdotH, fPower);
             lowp vec4 colorSpecular = vec4( vMaterialSpecular.xyz * specular, 1 );
             // increase ambient light to brighten the teapot :-)
-//            gl_FragColor = diffuseLight * texture2D(samplerObj, texCoord) +
-//            2.0f * vec4(vMaterialAmbient.xyz, 1.0f) + colorSpecular;
-            gl_FragColor = texture2D(samplerObj, texCoord);
+            gl_FragColor = diffuseLight * texture2D(samplerObj, texCoord) +
+            2.0f * vec4(vMaterialAmbient.xyz, 1.0f) + colorSpecular;
+//            gl_FragColor = texture2D(samplerObj, texCoord);
         }
 );
 
@@ -323,7 +323,8 @@ void ObjViewerFilter::loadObj() {
 //                                "/sdcard/issue-138.obj",
 //                                "/sdcard/12228_Dog_v1_L2.obj",
 //                                "/sdcard/teapot_n_glass.obj",
-                                "/sdcard/batman.obj",
+//                                "/sdcard/batman.obj",
+                                "/sdcard/earth.obj",
                                 "/sdcard", true);
     t.end();
     if (!warn.empty()) {

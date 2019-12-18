@@ -50,9 +50,9 @@ static const char *FRAGMEMT_SHADER = GET_STR(
             mediump float specular = pow(NdotH, fPower);
             lowp vec4 colorSpecular = vec4( vMaterialSpecular.xyz * specular, 1 );
             // increase ambient light to brighten the teapot :-)
-            gl_FragColor = diffuseLight * texture2D(samplerObj, texCoord) +
-            2.0f * vec4(vMaterialAmbient.xyz, 1.0f) + colorSpecular;
-//            gl_FragColor = texture2D(samplerObj, texCoord);
+//            gl_FragColor = diffuseLight * texture2D(samplerObj, texCoord) +
+//            2.0f * vec4(vMaterialAmbient.xyz, 1.0f) + colorSpecular;
+            gl_FragColor = texture2D(samplerObj, texCoord);
         }
 );
 
@@ -164,7 +164,9 @@ void ObjViewerFilter::doFrame() {
 
         glBindBuffer(GL_ARRAY_BUFFER, textures[i]);
 
-        texture2Ds[i]->bindTexture();
+        if (texture2Ds[i] != nullptr) {
+            texture2Ds[i]->bindTexture();
+        }
 
         glUniform1i(shaderProgram->samplerObj, i);
 
@@ -304,8 +306,10 @@ void ObjViewerFilter::init() {
                      2 * sizeof(float) * num,
                      coords.data(), GL_STATIC_DRAW);
         tinyobj::material_t *mp = &materials[i];
-        texture2Ds[i] = new Texture2D(("sdcard/" + mp->diffuse_texname).c_str());
-        texture2Ds[i]->create();
+        if (!mp->diffuse_texname.empty()) {
+            texture2Ds[i] = new Texture2D(("sdcard/" + mp->diffuse_texname).c_str());
+            texture2Ds[i]->create();
+        }
     }
 
     modelMatrix = ndk_helper::Mat4::Translation(0, 0, -15.f);

@@ -5,7 +5,6 @@
 #include <base/gl_utils.h>
 #include <iostream>
 #include "ObjViewerFilter.h"
-#include "teapot.inl"
 #include "timerutil.h"
 
 static const char *VERTEX_SHADER = GET_STR(

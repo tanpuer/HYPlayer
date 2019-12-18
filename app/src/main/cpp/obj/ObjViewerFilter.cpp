@@ -166,14 +166,13 @@ void ObjViewerFilter::doFrame() {
 
         if (texture2Ds[i] != nullptr) {
             texture2Ds[i]->bindTexture();
+            glUniform1i(shaderProgram->samplerObj, i);
+
+            glVertexAttribPointer(ATTRIB_UV, 2, GL_FLOAT, GL_FALSE,
+                                  2 * sizeof(GLfloat),
+                                  BUFFER_OFFSET(0));
+            glEnableVertexAttribArray(ATTRIB_UV);
         }
-
-        glUniform1i(shaderProgram->samplerObj, i);
-
-        glVertexAttribPointer(ATTRIB_UV, 2, GL_FLOAT, GL_FALSE,
-                              2 * sizeof(GLfloat),
-                              BUFFER_OFFSET(0));
-        glEnableVertexAttribArray(ATTRIB_UV);
 
         glDrawArrays(GL_TRIANGLES, 0, vertices[i]);
 
@@ -305,10 +304,12 @@ void ObjViewerFilter::init() {
         glBufferData(GL_ARRAY_BUFFER,
                      2 * sizeof(float) * num,
                      coords.data(), GL_STATIC_DRAW);
-        tinyobj::material_t *mp = &materials[i];
-        if (!mp->diffuse_texname.empty()) {
-            texture2Ds[i] = new Texture2D(("sdcard/" + mp->diffuse_texname).c_str());
-            texture2Ds[i]->create();
+        if (!materials.empty()) {
+            tinyobj::material_t *mp = &materials[i];
+            if (mp != nullptr && !mp->diffuse_texname.empty()) {
+                texture2Ds[i] = new Texture2D(("sdcard/" + mp->diffuse_texname).c_str());
+                texture2Ds[i]->create();
+            }
         }
     }
 
@@ -321,14 +322,12 @@ void ObjViewerFilter::loadObj() {
     std::string warn;
     std::string err;
     bool ret = tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err,
-//                                "/sdcard/usemtl-issue-68.obj",
-//                                "/sdcard/Handgun_obj.obj",
-//                                "/sdcard/issue-138.obj",
 //                                "/sdcard/12228_Dog_v1_L2.obj",
 //                                "/sdcard/teapot_n_glass.obj",
 //                                "/sdcard/batman.obj",
 //                                "/sdcard/earth.obj",
-                                "/sdcard/A380.obj",
+//                                "/sdcard/A380.obj",
+                                "/sdcard/uh60.obj",
                                 "/sdcard", true);
     t.end();
     if (!warn.empty()) {

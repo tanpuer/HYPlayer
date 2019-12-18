@@ -66,7 +66,7 @@ void ObjViewerFilter::updateViewport() {
     glGetIntegerv(GL_VIEWPORT, viewport);
 
     const float CAM_NEAR = 5.f;
-    const float CAM_FAR = 10000.f;
+    const float CAM_FAR = 100000.f;
     if (viewport[2] < viewport[3]) {
         float aspect =
                 static_cast<float>(viewport[2]) / static_cast<float>(viewport[3]);
@@ -327,7 +327,8 @@ void ObjViewerFilter::loadObj() {
 //                                "/sdcard/12228_Dog_v1_L2.obj",
 //                                "/sdcard/teapot_n_glass.obj",
 //                                "/sdcard/batman.obj",
-                                "/sdcard/earth.obj",
+//                                "/sdcard/earth.obj",
+                                "/sdcard/A380.obj",
                                 "/sdcard", true);
     t.end();
     if (!warn.empty()) {

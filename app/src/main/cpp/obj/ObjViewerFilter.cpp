@@ -166,7 +166,7 @@ void ObjViewerFilter::doFrame() {
 
         if (texture2Ds[i] != nullptr) {
             texture2Ds[i]->bindTexture();
-            glUniform1i(shaderProgram->samplerObj, i);
+            glUniform1i(shaderProgram->samplerObj, texture2Ds[i]->texId - 1);
 
             glVertexAttribPointer(ATTRIB_UV, 2, GL_FLOAT, GL_FALSE,
                                   2 * sizeof(GLfloat),

@@ -23,6 +23,7 @@ enum SHADER_ATTRIBUTES {
     ATTRIB_VERTEX,
     ATTRIB_NORMAL,
     ATTRIB_UV,
+    ATTRIB_COLOR
 };
 
 struct SHADER_PARAMS {
@@ -55,7 +56,7 @@ public:
 
     virtual void release();
 
-    void doFrame();
+    virtual void doFrame();
 
     void setNativeWindowSize(int width, int height);
 
@@ -63,9 +64,11 @@ public:
 
     void scale(float scale);
 
-protected:
+    virtual void loadObj();
 
     virtual void initShaders();
+
+protected:
 
     GLuint vertexShader;
     GLuint fragmentShader;
@@ -80,12 +83,11 @@ protected:
 
     float CAM_X = 0.f;
     float CAM_Y = 0.f;
-    float CAM_Z = 700.f;
+    float CAM_Z = 70.f;
 
     tinyobj::attrib_t attrib;
     std::vector<tinyobj::shape_t> shapes;
     std::vector<tinyobj::material_t> materials;
-    void loadObj();
     std::vector<GLuint> vbos;
     std::vector<int> vertices;
     std::vector<GLuint> textures;

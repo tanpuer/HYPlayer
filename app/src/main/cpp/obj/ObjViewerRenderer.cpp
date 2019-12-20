@@ -6,6 +6,7 @@
 #include <GLES3/gl3.h>
 #include "ObjViewerRenderer.h"
 #include "ObjViewerCubeTextureFilter.h"
+#include "NewObjFilter.h"
 
 ObjViewerRenderer::ObjViewerRenderer() {
 
@@ -40,13 +41,14 @@ void ObjViewerRenderer::objViewerCreated(ANativeWindow *nativeWindow) {
     glEnable(GL_POLYGON_OFFSET_FILL);
     glEnable(GL_CULL_FACE);
     glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LESS);
+    glDepthFunc(GL_LEQUAL);
     glEnable(GL_TEXTURE_2D);
-//    glCullFace(GL_CCW);
-//    glEnable(GL_BLEND);
+    glCullFace(GL_CCW);
+    glEnable(GL_BLEND);
 
-    baseFilter = new ObjViewerFilter();
+//    baseFilter = new ObjViewerFilter();
 //    baseFilter = new ObjViewerCubeTextureFilter();
+    baseFilter = new NewObjFilter();
     baseFilter->init();
 }
 

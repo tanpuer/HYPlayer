@@ -22,7 +22,10 @@ static const char *VERTEX_SHADER = GET_STR(
         uniform lowp vec4 vMaterialDiffuse;
         uniform lowp vec3 vMaterialAmbient;
         uniform lowp vec4 vMaterialSpecular;
+        attribute vec3 myColor;
+        varying vec3 vMyColor;
         void main(void) {
+            vMyColor = myColor;
             highp vec4 p = vec4(myVertex,1);
             gl_Position = uPMatrix * p;
             texCoord = myUV;
@@ -44,6 +47,7 @@ static const char *FRAGMEMT_SHADER = GET_STR(
         varying mediump vec3 position;
         varying mediump vec3 normal;
         uniform vec3 diffuse;
+        varying vec3 vMyColor;
         void main() {
             mediump vec3 halfVector = normalize(-vLight0 + position);
             mediump float NdotH = max(dot(normalize(normal), halfVector), 0.0);
@@ -53,14 +57,14 @@ static const char *FRAGMEMT_SHADER = GET_STR(
             // increase ambient light to brighten the teapot :-)
 //            gl_FragColor = diffuseLight * texture2D(samplerObj, texCoord) +
 //            2.0f * vec4(vMaterialAmbient.xyz, 1.0f) + colorSpecular;
-//            gl_FragColor = texture2D(samplerObj, texCoord);
-            gl_FragColor = vec4(diffuse, 1.0);
+            gl_FragColor = texture2D(samplerObj, texCoord);
+//            gl_FragColor = vec4(vMyColor, 1.0);
 //            gl_FragColor = mix(texture2D(samplerObj, texCoord), vec4(diffuse, 1.0), 0.5);
         }
 );
 
 ObjViewerFilter::ObjViewerFilter() {
-    loadObj();
+
 }
 
 void ObjViewerFilter::updateViewport() {
@@ -68,7 +72,7 @@ void ObjViewerFilter::updateViewport() {
     int32_t viewport[4];
     glGetIntegerv(GL_VIEWPORT, viewport);
 
-    const float CAM_NEAR = 5.f;
+    const float CAM_NEAR = 1.f;
     const float CAM_FAR = 100000.f;
     if (viewport[2] < viewport[3]) {
         float aspect =
@@ -167,6 +171,13 @@ void ObjViewerFilter::doFrame() {
                               BUFFER_OFFSET(3 * sizeof(GLfloat)));
         glEnableVertexAttribArray(ATTRIB_NORMAL);
 
+        glVertexAttribPointer(ATTRIB_COLOR, 3 ,GL_FLOAT, GL_FALSE, iStride, BUFFER_OFFSET(6 * sizeof(GLfloat)));
+        glEnableVertexAttribArray(ATTRIB_COLOR);
+
+        glVertexAttribPointer(ATTRIB_UV, 2 ,GL_FLOAT, GL_FALSE, iStride, BUFFER_OFFSET(9 * sizeof(GLfloat)));
+        glEnableVertexAttribArray(ATTRIB_UV);
+
+
         glBindBuffer(GL_ARRAY_BUFFER, textures[i]);
 
         if (materials.size() > 0) {
@@ -212,6 +223,8 @@ void ObjViewerFilter::initShaders() {
 }
 
 void ObjViewerFilter::init() {
+    loadObj();
+
     initShaders();
 
     GLuint program;
@@ -231,6 +244,7 @@ void ObjViewerFilter::init() {
     glBindAttribLocation(program, ATTRIB_VERTEX, "myVertex");
     glBindAttribLocation(program, ATTRIB_NORMAL, "myNormal");
     glBindAttribLocation(program, ATTRIB_UV, "myUV");
+    glBindAttribLocation(program, ATTRIB_COLOR, "myColor");
 
     // 链接program程序
     glLinkProgram(program);

@@ -43,6 +43,7 @@ static const char *FRAGMEMT_SHADER = GET_STR(
         uniform highp vec3   vLight0;
         varying mediump vec3 position;
         varying mediump vec3 normal;
+        uniform vec3 diffuse;
         void main() {
             mediump vec3 halfVector = normalize(-vLight0 + position);
             mediump float NdotH = max(dot(normalize(normal), halfVector), 0.0);
@@ -50,9 +51,11 @@ static const char *FRAGMEMT_SHADER = GET_STR(
             mediump float specular = pow(NdotH, fPower);
             lowp vec4 colorSpecular = vec4( vMaterialSpecular.xyz * specular, 1 );
             // increase ambient light to brighten the teapot :-)
-            gl_FragColor = diffuseLight * texture2D(samplerObj, texCoord) +
-            2.0f * vec4(vMaterialAmbient.xyz, 1.0f) + colorSpecular;
+//            gl_FragColor = diffuseLight * texture2D(samplerObj, texCoord) +
+//            2.0f * vec4(vMaterialAmbient.xyz, 1.0f) + colorSpecular;
 //            gl_FragColor = texture2D(samplerObj, texCoord);
+            gl_FragColor = vec4(diffuse, 1.0);
+//            gl_FragColor = mix(texture2D(samplerObj, texCoord), vec4(diffuse, 1.0), 0.5);
         }
 );
 
@@ -102,6 +105,8 @@ void ObjViewerFilter::release() {
         glDeleteProgram(shaderProgram->program);
         shaderProgram->program = 0;
     }
+
+    texturesMap.clear();
 
 }
 
@@ -164,14 +169,26 @@ void ObjViewerFilter::doFrame() {
 
         glBindBuffer(GL_ARRAY_BUFFER, textures[i]);
 
-        if (texture2Ds[i] != nullptr) {
-            texture2Ds[i]->bindTexture();
-            glUniform1i(shaderProgram->samplerObj, texture2Ds[i]->texId - 1);
+        if (materials.size() > 0) {
+            //todo 默认选0位的material
+            std::string name = materials[shapes[i].mesh.material_ids[0]].diffuse_texname;
+            if (texturesMap.find(name) != texturesMap.end()) {
+                int index = texturesMap[name];
+                Texture2D* texture2D = texture2Ds[index];
+                texture2D->bindTexture();
+                glUniform1i(shaderProgram->samplerObj, texture2D->texId - 1);
 
-            glVertexAttribPointer(ATTRIB_UV, 2, GL_FLOAT, GL_FALSE,
-                                  2 * sizeof(GLfloat),
-                                  BUFFER_OFFSET(0));
-            glEnableVertexAttribArray(ATTRIB_UV);
+                glVertexAttribPointer(ATTRIB_UV, 2, GL_FLOAT, GL_FALSE,
+                                      2 * sizeof(GLfloat),
+                                      BUFFER_OFFSET(0));
+                glEnableVertexAttribArray(ATTRIB_UV);
+            }
+        }
+
+        if (!materials.empty()) {
+            glUniform3fv(shaderProgram->diffuse, 1,
+                         materials[shapes[i].mesh.material_ids[0]].diffuse
+            );
         }
 
         glDrawArrays(GL_TRIANGLES, 0, vertices[i]);
@@ -251,6 +268,7 @@ void ObjViewerFilter::init() {
     shaderProgram->materialSpecular =
             glGetUniformLocation(program, "vMaterialSpecular");
     shaderProgram->samplerObj = glGetUniformLocation(program, "samplerObj");
+    shaderProgram->diffuse = glGetUniformLocation(program, "diffuse");
 
     shaderProgram->program = program;
 
@@ -260,7 +278,7 @@ void ObjViewerFilter::init() {
     vbos = std::vector<GLuint>(shapes.size());
     vertices = std::vector<int>(shapes.size());
     textures = std::vector<GLuint>(shapes.size());
-    texture2Ds = std::vector<Texture2D*>(shapes.size());
+    texture2Ds = std::vector<Texture2D*>(materials.size());
     for (int i = 0; i < shapes.size(); ++i) {
         int num = shapes[i].mesh.indices.size();
         vertices[i] = num;
@@ -305,11 +323,16 @@ void ObjViewerFilter::init() {
         glBufferData(GL_ARRAY_BUFFER,
                      2 * sizeof(float) * num,
                      coords.data(), GL_STATIC_DRAW);
-        if (!materials.empty()) {
-            tinyobj::material_t *mp = &materials[i];
-            if (mp != nullptr && !mp->diffuse_texname.empty()) {
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+    }
+
+    for (int i = 0; i < materials.size(); ++i) {
+        tinyobj::material_t *mp = &materials[i];
+        if (mp != nullptr && mp->diffuse_texname.length() > 0) {
+            if (texturesMap.find(mp->diffuse_texname) == texturesMap.end()) {
                 texture2Ds[i] = new Texture2D(("sdcard/" + mp->diffuse_texname).c_str());
                 texture2Ds[i]->create();
+                texturesMap.insert(std::make_pair(mp->diffuse_texname, i));
             }
         }
     }
@@ -328,7 +351,9 @@ void ObjViewerFilter::loadObj() {
 //                                "/sdcard/batman.obj",
 //                                "/sdcard/earth.obj",
 //                                "/sdcard/A380.obj",
-                                "/sdcard/uh60.obj",
+//                                "/sdcard/uh60.obj",
+//                                "/sdcard/LAM.obj",
+                                "/sdcard/IronMan.obj",
                                 "/sdcard", true);
     t.end();
     if (!warn.empty()) {
@@ -341,6 +366,7 @@ void ObjViewerFilter::loadObj() {
         ALOGD("Failed to load/parse .obj!");
         return;
     }
+    ALOGD("shape and material size is %d %d", shapes.size(), materials.size())
     ALOGD("Parsing obj success, time: %lu [msecs]\n", t.msec());
 }
 

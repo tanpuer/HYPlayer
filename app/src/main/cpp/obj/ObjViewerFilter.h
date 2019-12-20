@@ -36,6 +36,7 @@ struct SHADER_PARAMS {
     GLuint viewMatrix;
 
     GLuint samplerObj;
+    GLuint diffuse;
 };
 
 struct SHADER_MATERIALS {
@@ -89,6 +90,7 @@ protected:
     std::vector<int> vertices;
     std::vector<GLuint> textures;
     std::vector<Texture2D*> texture2Ds;
+    std::map<std::string, int>texturesMap;
 
     int scrollX = 0;
     int scrollY = 0;

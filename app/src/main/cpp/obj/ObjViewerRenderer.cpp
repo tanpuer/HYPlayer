@@ -37,9 +37,13 @@ void ObjViewerRenderer::objViewerCreated(ANativeWindow *nativeWindow) {
 
     windowSurface->makeCurrent();
     glClearColor(0.0, 0.0, 0.0, 1.0);
+    glEnable(GL_POLYGON_OFFSET_FILL);
     glEnable(GL_CULL_FACE);
     glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LEQUAL);
+    glDepthFunc(GL_LESS);
+    glEnable(GL_TEXTURE_2D);
+//    glCullFace(GL_CCW);
+//    glEnable(GL_BLEND);
 
     baseFilter = new ObjViewerFilter();
 //    baseFilter = new ObjViewerCubeTextureFilter();

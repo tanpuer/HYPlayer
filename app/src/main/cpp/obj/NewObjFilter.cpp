@@ -60,7 +60,7 @@ static const char *FRAGMEMT_SHADER = GET_STR(
 //            2.0f * vec4(vMaterialAmbient.xyz, 1.0f) + colorSpecular;
             gl_FragColor = texture2D(samplerObj, texCoord);
 //            gl_FragColor = vec4(vMyColor, 1.0);
-//            gl_FragColor = mix(texture2D(samplerObj, texCoord), vec4(diffuse, 1.0), 0.5);
+//            gl_FragColor = mix(texture2D(samplerObj, texCoord), vec4(diffuse, 1.0), 0.3);
         }
 );
 
@@ -114,7 +114,8 @@ void NewObjFilter::loadObj() {
 //                                "/sdcard/uh60.obj",
 //                                "/sdcard/LAM.obj",
 //                                "/sdcard/IronMan.obj",
-                                "/sdcard/Ak-47.obj",
+//                                "/sdcard/Ak-47.obj",
+                                "/sdcard/Japanese_Temple.obj",
                                 "/sdcard", true);
     t.end();
     if (!warn.empty()) {
@@ -410,13 +411,13 @@ bool NewObjFilter::LoadObjAndConvert() {
                         c[1] /= len;
                         c[2] /= len;
                     }
-                    buffer.push_back(c[0] * 0.5 + 0.5);
-                    buffer.push_back(c[1] * 0.5 + 0.5);
-                    buffer.push_back(c[2] * 0.5 + 0.5);
+//                    buffer.push_back(c[0] * 0.5 + 0.5);
+//                    buffer.push_back(c[1] * 0.5 + 0.5);
+//                    buffer.push_back(c[2] * 0.5 + 0.5);
 
-//                    buffer.push_back(diffuse[0]);
-//                    buffer.push_back(diffuse[1]);
-//                    buffer.push_back(diffuse[2]);
+                    buffer.push_back(diffuse[0]);
+                    buffer.push_back(diffuse[1]);
+                    buffer.push_back(diffuse[2]);
 
                     buffer.push_back(tc[k][0]);
                     buffer.push_back(tc[k][1]);

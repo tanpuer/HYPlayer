@@ -51,6 +51,8 @@ private:
                                  std::map<int, vec3> &smoothVertexNormals);
 
     std::map<std::string, int> texturesIdMap;
+
+    float maxExtent = 1.0f;
 };
 
 

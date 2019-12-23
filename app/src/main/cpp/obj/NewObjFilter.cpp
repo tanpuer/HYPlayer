@@ -132,7 +132,19 @@ void NewObjFilter::loadObj() {
     }
     ALOGD("shape and material size is %d %d", shapes.size(), materials.size())
     ALOGD("Parsing obj success, time: %lu [msecs]\n", t.msec());
+
+    bmin[0] = bmin[1] = bmin[2] = std::numeric_limits<float>::max();
+    bmax[0] = bmax[1] = bmax[2] = -std::numeric_limits<float>::max();
+
     LoadObjAndConvert();
+
+    maxExtent = 0.5f * (bmax[0] - bmin[0]);
+    if (maxExtent < 0.5f * (bmax[1] - bmin[1])) {
+        maxExtent = 0.5f * (bmax[1] - bmin[1]);
+    }
+    if (maxExtent < 0.5f * (bmax[2] - bmin[2])) {
+        maxExtent = 0.5f * (bmax[2] - bmin[2]);
+    }
 }
 
 bool NewObjFilter::hasSmoothingGroup(const tinyobj::shape_t& shape)
@@ -463,9 +475,10 @@ bool NewObjFilter::LoadObjAndConvert() {
 
 void NewObjFilter::doFrame() {
 
-    viewMatrix = ndk_helper::Mat4::LookAt(ndk_helper::Vec3(CAM_X, CAM_Y, CAM_Z / scaleIndex),
-                                          ndk_helper::Vec3(0.f, 0.f, 0.f),
-                                          ndk_helper::Vec3(0.f, 1.f, 0.f));
+    viewMatrix = ndk_helper::Mat4::LookAt(
+            ndk_helper::Vec3(CAM_X / maxExtent, CAM_Y / maxExtent, CAM_Z / scaleIndex / maxExtent),
+            ndk_helper::Vec3(0.f, 0.f, 0.f),
+            ndk_helper::Vec3(0.f, 1.f, 0.f));
 
     modelMatrix = ndk_helper::Mat4::Identity();
     ndk_helper::Mat4 scrollXMat = ndk_helper::Mat4::RotationY(-PI * scrollX / 180);

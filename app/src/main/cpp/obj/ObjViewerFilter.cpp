@@ -73,7 +73,7 @@ void ObjViewerFilter::updateViewport() {
     glGetIntegerv(GL_VIEWPORT, viewport);
 
     const float CAM_NEAR = 1.f;
-    const float CAM_FAR = 100000.f;
+    const float CAM_FAR = 10000.f;
     if (viewport[2] < viewport[3]) {
         float aspect =
                 static_cast<float>(viewport[2]) / static_cast<float>(viewport[3]);

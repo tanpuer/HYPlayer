@@ -116,6 +116,8 @@ void NewObjFilter::loadObj() {
 //                                "/sdcard/IronMan.obj",
 //                                "/sdcard/Ak-47.obj",
                                 "/sdcard/Japanese_Temple.obj",
+//                                "/sdcard/Touareg.obj",
+//                                "/sdcard/Airbus_A310.obj",
                                 "/sdcard", true);
     t.end();
     if (!warn.empty()) {

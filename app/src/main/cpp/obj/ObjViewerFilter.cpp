@@ -367,7 +367,9 @@ void ObjViewerFilter::loadObj() {
 //                                "/sdcard/A380.obj",
 //                                "/sdcard/uh60.obj",
 //                                "/sdcard/LAM.obj",
-                                "/sdcard/IronMan.obj",
+//                                "/sdcard/IronMan.obj",
+//                                "/sdcard/Airbus_A310.obj",
+                                "/sdcard/Japanese_Temple.obj",
                                 "/sdcard", true);
     t.end();
     if (!warn.empty()) {

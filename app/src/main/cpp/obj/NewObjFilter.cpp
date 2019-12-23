@@ -11,9 +11,9 @@
 static const char *VERTEX_SHADER = GET_STR(
         attribute highp vec3 myVertex;
         attribute highp vec3 myNormal;
-        attribute mediump vec2 myUV;
+        attribute highp vec2 myUV;
         attribute mediump vec4 myBone;
-        varying mediump vec2 texCoord;
+        varying highp vec2 texCoord;
         varying lowp vec4 diffuseLight;
         varying mediump vec3 position;
         varying mediump vec3 normal;
@@ -23,8 +23,8 @@ static const char *VERTEX_SHADER = GET_STR(
         uniform lowp vec4 vMaterialDiffuse;
         uniform lowp vec3 vMaterialAmbient;
         uniform lowp vec4 vMaterialSpecular;
-        attribute vec3 myColor;
-        varying vec3 vMyColor;
+        attribute highp vec3 myColor;
+        varying highp vec3 vMyColor;
         void main(void) {
             vMyColor = myColor;
             highp vec4 p = vec4(myVertex,1);
@@ -42,13 +42,12 @@ static const char *FRAGMEMT_SHADER = GET_STR(
         uniform lowp vec3 vMaterialAmbient;
         uniform lowp vec4 vMaterialSpecular;
         uniform sampler2D samplerObj;
-        varying mediump vec2 texCoord;
+        varying highp vec2 texCoord;
         varying lowp vec4 diffuseLight;
         uniform highp vec3   vLight0;
         varying mediump vec3 position;
         varying mediump vec3 normal;
-        uniform vec3 diffuse;
-        varying vec3 vMyColor;
+        varying highp vec3 vMyColor;
         void main() {
             mediump vec3 halfVector = normalize(-vLight0 + position);
             mediump float NdotH = max(dot(normalize(normal), halfVector), 0.0);
@@ -58,9 +57,9 @@ static const char *FRAGMEMT_SHADER = GET_STR(
             // increase ambient light to brighten the teapot :-)
 //            gl_FragColor = diffuseLight * texture2D(samplerObj, texCoord) +
 //            2.0f * vec4(vMaterialAmbient.xyz, 1.0f) + colorSpecular;
-            gl_FragColor = texture2D(samplerObj, texCoord);
+//            gl_FragColor = texture2D(samplerObj, texCoord);
 //            gl_FragColor = vec4(vMyColor, 1.0);
-//            gl_FragColor = mix(texture2D(samplerObj, texCoord), vec4(diffuse, 1.0), 0.3);
+            gl_FragColor = mix(texture2D(samplerObj, texCoord), vec4(vMyColor, 1.0), 0.2);
         }
 );
 
@@ -111,11 +110,11 @@ void NewObjFilter::loadObj() {
 //                                "/sdcard/batman.obj",
 //                                "/sdcard/earth.obj",
 //                                "/sdcard/A380.obj",
-//                                "/sdcard/uh60.obj",
+                                "/sdcard/uh60.obj",
 //                                "/sdcard/LAM.obj",
 //                                "/sdcard/IronMan.obj",
 //                                "/sdcard/Ak-47.obj",
-                                "/sdcard/Japanese_Temple.obj",
+//                                "/sdcard/Japanese_Temple.obj",
 //                                "/sdcard/tobao.obj",
 //                                "/sdcard/Touareg.obj",
 //                                "/sdcard/Airbus_A310.obj",
@@ -240,6 +239,7 @@ bool NewObjFilter::LoadObjAndConvert() {
                     ALOGD("Parsing time:%s %lu [msecs] %d %d %d\n", ("sdcard/" + mp->diffuse_texname).c_str(),  t.msec(), w, h, comp);
 
                     glGenTextures(1, &texture_id);
+                    glActiveTexture(GL_TEXTURE0 + texture_id - 1);
                     glBindTexture(GL_TEXTURE_2D, texture_id);
                     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
                     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);

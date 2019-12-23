@@ -116,6 +116,7 @@ void NewObjFilter::loadObj() {
 //                                "/sdcard/IronMan.obj",
 //                                "/sdcard/Ak-47.obj",
                                 "/sdcard/Japanese_Temple.obj",
+//                                "/sdcard/tobao.obj",
 //                                "/sdcard/Touareg.obj",
 //                                "/sdcard/Airbus_A310.obj",
                                 "/sdcard", true);
@@ -229,8 +230,14 @@ bool NewObjFilter::LoadObjAndConvert() {
                     int w, h;
                     int comp;
 
+                    timerutil t;
+                    t.start();
+//                    stbi_set_flip_vertically_on_load(1);
                     unsigned char *image =
-                            stbi_load(("sdcard/" + mp->diffuse_texname).c_str(), &w, &h, &comp, STBI_rgb);
+                            stbi_load(("sdcard/" + mp->diffuse_texname).c_str(), &w, &h, &comp, STBI_default);
+
+                    t.end();
+                    ALOGD("Parsing time:%s %lu [msecs] %d %d %d\n", ("sdcard/" + mp->diffuse_texname).c_str(),  t.msec(), w, h, comp);
 
                     glGenTextures(1, &texture_id);
                     glBindTexture(GL_TEXTURE_2D, texture_id);
@@ -413,18 +420,18 @@ bool NewObjFilter::LoadObjAndConvert() {
                     buffer.push_back(n[k][1]);
                     buffer.push_back(n[k][2]);
                     // Combine normal and diffuse to get color.
-                    float normal_factor = 1.0;
-                    float diffuse_factor = 1 - normal_factor;
-                    float c[3] = {n[k][0] * normal_factor + diffuse[0] * diffuse_factor,
-                                  n[k][1] * normal_factor + diffuse[1] * diffuse_factor,
-                                  n[k][2] * normal_factor + diffuse[2] * diffuse_factor};
-                    float len2 = c[0] * c[0] + c[1] * c[1] + c[2] * c[2];
-                    if (len2 > 0.0f) {
-                        float len = sqrtf(len2);
-                        c[0] /= len;
-                        c[1] /= len;
-                        c[2] /= len;
-                    }
+//                    float normal_factor = 1.0;
+//                    float diffuse_factor = 1 - normal_factor;
+//                    float c[3] = {n[k][0] * normal_factor + diffuse[0] * diffuse_factor,
+//                                  n[k][1] * normal_factor + diffuse[1] * diffuse_factor,
+//                                  n[k][2] * normal_factor + diffuse[2] * diffuse_factor};
+//                    float len2 = c[0] * c[0] + c[1] * c[1] + c[2] * c[2];
+//                    if (len2 > 0.0f) {
+//                        float len = sqrtf(len2);
+//                        c[0] /= len;
+//                        c[1] /= len;
+//                        c[2] /= len;
+//                    }
 //                    buffer.push_back(c[0] * 0.5 + 0.5);
 //                    buffer.push_back(c[1] * 0.5 + 0.5);
 //                    buffer.push_back(c[2] * 0.5 + 0.5);

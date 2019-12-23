@@ -63,6 +63,19 @@ static const char *FRAGMEMT_SHADER = GET_STR(
         }
 );
 
+static bool FileExists(const std::string& abs_filename) {
+    bool ret;
+    FILE* fp = fopen(abs_filename.c_str(), "rb");
+    if (fp) {
+        ret = true;
+        fclose(fp);
+    } else {
+        ret = false;
+    }
+
+    return ret;
+}
+
 static void CalcNormal(float N[3], float v0[3], float v1[3], float v2[3]) {
     float v10[3];
     v10[0] = v1[0] - v0[0];
@@ -233,11 +246,9 @@ bool NewObjFilter::LoadObjAndConvert() {
                     timerutil t;
                     t.start();
 //                    stbi_set_flip_vertically_on_load(1);
+                    assert(FileExists("sdcard/" + mp->diffuse_texname));
                     unsigned char *image =
                             stbi_load(("sdcard/" + mp->diffuse_texname).c_str(), &w, &h, &comp, STBI_default);
-
-                    t.end();
-                    ALOGD("Parsing time:%s %lu [msecs] %d %d %d\n", ("sdcard/" + mp->diffuse_texname).c_str(),  t.msec(), w, h, comp);
 
                     glGenTextures(1, &texture_id);
                     glActiveTexture(GL_TEXTURE0 + texture_id - 1);
@@ -260,6 +271,10 @@ bool NewObjFilter::LoadObjAndConvert() {
                     }
                     glTexImage2D(GL_TEXTURE_2D, 0, format, w, h, 0, format,
                                  GL_UNSIGNED_BYTE, image);
+
+                    t.end();
+                    ALOGD("Parsing time:%s %d %lu [msecs] %d %d %d\n", ("sdcard/" + mp->diffuse_texname).c_str(), texture_id, t.msec(), w, h, comp);
+
                     glBindTexture(GL_TEXTURE_2D, 0);
                     stbi_image_free(image);
                     texturesIdMap.insert(std::make_pair(mp->diffuse_texname, texture_id));
@@ -533,6 +548,7 @@ void NewObjFilter::doFrame() {
         if ((o.material_id < materials.size())) {
             std::string diffuse_texname = materials[o.material_id].diffuse_texname;
             if (texturesIdMap.find(diffuse_texname) != texturesIdMap.end()) {
+//                ALOGD("333333 %s %d", diffuse_texname.data(), texturesIdMap[diffuse_texname]);
                 glActiveTexture(GL_TEXTURE0 + texturesIdMap[diffuse_texname] - 1);
                 glBindTexture(GL_TEXTURE_2D, texturesIdMap[diffuse_texname]);
                 glUniform1i(shaderProgram->samplerObj, texturesIdMap[diffuse_texname] - 1);

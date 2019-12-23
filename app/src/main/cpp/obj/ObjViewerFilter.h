@@ -83,7 +83,7 @@ protected:
 
     float CAM_X = 0.f;
     float CAM_Y = 0.f;
-    float CAM_Z = 7000.f;
+    float CAM_Z = 70000.f;
 
     tinyobj::attrib_t attrib;
     std::vector<tinyobj::shape_t> shapes;

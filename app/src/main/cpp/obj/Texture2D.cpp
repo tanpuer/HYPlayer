@@ -17,6 +17,7 @@ void Texture2D::create() {
     glGenTextures(1, &texId);
     ALOGD("111111 create texture id is %d", texId);
     assert(texId != GL_INVALID_VALUE);
+    glActiveTexture(GL_TEXTURE0 + texId - 1);
     glBindTexture(GL_TEXTURE_2D, texId);
 
 //     tga/bmp files are saved as vertical mirror images ( at least more than half ).

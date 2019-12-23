@@ -429,9 +429,13 @@ bool NewObjFilter::LoadObjAndConvert() {
                 }
 
                 for (int k = 0; k < 3; k++) {
-                    buffer.push_back(v[k][0]);
-                    buffer.push_back(v[k][1]);
-                    buffer.push_back(v[k][2]);
+                    //todo
+                    buffer.push_back(v[k][0] / 100);
+                    buffer.push_back(v[k][1] / 100);
+                    buffer.push_back(v[k][2] / 100);
+//                    buffer.push_back(v[k][0]);
+//                    buffer.push_back(v[k][1]);
+//                    buffer.push_back(v[k][2]);
                     buffer.push_back(n[k][0]);
                     buffer.push_back(n[k][1]);
                     buffer.push_back(n[k][2]);
@@ -499,7 +503,7 @@ bool NewObjFilter::LoadObjAndConvert() {
 void NewObjFilter::doFrame() {
 
     viewMatrix = ndk_helper::Mat4::LookAt(
-            ndk_helper::Vec3(CAM_X / maxExtent, CAM_Y / maxExtent, CAM_Z / scaleIndex / maxExtent),
+            ndk_helper::Vec3(CAM_X, CAM_Y, CAM_Z / scaleIndex / maxExtent),
             ndk_helper::Vec3(0.f, 0.f, 0.f),
             ndk_helper::Vec3(0.f, 1.f, 0.f));
 

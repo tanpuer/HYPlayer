@@ -19,7 +19,8 @@ class AudioService : Service() {
             "/sdcard/test.mp3",
             "/sdcard/test1.mp3",
             "/sdcard/test2.mp3",
-            "/sdcard/test3.mp3"
+            "/sdcard/test3.mp3",
+            "/sdcard/test4.mp3"
         )
         var currentIndex = 0
     }

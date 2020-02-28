@@ -3,6 +3,7 @@
 //
 
 #include <base/native_log.h>
+#include <assert.h>
 #include "FFAudioEncoder.h"
 
 FFAudioEncoder::FFAudioEncoder(const char *path) {
@@ -38,7 +39,7 @@ FFAudioEncoder::FFAudioEncoder(const char *path) {
 
     int result = avcodec_open2(pCodecCtx, pCodec, nullptr);
     if (result < 0) {
-        ALOGE("can not open video encoder!");
+        ALOGE("can not open audio encoder!");
         return;
     }
 
@@ -52,7 +53,7 @@ FFAudioEncoder::FFAudioEncoder(const char *path) {
                              bufferSize, 1);
 
     avformat_write_header(pFormatCtx, nullptr);
-    av_new_packet(audioPacket, bufferSize);
+    av_new_packet(&audioPacket, bufferSize);
 
     swr = swr_alloc();
     swr_alloc_set_opts(swr, pCodecCtx->channel_layout, pCodecCtx->sample_fmt,
@@ -102,15 +103,17 @@ void FFAudioEncoder::release() {
 }
 
 void FFAudioEncoder::EncodeFrame(AVCodecContext *pCodecCtx, AVFrame *audioFrame) {
+    assert(pCodecCtx != nullptr);
+    assert(audioFrame != nullptr);
     int ret = avcodec_send_frame(pCodecCtx, audioFrame);
     if (ret < 0) {
-        ALOGE("Could't send frame");
+        ALOGE("Could't send frame %d %d", audioFrame->channels, audioFrame->format);
         return;
     }
-    while (avcodec_receive_packet(pCodecCtx, audioPacket) == 0) {
-        audioPacket->stream_index = pStream->index;
-        ret = av_interleaved_write_frame(pFormatCtx, audioPacket);
-        av_packet_unref(audioPacket);
+    while (avcodec_receive_packet(pCodecCtx, &audioPacket) == 0) {
+        audioPacket.stream_index = pStream->index;
+        ret = av_interleaved_write_frame(pFormatCtx, &audioPacket);
+        av_packet_unref(&audioPacket);
         ALOGD("write packet success");
     }
 }

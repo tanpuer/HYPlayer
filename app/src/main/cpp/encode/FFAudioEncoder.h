@@ -35,7 +35,7 @@ private:
     AVCodec *pCodec;
     AVFrame *audioFrame = nullptr;
     AVStream *pStream = nullptr;
-    AVPacket *audioPacket = nullptr;
+    AVPacket audioPacket;
     int bufferSize = 0;
     uint8_t *audioBuffer = nullptr;
     SwrContext *swr = nullptr;

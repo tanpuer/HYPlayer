@@ -98,7 +98,7 @@ SLAudioRecoder::SLAudioRecoder(const char *path) {
 }
 
 void SLAudioRecoder::start() {
-    ALOGD("SLAudioRecoder start");
+    ALOGD("SLAudioRecorder start");
     (*iRecoder)->SetRecordState(iRecoder, SL_RECORDSTATE_RECORDING);
     (*pcmQue)->Clear(pcmQue);
     (*pcmQue)->Enqueue(pcmQue, mBuffers[mIndex], BUFFER_SIZE * sizeof(short));

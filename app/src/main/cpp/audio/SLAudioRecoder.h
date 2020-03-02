@@ -6,7 +6,7 @@
 #define HYPLAYER_SLAUDIORECODER_H
 
 
-#include <encode/FFAudioEncoder.h>
+#include "AACEncoder.h"
 
 class SLAudioRecoder {
 
@@ -26,13 +26,13 @@ private:
 
     const char *path;
 
-    short *mBuffers[2];
+    char *mBuffers[2];
 
     int mIndex = 0;
 
     const short BUFFER_SIZE = 2048;
 
-    FFAudioEncoder *audioEncoder;
+    AACEncoder *audioEncoder;
 };
 
 

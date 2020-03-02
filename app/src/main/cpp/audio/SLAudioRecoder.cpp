@@ -90,11 +90,12 @@ SLAudioRecoder::SLAudioRecoder(const char *path) {
         ALOGE("RegisterCallback failed!");
         return;
     }
-    mBuffers[0] = new short[BUFFER_SIZE];
-    mBuffers[1] = new short[BUFFER_SIZE];
+    mBuffers[0] = new char[BUFFER_SIZE];
+    mBuffers[1] = new char[BUFFER_SIZE];
     ALOGD("CreateAudioRecorder success");
 
-    audioEncoder = new FFAudioEncoder(path);
+    audioEncoder = new AACEncoder();
+    audioEncoder->EncodeStart(path);
 }
 
 void SLAudioRecoder::start() {
@@ -143,12 +144,12 @@ void SLAudioRecoder::release() {
         mBuffers[1] = nullptr;
     }
 
-    audioEncoder->encodeEnd();
+    audioEncoder->EncodeStop();
 }
 
 void SLAudioRecoder::call(void *bufq) {
     ALOGD("recoder frame call");
-    audioEncoder->encoderBuffer(mBuffers[mIndex], BUFFER_SIZE);
+    audioEncoder->EncodeBuffer(reinterpret_cast<const unsigned char *>(mBuffers[mIndex]), BUFFER_SIZE);
     mIndex = 1 - mIndex;
-    (*pcmQue)->Enqueue(pcmQue, mBuffers[mIndex], BUFFER_SIZE * sizeof(short));
+    (*pcmQue)->Enqueue(pcmQue, mBuffers[mIndex], BUFFER_SIZE * sizeof(char));
 }

@@ -689,3 +689,36 @@ Java_com_cw_hyplayer_viewer_NativeObjView_nativeObjScale(
         objViewerLooper->setObjScale(scale);
     }
 }
+
+AACEncoder *aacEncoder = nullptr;
+//......................................................
+extern "C" JNIEXPORT void JNICALL
+Java_com_cw_hyplayer_encode_audio_AudioCapture_nativeEncodeStart(
+        JNIEnv *env,
+        jobject instance,
+        jstring path
+) {
+    aacEncoder = new AACEncoder();
+    const char *aacPath = env->GetStringUTFChars(path, NULL);
+    aacEncoder->EncodeStart(aacPath);
+}
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_cw_hyplayer_encode_audio_AudioCapture_nativeEncodeFrame(
+        JNIEnv *env,
+        jobject instance,
+        jbyteArray jpcmBuffer,
+        jint size
+) {
+    jbyte *buffer = env->GetByteArrayElements(jpcmBuffer, NULL);
+    aacEncoder->EncodeBuffer((unsigned char *) buffer, size);
+    env->ReleaseByteArrayElements(jpcmBuffer, buffer, NULL);
+}
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_cw_hyplayer_encode_audio_AudioCapture_nativeEncodeEnd(
+        JNIEnv *env,
+        jobject instance
+) {
+    aacEncoder->EncodeStop();
+}

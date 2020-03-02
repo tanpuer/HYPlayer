@@ -4,8 +4,8 @@ import android.media.AudioFormat
 import android.media.AudioRecord
 import android.media.MediaRecorder
 import android.util.Log
+import java.io.File
 import java.lang.Exception
-import kotlin.math.min
 
 class AudioCapture {
 
@@ -13,8 +13,12 @@ class AudioCapture {
         private const val TAG = "AudioCapture"
         private const val DEFAULT_SOURCE = MediaRecorder.AudioSource.MIC
         private const val DEFAULT_SAMPLE_RATE = 44100
-        private const val DEFAULT_CHANNEL_CONFIG = AudioFormat.CHANNEL_IN_MONO
+        private const val DEFAULT_CHANNEL_CONFIG = AudioFormat.CHANNEL_IN_STEREO
         private const val DEFAULT_AUDIO_FORMAT = AudioFormat.ENCODING_PCM_16BIT
+
+        init {
+            System.loadLibrary("native-lib")
+        }
     }
 
     private var mIsCaptureStarted = false
@@ -24,6 +28,15 @@ class AudioCapture {
     private var minBufferSize = 0
     var audioCaptureListener: AudioCaptureListener? = null
     private lateinit var mCaptureThread: Thread
+
+    init {
+        val file = File("sdcard/trailer_test.aac")
+        if (file.exists()) {
+            file.delete()
+            file.createNewFile()
+        }
+        nativeEncodeStart("sdcard/trailer_test.aac")
+    }
 
     fun startCapture() {
         startCapture(
@@ -63,6 +76,7 @@ class AudioCapture {
             Log.e(TAG, "audio capture already stop")
             return
         }
+        nativeEncodeEnd()
         isLoopExit = true
         try {
             mCaptureThread.interrupt()
@@ -71,7 +85,7 @@ class AudioCapture {
             e.printStackTrace()
         }
         if (mAudioRecord.state == AudioRecord.RECORDSTATE_RECORDING) {
-            mAudioRecord.stop();
+            mAudioRecord.stop()
         }
         mAudioRecord.release()
         mIsCaptureStarted = false
@@ -82,6 +96,10 @@ class AudioCapture {
     interface AudioCaptureListener {
         fun onAudioFrameCapture(buffer: ByteArray)
     }
+
+    private external fun nativeEncodeStart(path: String)
+    private external fun nativeEncodeFrame(buffer: ByteArray, size: Int)
+    private external fun nativeEncodeEnd()
 
     private inner class AudioCaptureRunnable : Runnable {
         override fun run() {
@@ -95,12 +113,15 @@ class AudioCapture {
                     AudioRecord.ERROR_BAD_VALUE -> {
                         Log.d(TAG, "audioRecord ERROR_BAD_VALUE")
                     }
+                    AudioRecord.RECORDSTATE_STOPPED -> {
+                    }
                     else -> {
+                        nativeEncodeFrame(buffer, minBufferSize)
                         audioCaptureListener?.onAudioFrameCapture(buffer)
                     }
                 }
             }
         }
-
     }
+
 }

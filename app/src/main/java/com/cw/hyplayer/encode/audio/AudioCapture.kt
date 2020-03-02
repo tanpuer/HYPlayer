@@ -13,7 +13,7 @@ class AudioCapture {
         private const val TAG = "AudioCapture"
         private const val DEFAULT_SOURCE = MediaRecorder.AudioSource.MIC
         private const val DEFAULT_SAMPLE_RATE = 44100
-        private const val DEFAULT_CHANNEL_CONFIG = AudioFormat.CHANNEL_IN_STEREO
+        private const val DEFAULT_CHANNEL_CONFIG = AudioFormat.CHANNEL_IN_MONO
         private const val DEFAULT_AUDIO_FORMAT = AudioFormat.ENCODING_PCM_16BIT
 
         init {

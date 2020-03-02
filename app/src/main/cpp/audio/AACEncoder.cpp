@@ -82,7 +82,7 @@ int AACEncoder::EncodeStart(const char *aacPath) {
 
     //9.用于音频转码
     swr = swr_alloc();
-    av_opt_set_channel_layout(swr, "in_channel_layout", AV_CH_LAYOUT_STEREO, 0);
+    av_opt_set_channel_layout(swr, "in_channel_layout", AV_CH_LAYOUT_MONO, 0);
     av_opt_set_channel_layout(swr, "out_channel_layout", AV_CH_LAYOUT_STEREO, 0);
     av_opt_set_int(swr, "in_sample_rate", 44100, 0);
     av_opt_set_int(swr, "out_sample_rate", 44100, 0);
@@ -99,7 +99,7 @@ int AACEncoder::EncodeBuffer(const unsigned char *pcmBuffer, int len) {
     uint8_t *outs[2];
     outs[0] = new uint8_t[len];
     outs[1] = new uint8_t[len];
-    int count = swr_convert(swr, (uint8_t **) &outs, len * 4, &pcmBuffer, len / 4);
+    int count = swr_convert(swr, (uint8_t **) &outs, audioFrame->nb_samples, &pcmBuffer, audioFrame->nb_samples);
     audioFrame->data[0] = outs[0];
     audioFrame->data[1] = outs[1];
 

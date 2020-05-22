@@ -83,20 +83,20 @@ void VideoPlayer::setNativeWindowCreated(ANativeWindow *nativeWindow) {
 }
 
 void VideoPlayer::setNativeWindowDestroyed() {
-    if (glVideoLooper != nullptr) {
+    if (enable && glVideoLooper != nullptr) {
         glVideoLooper->sendMessage(glVideoLooper->kMsgSurfaceDestroyed);
         glVideoLooper->quit();
     }
 }
 
 void VideoPlayer::setNativeWindowChanged(int width, int height) {
-    if (glVideoLooper != nullptr) {
+    if (enable && glVideoLooper != nullptr) {
         glVideoLooper->sendMessage(glVideoLooper->kMsgSurfaceChanged, width, height);
     }
 }
 
 void VideoPlayer::doFrame() {
-    if (glVideoLooper != nullptr) {
+    if (enable && glVideoLooper != nullptr) {
         glVideoLooper->sendMessage(glVideoLooper->kMsgSurfaceDoFrame);
     }
 }

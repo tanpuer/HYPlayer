@@ -98,6 +98,7 @@ class HYVideoActivity : AppCompatActivity(), IVideoViewCallback {
     override fun surfaceDestroyed() {
         surface = null
         videoPlayer?.setSurfaceDestroyed()
+        timer.cancel()
     }
 
     override fun surfaceDoFrame() {

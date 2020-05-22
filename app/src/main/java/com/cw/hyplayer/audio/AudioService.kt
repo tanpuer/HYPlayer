@@ -16,11 +16,11 @@ class AudioService : Service() {
         const val CHANNEL_NAME = "HYAudioService"
 
         private val AUDIO_LIST = listOf(
-            "/sdcard/test.mp3",
+//            "/sdcard/test.mp3",
             "/sdcard/test1.mp3",
-            "/sdcard/test2.mp3",
-            "/sdcard/test3.mp3",
-            "/sdcard/test4.mp3"
+            "/sdcard/test2.mp3"
+//            "/sdcard/test3.mp3",
+//            "/sdcard/test4.mp3"
         )
         var currentIndex = 0
     }
@@ -43,7 +43,7 @@ class AudioService : Service() {
 
     fun create() {
         if (audioPlayer == null) {
-            val mediaSource = MediaSource("/sdcard/test2.mp3")
+            val mediaSource = MediaSource("/sdcard/test1.mp3")
 //                val mediaSource = MediaSource("/sdcard/trailer111.mp4")
             audioPlayer = HYAudioPlayer(mediaSource)
         }

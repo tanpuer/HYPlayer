@@ -18,9 +18,15 @@ class AudioService : Service() {
         private val AUDIO_LIST = listOf(
 //            "/sdcard/test.mp3",
             "/sdcard/test1.mp3",
-            "/sdcard/test2.mp3"
-//            "/sdcard/test3.mp3",
-//            "/sdcard/test4.mp3"
+            "/sdcard/test2.mp3",
+            "/sdcard/test3.mp3",
+            "/sdcard/test4.mp3",
+            "/sdcard/test5.mp3",
+            "/sdcard/test6.mp3",
+            "/sdcard/test7.mp3",
+            "/sdcard/test8.mp3",
+            "/sdcard/test9.mp3",
+            "/sdcard/test10.mp3"
         )
         var currentIndex = 0
     }
@@ -88,9 +94,9 @@ class AudioService : Service() {
         if (currentIndex >= AUDIO_LIST.size) {
             currentIndex = 0
         }
+        currentIndex++
         val mediaSource = MediaSource(AUDIO_LIST[currentIndex])
         setDataSource(mediaSource)
-        currentIndex++
     }
 
     fun setVolume(volume: Int) {

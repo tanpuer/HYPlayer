@@ -1,5 +1,6 @@
 package com.cw.hyplayer.video
 
+import android.Manifest
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -7,6 +8,7 @@ import android.util.Log
 import android.view.Surface
 import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import com.cw.hyplayer.R
 import com.cw.hyplayer.audio.MediaSource
 import kotlinx.android.synthetic.main.activity_video.*
@@ -78,6 +80,9 @@ class HYVideoActivity : AppCompatActivity(), IVideoViewCallback {
                 }
             }
         }, 0, 500)
+        ActivityCompat.requestPermissions(
+            this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 10001
+        )
     }
 
     override fun surfaceCreated(surface: Surface) {
@@ -100,7 +105,7 @@ class HYVideoActivity : AppCompatActivity(), IVideoViewCallback {
     }
 
     private fun initPlayer(usingMediaCodec: Boolean) {
-        val mediaSource = MediaSource("/sdcard/trailer.mp4")
+        val mediaSource = MediaSource("/sdcard/trailer111.mp4")
         mediaSource.usingMediaCodec = usingMediaCodec
         videoPlayer = HYVideoPlayer(mediaSource)
         surface?.let {

@@ -12,18 +12,25 @@
         android:text="AudioPlayer"
         android:textAllCaps="false" />
 
-    <Button
-        android:id="@+id/audio_recoder"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="AudioRecoder"
-        android:textAllCaps="false" />
+<!--    <Button-->
+<!--        android:id="@+id/audio_recoder"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="AudioRecoder"-->
+<!--        android:textAllCaps="false" />-->
+
+<!--    <Button-->
+<!--        android:id="@+id/obj_loader"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="ObjLoader"-->
+<!--        android:textAllCaps="false" />-->
 
     <Button
-        android:id="@+id/obj_loader"
+        android:id="@+id/video_player"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="ObjLoader"
+        android:text="VideoPlayer"
         android:textAllCaps="false" />
 
 </LinearLayout>

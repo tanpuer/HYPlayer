@@ -91,10 +91,10 @@ class AudioService : Service() {
     }
 
     fun next() {
+        currentIndex++
         if (currentIndex >= AUDIO_LIST.size) {
             currentIndex = 0
         }
-        currentIndex++
         val mediaSource = MediaSource(AUDIO_LIST[currentIndex])
         setDataSource(mediaSource)
     }

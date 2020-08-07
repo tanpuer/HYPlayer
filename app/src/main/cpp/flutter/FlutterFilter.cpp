@@ -59,9 +59,9 @@ void FlutterFilter::setNativeWindowSize(int width, int height) {
 }
 
 void FlutterFilter::doFrame() {
-    glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
-                           frameBufferTextureId, 0);
+//    glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
+//    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
+//                           frameBufferTextureId, 0);
     SkGraphics::Init();
 
     if (skia_surface == nullptr) {
@@ -71,7 +71,8 @@ void FlutterFilter::doFrame() {
         // Wrap the frame buffer object attached to the screen in a Skia render target so Skia can
         // render to it
         GrGLFramebufferInfo info;
-        info.fFBOID = frameBuffer;
+//        info.fFBOID = frameBuffer;
+        info.fFBOID = 0;
         SkColorType colorType;
         info.fFormat = GR_GL_RGBA8;
         colorType = kRGBA_8888_SkColorType;
@@ -94,33 +95,33 @@ void FlutterFilter::doFrame() {
     ALOGD("Flutter draw time %ld", javaTimeMillis() - start);
 
 
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-    //fbo
-    glUseProgram(fboProgram);
-
-    GLint vertexCount = sizeof(vertex) / (sizeof(vertex[0]) * 2);
-    fboPositionLocation = glGetAttribLocation(fboProgram, fboPosition);
-    glEnableVertexAttribArray(fboPositionLocation);
-    glVertexAttribPointer(fboPositionLocation, 2, GL_FLOAT, GL_FALSE, 8, vertex);
-
-    fboTextureCoordinateLocation = glGetAttribLocation(fboProgram, fboTextureCoordinate);
-    glEnableVertexAttribArray(fboTextureCoordinateLocation);
-    glVertexAttribPointer(fboTextureCoordinateLocation, 2, GL_FLOAT, GL_FALSE, 8, texture);
-
-    fboTextureMatrixLocation = glGetUniformLocation(fboProgram, fboTextureMatrix);
-    glUniformMatrix4fv(fboTextureMatrixLocation, 1, GL_FALSE, fboTexMatrix.m);
-
-    fboTextureLocation = glGetUniformLocation(fboProgram, fboTexture);
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, frameBufferTextureId);
-    glUniform1i(fboTextureLocation, 0);
-
-    glDrawArrays(GL_TRIANGLES, 0, vertexCount);
-    glDisableVertexAttribArray(fboPositionLocation);
-    glDisableVertexAttribArray(fboTextureCoordinateLocation);
-
-    glBindTexture(GL_TEXTURE_2D, frameBufferTextureId);
+//    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+//
+//    //fbo
+//    glUseProgram(fboProgram);
+//
+//    GLint vertexCount = sizeof(vertex) / (sizeof(vertex[0]) * 2);
+//    fboPositionLocation = glGetAttribLocation(fboProgram, fboPosition);
+//    glEnableVertexAttribArray(fboPositionLocation);
+//    glVertexAttribPointer(fboPositionLocation, 2, GL_FLOAT, GL_FALSE, 8, vertex);
+//
+//    fboTextureCoordinateLocation = glGetAttribLocation(fboProgram, fboTextureCoordinate);
+//    glEnableVertexAttribArray(fboTextureCoordinateLocation);
+//    glVertexAttribPointer(fboTextureCoordinateLocation, 2, GL_FLOAT, GL_FALSE, 8, texture);
+//
+//    fboTextureMatrixLocation = glGetUniformLocation(fboProgram, fboTextureMatrix);
+//    glUniformMatrix4fv(fboTextureMatrixLocation, 1, GL_FALSE, fboTexMatrix.m);
+//
+//    fboTextureLocation = glGetUniformLocation(fboProgram, fboTexture);
+//    glActiveTexture(GL_TEXTURE0);
+//    glBindTexture(GL_TEXTURE_2D, frameBufferTextureId);
+//    glUniform1i(fboTextureLocation, 0);
+//
+//    glDrawArrays(GL_TRIANGLES, 0, vertexCount);
+//    glDisableVertexAttribArray(fboPositionLocation);
+//    glDisableVertexAttribArray(fboTextureCoordinateLocation);
+//
+//    glBindTexture(GL_TEXTURE_2D, frameBufferTextureId);
 }
 
 void FlutterFilter::release() {

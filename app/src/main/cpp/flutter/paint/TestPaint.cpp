@@ -26,7 +26,7 @@ TestPaint::TestPaint() {
 
     imageView = new ImageView();
     imageView->setRect(0.4f, 0.7f, 0.5f, 0.5f);
-    imageView->setSrc("sdcard/test.jpeg");
+    imageView->setSrc("sdcard/cowboy.png");
 }
 
 void TestPaint::onDraw(SkCanvas *canvas, int windowWidth, int windowHeight) {

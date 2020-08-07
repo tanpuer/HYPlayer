@@ -5,7 +5,13 @@
 #include "TextView.h"
 
 void TextView::onDraw(SkCanvas *canvas, int parentWidth, int parentHeight) {
-    canvas->drawText(text, strlen(text), left * parentWidth, top * parentHeight, *paint);
+    left -= 0.001f;
+    if (left < 0.0f) {
+        left = 0.3f;
+    }
+    for (int i = 0; i < 100; i+=3) {
+        canvas->drawText(text, strlen(text), left * parentWidth, i * parentHeight / 100, *paint);
+    }
 }
 
 TextView::TextView() {

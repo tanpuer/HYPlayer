@@ -9,7 +9,7 @@ void TextView::onDraw(SkCanvas *canvas, int parentWidth, int parentHeight) {
     if (left < 0.0f) {
         left = 0.3f;
     }
-    for (int i = 0; i < 100; i+=3) {
+    for (int i = 0; i < 100; i++) {
         canvas->drawText(text, strlen(text), left * parentWidth, i * parentHeight / 100, *paint);
     }
 }

@@ -18,10 +18,10 @@ TestPaint::TestPaint() {
     view->setRect(0.1f, 0.1f, 0.5f, 0.1f);
 
     textView = new TextView();
-    textView->setRect(0.5f, 0.3f, 0.3f, 0.1f);
+    textView->setRect(0.5f, 1.0f, 0.3f, 0.1f);
     textView->setColor(SK_ColorRED);
     textView->setBold(true);
-    textView->setTextSize(100);
+    textView->setTextSize(30);
     textView->setText("Hello World!");
 
     imageView = new ImageView();

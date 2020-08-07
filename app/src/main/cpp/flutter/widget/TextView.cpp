@@ -3,13 +3,14 @@
 //
 
 #include "TextView.h"
+#include "SkTypeface.h"
 
 void TextView::onDraw(SkCanvas *canvas, int parentWidth, int parentHeight) {
     left -= 0.001f;
     if (left < 0.0f) {
         left = 0.3f;
     }
-    for (int i = 0; i < 100; i++) {
+    for (int i = 0; i < 100; i+=3) {
         canvas->drawText(text, strlen(text), left * parentWidth, i * parentHeight / 100, *paint);
     }
 }
@@ -17,6 +18,7 @@ void TextView::onDraw(SkCanvas *canvas, int parentWidth, int parentHeight) {
 TextView::TextView() {
     paint = new SkPaint();
     paint->setAntiAlias(true);
+    paint->setTypeface(SkTypeface::MakeFromFile("/sdcard/Kaiw5-gb5-2.ttf"));
 }
 
 TextView::~TextView() {

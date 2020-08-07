@@ -22,7 +22,7 @@ TestPaint::TestPaint() {
     textView->setColor(SK_ColorRED);
     textView->setBold(true);
     textView->setTextSize(30);
-    textView->setText("Hello World!");
+    textView->setText("你好呀！！！");
 
     imageView = new ImageView();
     imageView->setRect(0.4f, 0.7f, 0.5f, 0.5f);

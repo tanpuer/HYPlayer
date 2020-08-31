@@ -7,6 +7,7 @@
 
 
 #include "View.h"
+#include "vector"
 
 class TextView : public View {
 
@@ -35,6 +36,7 @@ private:
 
     SkPaint *paint;
 
+    std::vector<float> startList;
 };
 
 

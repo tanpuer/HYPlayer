@@ -131,7 +131,7 @@ void FlutterFilter::release() {
     glDeleteShader(fboVertexShader);
     auto textures = new GLuint[1];
     textures[0] = frameBufferTextureId;
-    glDeleteTextures(3, textures);
+    glDeleteTextures(1, textures);
     auto frameBuffers = new GLuint[1];
     frameBuffers[0] = frameBuffer;
     glDeleteFramebuffers(1, frameBuffers);

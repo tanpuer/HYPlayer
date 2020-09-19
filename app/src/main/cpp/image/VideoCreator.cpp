@@ -94,17 +94,22 @@ void VideoCreator::startDecode() {
             ALOGE("video send packet fail %s", buf);
             return;
         }
-        AVFrame *pFrameYUV = av_frame_alloc();
-        re = avcodec_receive_frame(codecContext, pFrameYUV);
-        if (re != 0) {
-            ALOGE("video receive frame fail %d", re);
-            return;
+        while (isDecoding) {
+            AVFrame *pFrameYUV = av_frame_alloc();
+            re = avcodec_receive_frame(codecContext, pFrameYUV);
+            if (re == 0) {
+                pFrameYUV->width = codecContext->width;
+                pFrameYUV->height = codecContext->height;
+                ALOGD("push avFrame")
+                frameList.push_back(pFrameYUV);
+                count++;
+            } else {
+                av_frame_free(&pFrameYUV);
+                break;
+            }
         }
-        pFrameYUV->width = codecContext->width;
-        pFrameYUV->height = codecContext->height;
-//        pFrameYUV->pts = 1000 * timeBase;
-        frameList.push_back(pFrameYUV);
-        count++;
+
+
     }
     ALOGD("read all video %ld %d", javaTimeMillis() - start, count);
 }

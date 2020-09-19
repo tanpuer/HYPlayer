@@ -46,6 +46,8 @@ public:
 
     void identifyTextureMatrix();
 
+    virtual void updateMatrix();
+
 protected:
 
     GLuint yTexture;
@@ -74,7 +76,6 @@ protected:
 
     ESMatrix baseMVPMatrix;
     ESMatrix textureMatrix;
-    void updateMatrix();
 
     IAVFrameCreator *avFrameCreator;
 

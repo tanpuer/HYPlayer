@@ -52,7 +52,8 @@ TemplateBaseFilter::TemplateBaseFilter() {
 
 //    avFrameCreator = new ImageCreator("sdcard/test.jpeg");
 //    avFrameCreator = new GifCreator("sdcard/test.gif");
-    avFrameCreator = new VideoCreator("sdcard/trailer111.mp4");
+//    avFrameCreator = new VideoCreator("sdcard/trailer111.mp4");
+    avFrameCreator = new VideoCreator("sdcard/trailer_with_alpha.mp4");
 
     baseMVPMatrix = ESMatrix();
     textureMatrix = ESMatrix();
@@ -72,7 +73,7 @@ TemplateBaseFilter::~TemplateBaseFilter() {
 void TemplateBaseFilter::doFrame() {
     AVFrame *avFrame = avFrameCreator->readFrame(time);
     if (avFrame == nullptr) {
-        ALOGE("doFrame with avFrame nullptr, pls check");
+//        ALOGE("doFrame with avFrame nullptr, pls check");
         return;
     }
     if (avFrame->width != imageWidth || avFrame->height != imageHeight) {

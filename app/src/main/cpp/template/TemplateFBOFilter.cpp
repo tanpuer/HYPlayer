@@ -120,7 +120,7 @@ void TemplateFBOFilter::doFrame() {
     SkCanvas *canvas = skia_surface->getCanvas();
     paint->onDraw(canvas, windowWidth, windowHeight);
     canvas->flush();
-    ALOGD("skia draw time %ld", javaTimeMillis() - start);
+//    ALOGD("skia draw time %ld", javaTimeMillis() - start);
 
     glDisableVertexAttribArray(fboPositionLocation);
     glDisableVertexAttribArray(fboTextureCoordinateLocation);

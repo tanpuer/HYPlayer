@@ -22,7 +22,7 @@ void TextView::onDraw(SkCanvas *canvas, int parentWidth, int parentHeight) {
                          *paint);
         startList[i] -= 0.005f;
     }
-    ALOGD("SK TextView: %ld", javaTimeMillis() - start)
+//    ALOGD("SK TextView: %ld", javaTimeMillis() - start)
 }
 
 TextView::TextView() {

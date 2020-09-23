@@ -48,6 +48,8 @@ public:
 
     virtual void updateMatrix();
 
+    virtual void initGLProgram();
+
 protected:
 
     GLuint yTexture;

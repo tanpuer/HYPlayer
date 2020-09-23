@@ -48,11 +48,15 @@ static const char *FRAGMENT_SHADER_STR = GET_STR(
                float g1 = y1 - 0.344 * u1 - 0.714 * v1;
                float b1 = y1 + 1.772 * u1;
                 gl_FragColor = vec4(colorLeft.rgb, alpha);
-//                gl_FragColor = vec4(alpha, g1, b1, 1.0);
+//                gl_FragColor = vec4(alpha, alpha, alpha, 1.0);
            }
 );
 
 AlphaBaseFilter::AlphaBaseFilter() {
+
+}
+
+void AlphaBaseFilter::initGLProgram() {
     vertexShader = loadShader(GL_VERTEX_SHADER, VERTEX_SHADER_STR);
     fragmentShader = loadShader(GL_FRAGMENT_SHADER, FRAGMENT_SHADER_STR);
     program = createShaderProgram(vertexShader, fragmentShader);
@@ -60,9 +64,6 @@ AlphaBaseFilter::AlphaBaseFilter() {
     uTexture = createTexture(GL_TEXTURE_2D);
     vTexture = createTexture(GL_TEXTURE_2D);
 
-//    avFrameCreator = new ImageCreator("sdcard/test.jpeg");
-//    avFrameCreator = new GifCreator("sdcard/test.gif");
-//    avFrameCreator = new VideoCreator("sdcard/trailer111.mp4");
     avFrameCreator = new VideoCreator("sdcard/trailer_with_alpha.mp4");
 
     baseMVPMatrix = ESMatrix();

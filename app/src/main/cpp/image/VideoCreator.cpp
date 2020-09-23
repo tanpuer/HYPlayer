@@ -108,10 +108,8 @@ void VideoCreator::startDecode() {
                 break;
             }
         }
-
-
     }
-    ALOGD("read all video %ld %d", javaTimeMillis() - start, count);
+    ALOGD("read all video %ld %d", javaTimeMillis() - start, count)
 }
 
 void VideoCreator::handleMessage(Looper::LooperMessage *msg) {

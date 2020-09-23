@@ -43,6 +43,10 @@ static const char *FRAGMENT_SHADER_STR = GET_STR(
 );
 
 TemplateBaseFilter::TemplateBaseFilter() {
+
+}
+
+void TemplateBaseFilter::initGLProgram() {
     vertexShader = loadShader(GL_VERTEX_SHADER, VERTEX_SHADER_STR);
     fragmentShader = loadShader(GL_FRAGMENT_SHADER, FRAGMENT_SHADER_STR);
     program = createShaderProgram(vertexShader, fragmentShader);
@@ -61,7 +65,6 @@ TemplateBaseFilter::TemplateBaseFilter() {
     setIdentityM(&textureMatrix);
     textureMatrix.m[5] = -1.0f;
     textureMatrix.m[13] = 1.0f;
-
 }
 
 TemplateBaseFilter::~TemplateBaseFilter() {

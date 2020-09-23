@@ -43,9 +43,10 @@ void TemplateRenderer::templateCreated(ANativeWindow *nativeWindow) {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    baseFilter = new TemplateBaseFilter();
+//    baseFilter = new TemplateBaseFilter();
 //    baseFilter = new TemplateFBOFilter();
     baseFilter = new AlphaBaseFilter();
+    baseFilter->initGLProgram();
 }
 
 void TemplateRenderer::templateChanged(int width, int height) {

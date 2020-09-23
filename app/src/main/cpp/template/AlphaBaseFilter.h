@@ -18,6 +18,7 @@ public:
 
     virtual void updateMatrix();
 
+    void initGLProgram() override;
 };
 
 

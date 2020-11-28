@@ -13,7 +13,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.CameraX
 import androidx.camera.core.Preview
-import androidx.camera.core.PreviewConfig
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
@@ -62,33 +61,34 @@ class LiveActivity : AppCompatActivity(), LifecycleOwner {
         }
     }
 
+    //todo api变了
     private fun startCamera() {
-        // Create configuration object for the viewfinder use case
-        val previewConfig = PreviewConfig.Builder().apply {
-//            setTargetAspectRatio(Rational(9, 16))
-            setTargetResolution(Size(1080, 1920))
-        }.build()
-
-        // Build the viewfinder use case
-        val preview = Preview(previewConfig)
-
-        // Every time the viewfinder is updated, recompute layout
-        preview.setOnPreviewOutputUpdateListener {
-
-            // To update the SurfaceTexture, we have to remove it and re-add it
-            val parent = viewFinder.parent as ViewGroup
-            parent.removeView(viewFinder)
-            parent.addView(viewFinder, 0)
-
-            viewFinder.surfaceTexture = it.surfaceTexture
-            updateTransform()
-        }
-
-        // Bind use cases to lifecycle
-        // If Android Studio complains about "this" being not a LifecycleOwner
-        // try rebuilding the project or updating the appcompat dependency to
-        // version 1.1.0 or higher.
-        CameraX.bindToLifecycle(this, preview)
+//        // Create configuration object for the viewfinder use case
+//        val previewConfig = PreviewConfig.Builder().apply {
+////            setTargetAspectRatio(Rational(9, 16))
+//            setTargetResolution(Size(1080, 1920))
+//        }.build()
+//
+//        // Build the viewfinder use case
+//        val preview = Preview(previewConfig)
+//
+//        // Every time the viewfinder is updated, recompute layout
+//        preview.setOnPreviewOutputUpdateListener {
+//
+//            // To update the SurfaceTexture, we have to remove it and re-add it
+//            val parent = viewFinder.parent as ViewGroup
+//            parent.removeView(viewFinder)
+//            parent.addView(viewFinder, 0)
+//
+//            viewFinder.surfaceTexture = it.surfaceTexture
+//            updateTransform()
+//        }
+//
+//        // Bind use cases to lifecycle
+//        // If Android Studio complains about "this" being not a LifecycleOwner
+//        // try rebuilding the project or updating the appcompat dependency to
+//        // version 1.1.0 or higher.
+//        CameraX.bindToLifecycle(this, preview)
     }
 
     private fun updateTransform() {

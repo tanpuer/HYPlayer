@@ -32,7 +32,6 @@ static const char *FRAGMENT_SHADER_STR = GET_STR(
            void main()
            {
                 vec2 vecLeft = vec2(vTextureCoord.x / 2.0, vTextureCoord.y);
-                vec2 vecRight = vec2(vTextureCoord.x / 2.0 + 0.5, vTextureCoord.y);
                 float y = texture2D(uTextureY, vecLeft).r;
                 float u = texture2D(uTextureU, vecLeft).r - 0.5;
                 float v = texture2D(uTextureV, vecLeft).r - 0.5;
@@ -41,14 +40,11 @@ static const char *FRAGMENT_SHADER_STR = GET_STR(
                 float b = y + 1.772 * u;
                 vec3 colorLeft = vec3(r,g,b);
 
-               float y1 = texture2D(uTextureY, vecRight).r;
-               float u1 = texture2D(uTextureU, vecRight).r - 0.5;
-               float v1 = texture2D(uTextureV, vecRight).r - 0.5;
-               float alpha = y1 + 1.402 * v1;
-               float g1 = y1 - 0.344 * u1 - 0.714 * v1;
-               float b1 = y1 + 1.772 * u1;
+                vec2 vecRight = vec2(vTextureCoord.x / 2.0 + 0.5, vTextureCoord.y);
+                float y1 = texture2D(uTextureY, vecRight).r;
+                float v1 = texture2D(uTextureV, vecRight).r - 0.5;
+                float alpha = y1 + 1.402 * v1;
                 gl_FragColor = vec4(colorLeft.rgb, alpha);
-//                gl_FragColor = vec4(alpha, alpha, alpha, 1.0);
            }
 );
 

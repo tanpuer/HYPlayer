@@ -37,7 +37,7 @@ void TemplateRenderer::templateCreated(ANativeWindow *nativeWindow) {
     windowSurface = new window_surface(nativeWindow, eglCore);
 
     windowSurface->makeCurrent();
-    glClearColor(0.0, 0.0, 0.0, 1.0);
+    glClearColor(1.0, 1.0, 1.0, 0.0);
     glDisable(GL_DEPTH_TEST);
     glDisable(GL_CULL_FACE);
     glEnable(GL_BLEND);
@@ -76,7 +76,7 @@ void TemplateRenderer::templateDestroyed() {
 }
 
 void TemplateRenderer::templateDoFrame(long frameTimeNanos) {
-    glClearColor(0.0, 0.0, 0.0, 1.0);
+    glClearColor(1.0, 1.0, 1.0, 0.0);
     glClear(GL_COLOR_BUFFER_BIT);
 
     baseFilter->doFrame();

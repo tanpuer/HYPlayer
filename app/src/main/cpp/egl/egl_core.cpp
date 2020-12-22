@@ -109,6 +109,8 @@ EGLConfig egl_core::getConfig(int flags, int version) {
                               8,
                               EGL_DEPTH_SIZE,
                               16,
+                              EGL_ALPHA_SIZE,
+                              8,
                               EGL_NONE};
     int length = sizeof(attrib)/ sizeof(attrib[0]);
     if ((flags & FLAG_RECORDABLE) != 0){

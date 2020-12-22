@@ -77,7 +77,7 @@ AlphaBaseFilter::~AlphaBaseFilter() {
 void AlphaBaseFilter::updateMatrix() {
     if (windowWidth > 0 && windowHeight > 0 && imageWidth > 0 && imageHeight > 0) {
         int realWidth = imageWidth / 2;
-        if (true) {
+        if (false) {
             //fit_center
             if (realWidth /2 * 1.0 / imageHeight > windowWidth * 1.0 / windowHeight) {
                 //横屏视频

@@ -1,5 +1,6 @@
 package com.cw.hyplayer.template
 
+import android.graphics.Color
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.cw.hyplayer.R
@@ -20,5 +21,7 @@ class TemplateActivity : AppCompatActivity() {
             一代天骄，成吉思汗，只识弯弓射大雕。
             俱往矣，数风流人物，还看今朝。
         """
+
+        template_container.setBackgroundColor(Color.TRANSPARENT)
     }
 }

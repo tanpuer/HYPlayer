@@ -1,13 +1,13 @@
 package com.cw.hyplayer.template
 
 import android.content.Context
+import android.graphics.Color
+import android.graphics.SurfaceTexture
 import android.util.AttributeSet
-import android.view.Choreographer
-import android.view.Surface
-import android.view.SurfaceHolder
-import android.view.SurfaceView
+import android.view.*
 
-class TemplateView : SurfaceView, SurfaceHolder.Callback, Choreographer.FrameCallback{
+class TemplateView : TextureView, SurfaceHolder.Callback, Choreographer.FrameCallback,
+    TextureView.SurfaceTextureListener {
 
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
@@ -20,7 +20,13 @@ class TemplateView : SurfaceView, SurfaceHolder.Callback, Choreographer.FrameCal
     private var active = false
 
     init {
-        holder.addCallback(this)
+//        holder.addCallback(this)
+//        setBackgroundColor(Color.TRANSPARENT)
+//        setZOrderOnTop(true)
+//        setZOrderMediaOverlay(true)
+
+        surfaceTextureListener = this
+        isOpaque = false
     }
 
     override fun surfaceCreated(holder: SurfaceHolder?) {
@@ -55,6 +61,26 @@ class TemplateView : SurfaceView, SurfaceHolder.Callback, Choreographer.FrameCal
         init {
             System.loadLibrary("native-lib")
         }
+    }
+
+    override fun onSurfaceTextureAvailable(surface: SurfaceTexture?, width: Int, height: Int) {
+        active = true
+        nativeTemplateViewCreated(Surface(surface!!))
+        Choreographer.getInstance().postFrameCallback(this)
+        nativeTemplateViewChanged(width, height)
+    }
+
+    override fun onSurfaceTextureSizeChanged(surface: SurfaceTexture?, width: Int, height: Int) {
+    }
+
+    override fun onSurfaceTextureDestroyed(surface: SurfaceTexture?): Boolean {
+        active = false
+        nativeTemplateViewDestroyed()
+        Choreographer.getInstance().removeFrameCallback(this)
+        return true
+    }
+
+    override fun onSurfaceTextureUpdated(surface: SurfaceTexture?) {
     }
 
 }

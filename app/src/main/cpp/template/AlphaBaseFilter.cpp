@@ -68,9 +68,6 @@ void AlphaBaseFilter::initGLProgram() {
     setIdentityM(&textureMatrix);
     textureMatrix.m[5] = -1.0f;
     textureMatrix.m[13] = 1.0f;
-
-    //init alpha
-    initTransPrograms();
 }
 
 AlphaBaseFilter::~AlphaBaseFilter() {
@@ -107,47 +104,4 @@ void AlphaBaseFilter::updateMatrix() {
         setIdentityM(&baseMVPMatrix);
         scaleM(&baseMVPMatrix, 0, originScaleX * scaleX, originScaleY * scaleY, 1.0F);
     }
-}
-
-static const char *VERTEX_TRANS_SHADER_STR = GET_STR(
-        attribute vec4 aTransPosition;
-        void main() {
-            gl_Position = aTransPosition;
-        }
-);
-
-static const char *FRAGMENT_TRANS_SHADER_STR = GET_STR(
-        precision highp float;
-        void main() {
-            gl_FragColor = vec4(1.0, 1.0, 1.0, 0.0);
-        }
-);
-
-void AlphaBaseFilter::doFrame() {
-    glUseProgram(transProgram);
-    GLint vertexCount = sizeof(vertex) / (sizeof(vertex[0]) * 2);
-    aTransPositionLocation = glGetAttribLocation(transProgram, "aTransPosition");
-    glEnableVertexAttribArray(aTransPositionLocation);
-    glVertexAttribPointer(aTransPositionLocation, 2, GL_FLOAT, GL_FALSE, 8, vertex);
-    glDrawArrays(GL_TRIANGLES, 0, vertexCount);
-    glDisableVertexAttribArray(aTransPositionLocation);
-
-    TemplateBaseFilter::doFrame();
-}
-
-void AlphaBaseFilter::initTransPrograms() {
-    transVertexShader = loadShader(GL_VERTEX_SHADER, VERTEX_TRANS_SHADER_STR);
-    transFragmentShader = loadShader(GL_FRAGMENT_SHADER, FRAGMENT_TRANS_SHADER_STR);
-    transProgram = createShaderProgram(transVertexShader, transFragmentShader);
-}
-
-void AlphaBaseFilter::releaseTransProgram() {
-    glDeleteProgram(transProgram);
-    glDeleteShader(transVertexShader);
-    glDeleteShader(transFragmentShader);
-}
-
-void AlphaBaseFilter::release() {
-    releaseTransProgram();
-    TemplateBaseFilter::release();
 }

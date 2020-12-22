@@ -19,6 +19,22 @@ public:
     virtual void updateMatrix();
 
     void initGLProgram() override;
+
+    void doFrame() override;
+
+    void release() override;
+
+private:
+
+    void initTransPrograms();
+
+    void releaseTransProgram();
+
+    GLuint transVertexShader = 0;
+    GLuint transFragmentShader = 0;
+    GLuint transProgram = 0;
+
+    GLuint aTransPositionLocation = -1;
 };
 
 

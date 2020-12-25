@@ -17,14 +17,10 @@
 #define GET_STR(x) #x
 
 static const char *VERTEX_SHADER_STR = GET_STR(
-        attribute
-        vec4 fboPosition;
-        uniform
-        mat4 fboTextureMatrix;
-        attribute
-        vec4 fboTextureCoordinate;
-        varying
-        vec2 fboTextureCoord;
+        attribute vec4 fboPosition;
+        uniform mat4 fboTextureMatrix;
+        attribute vec4 fboTextureCoordinate;
+        varying vec2 fboTextureCoord;
         void main() {
             fboTextureCoord = (fboTextureMatrix * fboTextureCoordinate).xy;
             gl_Position = fboPosition;

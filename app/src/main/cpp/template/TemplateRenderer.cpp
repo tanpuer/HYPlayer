@@ -6,6 +6,7 @@
 #include "../base/native_log.h"
 #include "TemplateFBOFilter.h"
 #include "AlphaBaseFilter.h"
+#include "AlphaFBOFilter.h"
 #include <GLES3/gl3.h>
 
 TemplateRenderer::TemplateRenderer() {
@@ -46,6 +47,7 @@ void TemplateRenderer::templateCreated(ANativeWindow *nativeWindow) {
 //    baseFilter = new TemplateBaseFilter();
 //    baseFilter = new TemplateFBOFilter();
     baseFilter = new AlphaBaseFilter();
+//    baseFilter = new AlphaFBOFilter();
     baseFilter->initGLProgram();
 }
 

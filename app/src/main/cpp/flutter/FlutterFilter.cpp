@@ -29,7 +29,8 @@ void FlutterFilter::setNativeWindowSize(int width, int height) {
     windowWidth = width;
     windowHeight = height;
 
-    if (skia_surface == nullptr) {
+    if (skia_surface == nullptr || skia_surface->width() != width ||
+        skia_surface->height() != height) {
         sk_sp<const GrGLInterface> interface(GrGLMakeNativeInterface());
         context = GrContext::MakeGL(interface);
         SkASSERT(context);
@@ -56,7 +57,7 @@ void FlutterFilter::setNativeWindowSize(int width, int height) {
 
 void FlutterFilter::doFrame() {
     long start = javaTimeMillis();
-    SkCanvas* canvas = skia_surface->getCanvas();
+    SkCanvas *canvas = skia_surface->getCanvas();
     basePaint->onDraw(canvas, windowWidth, windowHeight);
     canvas->flush();
     ALOGD("Flutter draw time %ld", javaTimeMillis() - start);

@@ -28,6 +28,7 @@ void TextView::onDraw(SkCanvas *canvas, int parentWidth, int parentHeight) {
 TextView::TextView() {
     paint = new SkPaint();
     paint->setAntiAlias(true);
+    //todo 汉字需要ttf
     paint->setTypeface(SkTypeface::MakeFromFile("/sdcard/Kaiw5-gb5-2.ttf"));
     startList = std::vector<float>(100, 0.0);
     default_random_engine e;

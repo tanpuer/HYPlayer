@@ -23,11 +23,11 @@
 <!--            </intent-filter>-->
         </activity>
         <activity android:name=".template.TemplateActivity" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
         </activity>
         <activity android:name=".encode.EncodeActivity">
 <!--            <intent-filter>-->
@@ -37,11 +37,11 @@
 <!--            </intent-filter>-->
         </activity>
         <activity android:name=".flutter.FlutterActivity">
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity android:name=".camera.LiveActivity">
 <!--            <intent-filter>-->

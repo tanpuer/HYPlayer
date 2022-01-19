@@ -9,7 +9,7 @@
 #include <GLES2/gl2.h>
 #include <base/matrix_util.h>
 #include <image/IAVFrameCreator.h>
-#include <gpu/GrContext.h>
+#include <gpu/GrBackendSurface.h>
 #include <core/SkSurface.h>
 #include <flutter/paint/FlutterBasePaint.h>
 
@@ -30,7 +30,7 @@ public:
     int time = 0;
 
 protected:
-    sk_sp<GrContext> context = nullptr;
+    sk_sp<GrDirectContext> context = nullptr;
     sk_sp<SkSurface> skia_surface = nullptr;
 
     int windowWidth;

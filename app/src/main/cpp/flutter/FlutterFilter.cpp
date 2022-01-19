@@ -9,16 +9,17 @@
 #include <skia/core/SkCanvas.h>
 #include <skia/core/SkGraphics.h>
 #include <skia/gpu/GrBackendSurface.h>
-#include <skia/gpu/gl/GrGLDefines.h>
 #include <template/TemplateBaseFilter.h>
 #include <flutter/paint/TestPaint.h>
 #include <base/utils.h>
+#include <skia/gpu/gl/GrGLInterface.h>
+#include <gpu/gl/GrGLTypes.h>
+#include <core/SkImageInfo.h>
 
 #define GET_STR(x) #x
 
 FlutterFilter::FlutterFilter() {
     basePaint = new TestPaint();
-    SkGraphics::Init();
 }
 
 FlutterFilter::~FlutterFilter() {
@@ -31,6 +32,8 @@ void FlutterFilter::setNativeWindowSize(int width, int height) {
 
     if (skia_surface == nullptr || skia_surface->width() != width ||
         skia_surface->height() != height) {
+        auto backendInterface = GrGLMakeNativeInterface();
+        skia_surface = GrDirectContext::MakeGL(backendInterface);
         sk_sp<const GrGLInterface> interface(GrGLMakeNativeInterface());
         context = GrContext::MakeGL(interface);
         SkASSERT(context);

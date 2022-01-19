@@ -8,6 +8,7 @@
 
 #include <core/SkColor.h>
 #include <core/SkCanvas.h>
+#include <core/SkPaint.h>
 
 class View {
 
